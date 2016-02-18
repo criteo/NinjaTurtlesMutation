@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>$id$</id>
+    <version>$version$</version>
+    <title>$title$</title>
+    <authors>$author$</authors>
+    <owners>$author$</owners>
+    <licenseUrl>https://ninjaturtles.codeplex.com/license</licenseUrl>
+    <projectUrl>https://ninjaturtles.codeplex.com</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>$description$</description>
+    <releaseNotes>Early alpha release of NinjaTurtles.</releaseNotes>
+    <copyright>Copyright (C) 2012 David Musgrove</copyright>
+    <tags></tags>
+  </metadata>
+</package>

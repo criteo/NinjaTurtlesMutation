@@ -1,0 +1,129 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.21022</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{688A032D-2BE0-4BE0-85A4-57AA9379F314}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>NinjaTurtles.Tests</RootNamespace>
+    <AssemblyName>NinjaTurtles.Tests</AssemblyName>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug</OutputPath>
+    <DefineConstants>DEBUG;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+    <Prefer32Bit>false</Prefer32Bit>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Release</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+    <Prefer32Bit>false</Prefer32Bit>
+    <DebugSymbols>true</DebugSymbols>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Mono.Cecil, Version=0.9.5.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756, processorArchitecture=MSIL">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Mono.Cecil.Mdb, Version=0.9.5.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Mono.Cecil.0.9.5.4\lib\net40\Mono.Cecil.Mdb.dll</HintPath>
+    </Reference>
+    <Reference Include="Mono.Cecil.Pdb, Version=0.9.5.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Mono.Cecil.0.9.5.4\lib\net40\Mono.Cecil.Pdb.dll</HintPath>
+    </Reference>
+    <Reference Include="Mono.Cecil.Rocks, Version=0.9.5.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Mono.Cecil.0.9.5.4\lib\net40\Mono.Cecil.Rocks.dll</HintPath>
+    </Reference>
+    <Reference Include="NLog">
+      <HintPath>..\packages\NLog.3.2.0.0\lib\net45\NLog.dll</HintPath>
+    </Reference>
+    <Reference Include="nunit.framework">
+      <HintPath>..\packages\NUnit.2.6.4\lib\nunit.framework.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="TestLibraryMono">
+      <HintPath>..\lib\TestLibraryMono.dll</HintPath>
+    </Reference>
+    <Reference Include="TestLibraryNoPdb">
+      <HintPath>..\lib\TestLibraryNoPdb.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="MethodDefinitionResolverLoggingTests.cs" />
+    <Compile Include="TestDirectoryLoggingTests.cs" />
+    <Compile Include="InstructionExtensionsTests.cs" />
+    <Compile Include="TestUtilities\LoggingTestFixture.cs" />
+    <Compile Include="MethodDefinitionResolverTests.cs" />
+    <Compile Include="ModuleTests.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ConsoleProcessFactoryTests.cs" />
+    <Compile Include="MutationTestBuilderTests.cs" />
+    <Compile Include="Turtles\ArithmeticOperatorTurtleTests.cs" />
+    <Compile Include="Turtles\ArithmeticOperatorTurtleTestSuite\Tests\AdditionClassUnderTestTests.cs" />
+    <Compile Include="Turtles\ArithmeticOperatorTurtleTestSuite\AdditionClassUnderTest.cs" />
+    <Compile Include="MutationTestTests.cs" />
+    <Compile Include="TestUtilities\ConsoleCapturer.cs" />
+    <Compile Include="TestDirectoryTests.cs" />
+    <Compile Include="Turtles\BitwiseOperatorTurtleTestSuite\Tests\XorClassUnderTestTests.cs" />
+    <Compile Include="Turtles\BitwiseOperatorTurtleTestSuite\XorClassUnderTest.cs" />
+    <Compile Include="Turtles\BranchConditionTurtleTests.cs" />
+    <Compile Include="Turtles\BranchConditionTurtleTestSuite\BranchConditionClassUnderTest.cs" />
+    <Compile Include="Turtles\BranchConditionTurtleTestSuite\Tests\BranchConditionClassUnderTestTests.cs" />
+    <Compile Include="Turtles\BitwiseOperatorTurtleTests.cs" />
+    <Compile Include="Turtles\ConditionalBoundaryTurtleTests.cs" />
+    <Compile Include="Turtles\ConditionalBoundaryTurtleTestSuite\ConditionalBoundaryClassUnderTest.cs" />
+    <Compile Include="Turtles\ConditionalBoundaryTurtleTestSuite\Tests\ConditionalBoundaryClassUnderTestTests.cs" />
+    <Compile Include="Turtles\Tests\ClosureClassUnderTest.cs" />
+    <Compile Include="Turtles\VariableReadTurtleTests.cs" />
+    <Compile Include="Turtles\VariableWriteTurtleTests.cs" />
+    <Compile Include="Turtles\VariableReadTurtleTestSuite\Tests\VariableReadClassUnderTestTests.cs" />
+    <Compile Include="Turtles\VariableReadTurtleTestSuite\VariableReadClassUnderTest.cs" />
+    <Compile Include="Turtles\MethodTurtleBaseTests.cs" />
+    <Compile Include="Turtles\OpCodeRotationTurtleTests.cs" />
+    <Compile Include="Turtles\SequencePointDeletionTurtleTests.cs" />
+    <Compile Include="Turtles\SequencePointDeletionTurtleTestSuite\SequencePointDeletionClassUnderTest.cs" />
+    <Compile Include="Turtles\SequencePointDeletionTurtleTestSuite\Tests\SequencePointDeletionClassUnderTestTests.cs" />
+    <Compile Include="Turtles\VariableWriteTurtleTestSuite\Tests\VariableWriteClassUnderTestTests.cs" />
+    <Compile Include="Turtles\VariableWriteTurtleTestSuite\VariableWriteClassUnderTest.cs" />
+    <Compile Include="TypeResolverLoggingTests.cs" />
+    <Compile Include="TypeResolverTests.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <None Include="..\lib\TestLibraryMono.dll.mdb">
+      <Link>TestLibraryMono.dll.mdb</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="packages.config">
+      <SubType>Designer</SubType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\NinjaTurtles\NinjaTurtles.csproj">
+      <Project>{56afcf77-0818-4b5c-8099-1ccc5d611282}</Project>
+      <Name>NinjaTurtles</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(SolutionDir)\.nuget\nuget.targets" />
+</Project>

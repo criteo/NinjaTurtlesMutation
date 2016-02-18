@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>$id$</id>
+    <version>$version$</version>
+    <title>$title$</title>
+    <authors>$author$</authors>
+    <owners>$author$</owners>
+    <licenseUrl>http://ninjaturtles.codeplex.com/license</licenseUrl>
+    <projectUrl>http://www.mutation-testing.net</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>$description$</description>
+    <releaseNotes>Beta release of NinjaTurtles.</releaseNotes>
+    <copyright>Copyright (C) 2012 David Musgrove</copyright>
+    <tags></tags>
+  </metadata>
+  <files>
+    <file src="..\NinjaTurtles.Console\bin\Release\*.exe" target="tools\net40" />
+    <file src="..\NinjaTurtles.Console\bin\Release\*.dll" target="tools\net40" />
+    <file src="..\NinjaTurtles.Console\bin\Release\*.pdb" target="tools\net40" />
+  </files>
+</package>

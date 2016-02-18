@@ -1,0 +1,127 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.21022</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{56AFCF77-0818-4B5C-8099-1CCC5D611282}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>NinjaTurtles</RootNamespace>
+    <AssemblyName>NinjaTurtles</AssemblyName>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug</OutputPath>
+    <DefineConstants>DEBUG;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+    <DocumentationFile>bin\Debug\NinjaTurtles.XML</DocumentationFile>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Release</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+    <DocumentationFile>bin\Release\NinjaTurtles.XML</DocumentationFile>
+    <Prefer32Bit>false</Prefer32Bit>
+    <DebugSymbols>true</DebugSymbols>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Mono.Cecil, Version=0.9.5.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Mono.Cecil.0.9.5.4\lib\net40\Mono.Cecil.dll</HintPath>
+    </Reference>
+    <Reference Include="Mono.Cecil.Mdb, Version=0.9.5.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Mono.Cecil.0.9.5.4\lib\net40\Mono.Cecil.Mdb.dll</HintPath>
+    </Reference>
+    <Reference Include="Mono.Cecil.Pdb, Version=0.9.5.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Mono.Cecil.0.9.5.4\lib\net40\Mono.Cecil.Pdb.dll</HintPath>
+    </Reference>
+    <Reference Include="Mono.Cecil.Rocks, Version=0.9.5.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Mono.Cecil.0.9.5.4\lib\net40\Mono.Cecil.Rocks.dll</HintPath>
+    </Reference>
+    <Reference Include="NLog">
+      <HintPath>..\packages\NLog.3.2.0.0\lib\net45\NLog.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Management" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\GlobalAssemblyInfo.cs">
+      <Link>Properties\GlobalAssemblyInfo.cs</Link>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="InstructionExtensions.cs" />
+    <Compile Include="MethodDefinitionResolver.cs" />
+    <Compile Include="Methods.cs" />
+    <Compile Include="Module.cs" />
+    <Compile Include="MutationTestAttribute.cs" />
+    <Compile Include="NamespaceDoc.cs" />
+    <Compile Include="ConsoleProcessFactory.cs" />
+    <Compile Include="MutationTestBuilder.cs" />
+    <Compile Include="IMutationTest.cs" />
+    <Compile Include="MutationTest.cs" />
+    <Compile Include="Reporting\AppliedMutant.cs" />
+    <Compile Include="Reporting\MutationTestingReport.cs" />
+    <Compile Include="Reporting\NamespaceDoc.cs" />
+    <Compile Include="Reporting\SequencePoint.cs" />
+    <Compile Include="Reporting\SourceFile.cs" />
+    <Compile Include="Reporting\Line.cs" />
+    <Compile Include="TestRunners\MSTestTestRunner.cs" />
+    <Compile Include="TestRunners\NamespaceDoc.cs" />
+    <Compile Include="TestRunners\TestRunnerBase.cs" />
+    <Compile Include="TestRunners\TestRunnerException.cs" />
+    <Compile Include="TestRunners\xUnitTestRunner.cs" />
+    <Compile Include="TestRunners\GallioTestRunner.cs" />
+    <Compile Include="TestRunners\ITestRunner.cs" />
+    <Compile Include="TestRunners\NUnitTestRunner.cs" />
+    <Compile Include="Turtles\ArithmeticOperatorTurtle.cs" />
+    <Compile Include="MutantMetaData.cs" />
+    <Compile Include="Turtles\BranchConditionTurtle.cs" />
+    <Compile Include="Turtles\BitwiseOperatorTurtle.cs" />
+    <Compile Include="Turtles\ConditionalBoundaryTurtle.cs" />
+    <Compile Include="Turtles\IMethodTurtle.cs" />
+    <Compile Include="MutationTestFailureException.cs" />
+    <Compile Include="TestDirectory.cs" />
+    <Compile Include="Turtles\MethodTurtleBase.cs" />
+    <Compile Include="Turtles\MutantExtensions.cs" />
+    <Compile Include="Turtles\NamespaceDoc.cs" />
+    <Compile Include="Turtles\OpCodeRotationTurtle.cs" />
+    <Compile Include="Turtles\SequencePointDeletionTurtle.cs" />
+    <Compile Include="Turtles\VariableReadTurtle.cs" />
+    <Compile Include="Turtles\VariableWriteTurtle.cs" />
+    <Compile Include="TypeReferenceExtensions.cs" />
+    <Compile Include="TypeResolver.cs" />
+    <Compile Include="Variable.cs" />
+    <Compile Include="VariableType.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <None Include="NinjaTurtles.nuspec" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\ReportXslt.xslt">
+      <Link>ReportXslt.xslt</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <Import Project="$(SolutionDir)\.nuget\nuget.targets" />
+</Project>
