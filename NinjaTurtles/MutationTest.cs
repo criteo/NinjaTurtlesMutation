@@ -94,6 +94,7 @@ namespace NinjaTurtles
 
 	    public void Run()
 		{
+            System.Console.WriteLine("              IN: MutationTest.Run(), _testAssemblyLocation: {0}, _reportFileName: {1}", _testAssemblyLocation, _reportFileName); ////////////////
 	        var errorReportingValue = TurnOffErrorReporting();
 
 	        MethodDefinition method = ValidateMethod();
@@ -140,7 +141,8 @@ namespace NinjaTurtles
 			}
 			if (failures > 0)
 			{
-				throw new MutationTestFailureException();
+                System.Console.WriteLine("              OUT MutationTestFailureEXCP: MutationTest.Run(), _testAssemblyLocation: {0}, _reportFileName: {1}", _testAssemblyLocation, _reportFileName); ////////////////
+                throw new MutationTestFailureException();
 			}
 		}
 
@@ -251,9 +253,12 @@ namespace NinjaTurtles
 
         private ISet<string> GetMatchingTestsFromTree(MethodDefinition targetmethod, IList<MethodReference> matchingMethods, bool force = false)
         {
+            System.Console.WriteLine("                  IN: MutationTest.GetMatchingTestsFromTree, MethodDefinition tm: {0}, IList<MethodReference> mm.count: {1}, force: {2}", targetmethod,
+                                                                                                                                                                    matchingMethods.Count,
+                                                                                                                                                                    force); ////////////////
             ISet<string> result = new HashSet<string>();
             foreach (var type in _testAssembly.MainModule.Types)
-            AddTestsForType(targetmethod, matchingMethods, force, type, result);
+                AddTestsForType(targetmethod, matchingMethods, force, type, result);
             if (!force && result.Count == 0)
             {
                 result = GetMatchingTestsFromTree(targetmethod, matchingMethods, true);
@@ -261,8 +266,14 @@ namespace NinjaTurtles
             if (result.Count == 0)
             {
                 Console.WriteLine("No matching tests found so mutation testing cannot be applied.");
+                System.Console.WriteLine("                  OUT MutationTestFailureEXCP: MutationTest.GetMatchingTestsFromTree, MethodDefinition tm: {0}, IList<MethodReference> mm.count: {1}, force: {2}",    targetmethod,
+                                                                                                                                                                                                    matchingMethods.Count,
+                                                                                                                                                                                                    force); ////////////////
                 throw new MutationTestFailureException("No matching tests were found to run.");
             }
+            System.Console.WriteLine("                  OUT: MutationTest.GetMatchingTestsFromTree, MethodDefinition tm: {0}, IList<MethodReference> mm.count: {1}, force: {2}", targetmethod,
+                                                                                                                                                                    matchingMethods.Count,
+                                                                                                                                                                    force); ////////////////
             return result;
 	    }
 
