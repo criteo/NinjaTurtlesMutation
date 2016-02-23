@@ -280,14 +280,18 @@ namespace NinjaTurtles
 	    private void AddTestsForType(MethodDefinition targetmethod, IList<MethodReference> matchingMethods, bool force, TypeDefinition type,
 	                                 ISet<string> result)
 	    {
-            Console.WriteLine("                      IN: MutationTest.AddTestsForType, MethodDefinition tm: {0}, IList<MethodReference> mm.count: {1}, force: {2}, TypeDefinition t: {3}, ISet<string> res: {4}",    targetmethod,
+	        String          methodName;
+	        String[]        parts;
+	        MethodReference reference;
+            String          targetType = targetmethod.DeclaringType.FullName;
+
+            Console.WriteLine("                      IN: MutationTest.AddTestsForType, MethodDefinition tm: {0}, IList<MethodReference> mm.count: {1}, force: {2}, TypeDefinition t: {3}, ISet<string> res: {4}", targetmethod,
                                                                                                                                                                                                                             matchingMethods.Count,
                                                                                                                                                                                                                             force,
                                                                                                                                                                                                                             type,
                                                                                                                                                                                                                             string.Join(", ", result.ToArray())); ///////////////////
-	        foreach (MethodDefinition method in type.Methods.Where(m => m.HasBody))
+            foreach (MethodDefinition method in type.Methods.Where(m => m.HasBody))
             {
-                String targetType = targetmethod.DeclaringType.FullName;
                 if (!force && !DoesMethodReferenceType(method, targetType))
                     continue;
                 foreach (Mono.Cecil.Cil.Instruction instruction in method.Body.Instructions)
@@ -297,22 +301,22 @@ namespace NinjaTurtles
                           || instruction.OpCode == OpCodes.Newobj // Allocate an uninitialized object or value type and call ctor
                           || instruction.OpCode == OpCodes.Ldftn)) // Push a pointer to a method referenced by method, on the stack
                         continue;
-                    var reference = (MethodReference)instruction.Operand;
+                    reference = (MethodReference)instruction.Operand;
                     Console.WriteLine("                              reference \"{0}\"", reference); //////////////
                     if (!(matchingMethods.Any(m => _comparer.Equals(m, reference))
                           && method.CustomAttributes.All(a => a.AttributeType.Name != "MutationTestAttribute")))
                         continue;
                     foreach (MethodReference m in matchingMethods) /////////////
                     {
-                        if (!(_comparer.Equals(m, reference)))
+                        if (!(_comparer.Equals(m, reference) && method.CustomAttributes.All(a => a.AttributeType.Name != "MutationTestAttribute")))
                             continue;
                         Console.WriteLine("                                  PASS --> matchingMethod is \"{0}\" && methodName is \"{1}\"", m, method.Name); //////////////
                         break;
                     } /////////////////
-                    string methodName = method.Name;
+                    methodName = method.Name;
                     if (methodName.StartsWith("<"))
                     {
-                        String[] parts = methodName.Split('<', '>');
+                        parts = methodName.Split('<', '>');
                         methodName = parts[1];
                     }
                     result.Add(string.Format("{0}.{1}", type.FullName.Replace("/", "+"), methodName));
@@ -321,7 +325,7 @@ namespace NinjaTurtles
             }
             if (type.NestedTypes != null)
             {
-                foreach (var typeDefinition in type.NestedTypes)
+                foreach (TypeDefinition typeDefinition in type.NestedTypes)
                     AddTestsForType(targetmethod, matchingMethods, force, typeDefinition, result);
             }
             System.Console.WriteLine("                      OUT: MutationTest.AddTestsForType, MethodDefinition tm: {0}, IList<MethodReference> mm.count: {1}, force: {2}, TypeDefinition t: {3}, ISet<string> res: {4}", targetmethod,
@@ -423,7 +427,8 @@ namespace NinjaTurtles
         {
             public bool Equals(MethodReference x, MethodReference y)
             {
-                if (x.Name != y.Name) return false;
+                if (x.Name != y.Name)
+                    return false;
                 return x.DeclaringType.FullName == y.DeclaringType.FullName
                        && x.Parameters.Select(p => p.ParameterType.Name)
                               .SequenceEqual(y.Parameters.Select(p => p.ParameterType.Name))
