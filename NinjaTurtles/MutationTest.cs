@@ -103,7 +103,7 @@ namespace NinjaTurtles
 		    _comparer = new MethodReferenceComparer();
             var matchingMethods = new List<MethodReference>();
             AddMethod(method, matchingMethods);
-
+            Console.WriteLine("               Matched methods for [{0}] are [{1}]", method, string.Join("][", matchingMethods)); //////////////
             int[] originalOffsets = method.Body.Instructions.Select(i => i.Offset).ToArray();
 		    _report = new MutationTestingReport();
             _testsToRun = GetMatchingTestsFromTree(method, matchingMethods);
