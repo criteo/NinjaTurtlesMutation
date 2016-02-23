@@ -286,10 +286,10 @@ namespace NinjaTurtles
 	            if (!force && !DoesMethodReferenceType(method, targetType)) continue;
 	            foreach (var instruction in method.Body.Instructions)
 	            {
-	                if (instruction.OpCode == OpCodes.Call
-	                    || instruction.OpCode == OpCodes.Callvirt
-	                    || instruction.OpCode == OpCodes.Newobj
-	                    || instruction.OpCode == OpCodes.Ldftn)
+                    if (instruction.OpCode == OpCodes.Call // Call method
+                        || instruction.OpCode == OpCodes.Callvirt // Call a method associated with an object
+                        || instruction.OpCode == OpCodes.Newobj // Allocate an uninitialized object or value type and call ctor
+                        || instruction.OpCode == OpCodes.Ldftn) // Push a pointer to a method referenced by method, on the stack
 	                {
 	                    var reference = (MethodReference)instruction.Operand;
 	                    if (matchingMethods.Any(m => _comparer.Equals(m, reference))
