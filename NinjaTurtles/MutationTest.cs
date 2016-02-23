@@ -280,6 +280,11 @@ namespace NinjaTurtles
 	    private void AddTestsForType(MethodDefinition targetmethod, IList<MethodReference> matchingMethods, bool force, TypeDefinition type,
 	                                 ISet<string> result)
 	    {
+            System.Console.WriteLine("                      IN: MutationTest.AddTestsForType, MethodDefinition tm: {0}, IList<MethodReference> mm.count: {1}, force: {2}, TypeDefinition t: {3}, ISet<string> res: {4}",    targetmethod,
+                                                                                                                                                                                                                            matchingMethods.Count,
+                                                                                                                                                                                                                            force,
+                                                                                                                                                                                                                            type,
+                                                                                                                                                                                                                            string.Join(", ", result.ToArray())); ///////////////////
 	        foreach (var method in type.Methods.Where(m => m.HasBody))
 	        {
 	            var targetType = targetmethod.DeclaringType.FullName;
@@ -292,9 +297,18 @@ namespace NinjaTurtles
                         || instruction.OpCode == OpCodes.Ldftn) // Push a pointer to a method referenced by method, on the stack
 	                {
 	                    var reference = (MethodReference)instruction.Operand;
+                        Console.WriteLine("                              reference \"{0}\"", reference); //////////////
 	                    if (matchingMethods.Any(m => _comparer.Equals(m, reference))
 	                        && method.CustomAttributes.All(a => a.AttributeType.Name != "MutationTestAttribute"))
 	                    {
+                            foreach (MethodReference m in matchingMethods) /////////////
+	                        {
+	                            if (_comparer.Equals(m, reference))
+	                            {
+                                    Console.WriteLine("                                  PASS --> matchingMethod is \"{0}\" && methodName is \"{1}\"", m, method.Name); //////////////
+	                                break;
+	                            }
+	                        } /////////////////
 	                        string methodName = method.Name;
 	                        if (methodName.StartsWith("<"))
 	                        {
@@ -303,7 +317,7 @@ namespace NinjaTurtles
 	                        }
 	                        result.Add(string.Format("{0}.{1}", type.FullName.Replace("/", "+"), methodName));
 	                        break;
-	                    }
+                        }
 	                }
 	            }
 	        }
@@ -314,7 +328,12 @@ namespace NinjaTurtles
                     AddTestsForType(targetmethod, matchingMethods, force, typeDefinition, result);
                 }
             }
-	    }
+            System.Console.WriteLine("                      OUT: MutationTest.AddTestsForType, MethodDefinition tm: {0}, IList<MethodReference> mm.count: {1}, force: {2}, TypeDefinition t: {3}, ISet<string> res: {4}", targetmethod,
+                                                                                                                                                                                                                            matchingMethods.Count,
+                                                                                                                                                                                                                            force,
+                                                                                                                                                                                                                            type,
+                                                                                                                                                                                                                            string.Join(", ", result.ToArray())); ///////////////////
+        }
 
 	    private static bool DoesMethodReferenceType(MethodDefinition method, string targetType)
 	    {
