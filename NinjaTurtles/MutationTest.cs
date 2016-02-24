@@ -103,7 +103,7 @@ namespace NinjaTurtles
 		    _comparer = new MethodReferenceComparer();
             var matchingMethods = new List<MethodReference>();
             AddMethod(method, matchingMethods);
-            Console.WriteLine("               Matched methods for [{0}] are [{1}]", method, string.Join("][", matchingMethods)); //////////////
+            Console.WriteLine("               Matched methods for [{0}] are [{1}]", method, string.Join("], [", matchingMethods)); //////////////
             int[] originalOffsets = method.Body.Instructions.Select(i => i.Offset).ToArray();
 		    _report = new MutationTestingReport();
             _testsToRun = GetMatchingTestsFromTree(method, matchingMethods);
@@ -285,8 +285,8 @@ namespace NinjaTurtles
 	        MethodReference reference;
             String          targetType = targetmethod.DeclaringType.FullName;
 
-            Console.WriteLine("                      IN: MutationTest.AddTestsForType, MethodDefinition tm: {0}, IList<MethodReference> mm.count: {1}, force: {2}, TypeDefinition t: {3}, ISet<string> res: {4}", targetmethod,
-                                                                                                                                                                                                                            matchingMethods.Count,
+            Console.WriteLine("                      IN: MutationTest.AddTestsForType, MethodDefinition tm: {0}, IList<MethodReference> mm: [{1}], force: {2}, TypeDefinition t: {3}, ISet<string> res: {4}", targetmethod,
+                                                                                                                                                                                                                           string.Join("], [", matchingMethods),
                                                                                                                                                                                                                             force,
                                                                                                                                                                                                                             type,
                                                                                                                                                                                                                             string.Join(", ", result.ToArray())); ///////////////////
@@ -325,11 +325,12 @@ namespace NinjaTurtles
             }
             if (type.NestedTypes != null)
             {
+                Console.WriteLine("                         Nested type founded: [{0}] (count is {1})", string.Join("], [", type.NestedTypes), type.NestedTypes.Count); //////////
                 foreach (TypeDefinition typeDefinition in type.NestedTypes)
                     AddTestsForType(targetmethod, matchingMethods, force, typeDefinition, result);
             }
-            System.Console.WriteLine("                      OUT: MutationTest.AddTestsForType, MethodDefinition tm: {0}, IList<MethodReference> mm.count: {1}, force: {2}, TypeDefinition t: {3}, ISet<string> res: {4}", targetmethod,
-                                                                                                                                                                                                                            matchingMethods.Count,
+            Console.WriteLine("                      OUT: MutationTest.AddTestsForType, MethodDefinition tm: {0}, IList<MethodReference> mm: [{1}], force: {2}, TypeDefinition t: {3}, ISet<string> res: {4}", targetmethod,
+                                                                                                                                                                                                                            string.Join("], [", matchingMethods),
                                                                                                                                                                                                                             force,
                                                                                                                                                                                                                             type,
                                                                                                                                                                                                                             string.Join(", ", result.ToArray())); ///////////////////
@@ -537,14 +538,17 @@ namespace NinjaTurtles
 
 	    private MethodDefinition ValidateMethod()
 	    {
+            System.Console.WriteLine("                  IN: MutationTest.ValidateMethod()"); ////////////////
             _module = new Module(TargetType.Assembly.Location);
 
             var type = ResolveFromTypeCollection(_module.Definition.Types);
             if (_parameterTypes != null)
             {
+                System.Console.WriteLine("                  OUT _pT null: MutationTest.ValidateMethod()"); ////////////////
                 return MethodDefinitionResolver.ResolveMethod(type, TargetMethod, _parameterTypes);
             }
-	        return MethodDefinitionResolver.ResolveMethod(type, TargetMethod, _parameterTypeReferences);
+            System.Console.WriteLine("                  OUT: MutationTest.ValidateMethod()"); ////////////////
+            return MethodDefinitionResolver.ResolveMethod(type, TargetMethod, _parameterTypeReferences);
 	    }
 
 	    private TypeDefinition ResolveFromTypeCollection(Collection<TypeDefinition> types)
