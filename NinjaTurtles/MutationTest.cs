@@ -282,7 +282,7 @@ namespace NinjaTurtles
 	    {
 	        String          methodName;
 	        String[]        parts;
-	        MethodReference reference;
+	        //MethodReference reference;
             String          targetType = targetmethod.DeclaringType.FullName;
 
             Console.WriteLine("                      IN: MutationTest.AddTestsForType, MethodDefinition tm: {0}, IList<MethodReference> mm: [{1}], force: {2}, TypeDefinition t: {3}, ISet<string> res: {4}", targetmethod,
@@ -294,6 +294,15 @@ namespace NinjaTurtles
             {
                 if (!force && !DoesMethodReferenceType(method, targetType))
                     continue;
+                if (!MethodCallTargetDirectOrIndirect(method, matchingMethods))
+                    continue;
+                methodName = method.Name;
+                if (methodName.StartsWith("<"))
+                {
+                    parts = methodName.Split('<', '>');
+                    methodName = parts[1];
+                }
+                result.Add(string.Format("{0}.{1}", type.FullName.Replace("/", "+"), methodName));/*
                 foreach (Mono.Cecil.Cil.Instruction instruction in method.Body.Instructions)
                 {
                     if (!(instruction.OpCode == OpCodes.Call // Call method
@@ -321,7 +330,7 @@ namespace NinjaTurtles
                     }
                     result.Add(string.Format("{0}.{1}", type.FullName.Replace("/", "+"), methodName));
                     break;
-                }
+                }*/
             }
             if (type.NestedTypes != null)
             {
@@ -334,6 +343,21 @@ namespace NinjaTurtles
                                                                                                                                                                                                                             force,
                                                                                                                                                                                                                             type,
                                                                                                                                                                                                                             string.Join(", ", result.ToArray())); ///////////////////
+        }
+
+        private bool MethodCallTargetDirectOrIndirect(MethodDefinition methodDefinition, IList<MethodReference> matchingMethods)
+        {
+            foreach (Instruction instruction in methodDefinition.Body.Instructions)
+            {
+                if ((instruction.OpCode == OpCodes.Call // Call method
+                     || instruction.OpCode == OpCodes.Callvirt // Call a method associated with an object
+                     || instruction.OpCode == OpCodes.Newobj // Allocate an uninitialized object or value type and call ctor
+                     || instruction.OpCode == OpCodes.Ldftn) && // Push a pointer to a method referenced by method, on the stack
+                    matchingMethods.Any(m => _comparer.Equals(m, (MethodReference) instruction.Operand)) && // At least one matching method correspond to the instruction's operand
+                    methodDefinition.CustomAttributes.All(a => a.AttributeType.Name != "MutationTestAttribute"))
+                    return (true);
+            }
+            return (false);
         }
 
 	    private static bool DoesMethodReferenceType(MethodDefinition method, string targetType)
