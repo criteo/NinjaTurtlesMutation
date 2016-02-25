@@ -318,16 +318,22 @@ namespace NinjaTurtles
 
         private bool MethodCallTargetDirectOrIndirect(MethodDefinition methodDefinition, IList<MethodReference> matchingMethods)
         {
+            Console.WriteLine("                         IN: MethodCallTargetDirectOrIndirect, calling method [{0}], potential match [{1}]", methodDefinition.Name, string.Join("], [", matchingMethods.Select(mm => mm.FullName)));
             foreach (Instruction instruction in methodDefinition.Body.Instructions)
             {
-                if ((instruction.OpCode == OpCodes.Call // Call method
-                     || instruction.OpCode == OpCodes.Callvirt // Call a method associated with an object
-                     || instruction.OpCode == OpCodes.Newobj // Allocate an uninitialized object or value type and call ctor
-                     || instruction.OpCode == OpCodes.Ldftn) && // Push a pointer to a method referenced by method, on the stack
-                    matchingMethods.Any(m => _comparer.Equals(m, (MethodReference) instruction.Operand)) && // At least one matching method correspond to the instruction's operand
-                    methodDefinition.CustomAttributes.All(a => a.AttributeType.Name != "MutationTestAttribute"))
-                    return (true);
+                if (!(instruction.OpCode == OpCodes.Call // Call method
+                      || instruction.OpCode == OpCodes.Callvirt // Call a method associated with an object
+                      || instruction.OpCode == OpCodes.Newobj // Allocate an uninitialized object or value type and call ctor
+                      || instruction.OpCode == OpCodes.Ldftn)) // Push a pointer to a method referenced by method, on the stack
+                    continue;
+                if (!matchingMethods.Any(m => _comparer.Equals(m, (MethodReference) instruction.Operand)))  // At least one matching method correspond to the instruction's operand
+                    continue;
+                if (methodDefinition.CustomAttributes.Any(a => a.AttributeType.Name == "MutationTestAttribute"))
+                    continue;
+                Console.WriteLine("                         OUT True: MethodCallTargetDirectOrIndirect, calling method [{0}], potential match [{1}]", methodDefinition.Name, string.Join("], [", matchingMethods.Select(mm => mm.FullName)));
+                return (true);
             }
+            Console.WriteLine("                         OUT False: MethodCallTargetDirectOrIndirect, calling method [{0}], potential match [{1}]", methodDefinition.Name, string.Join("], [", matchingMethods.Select(mm => mm.FullName)));
             return (false);
         }
 
