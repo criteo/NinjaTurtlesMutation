@@ -277,8 +277,7 @@ namespace NinjaTurtles
             return result;
 	    }
 
-	    private void AddTestsForType(MethodDefinition targetmethod, IList<MethodReference> matchingMethods, bool force, TypeDefinition type,
-	                                 ISet<string> result)
+	    private void AddTestsForType(MethodDefinition targetmethod, IList<MethodReference> matchingMethods, bool force, TypeDefinition type, ISet<string> result)
 	    {
 	        String          methodName;
 	        String[]        parts;
@@ -302,35 +301,7 @@ namespace NinjaTurtles
                     parts = methodName.Split('<', '>');
                     methodName = parts[1];
                 }
-                result.Add(string.Format("{0}.{1}", type.FullName.Replace("/", "+"), methodName));/*
-                foreach (Mono.Cecil.Cil.Instruction instruction in method.Body.Instructions)
-                {
-                    if (!(instruction.OpCode == OpCodes.Call // Call method
-                          || instruction.OpCode == OpCodes.Callvirt // Call a method associated with an object
-                          || instruction.OpCode == OpCodes.Newobj // Allocate an uninitialized object or value type and call ctor
-                          || instruction.OpCode == OpCodes.Ldftn)) // Push a pointer to a method referenced by method, on the stack
-                        continue;
-                    reference = (MethodReference)instruction.Operand;
-                    Console.WriteLine("                              reference \"{0}\"", reference); //////////////
-                    if (!(matchingMethods.Any(m => _comparer.Equals(m, reference))
-                          && method.CustomAttributes.All(a => a.AttributeType.Name != "MutationTestAttribute")))
-                        continue;
-                    foreach (MethodReference m in matchingMethods) /////////////
-                    {
-                        if (!(_comparer.Equals(m, reference) && method.CustomAttributes.All(a => a.AttributeType.Name != "MutationTestAttribute")))
-                            continue;
-                        Console.WriteLine("                                  PASS --> matchingMethod is \"{0}\" && methodName is \"{1}\"", m, method.Name); //////////////
-                        break;
-                    } /////////////////
-                    methodName = method.Name;
-                    if (methodName.StartsWith("<"))
-                    {
-                        parts = methodName.Split('<', '>');
-                        methodName = parts[1];
-                    }
-                    result.Add(string.Format("{0}.{1}", type.FullName.Replace("/", "+"), methodName));
-                    break;
-                }*/
+                result.Add(string.Format("{0}.{1}", type.FullName.Replace("/", "+"), methodName));
             }
             if (type.NestedTypes != null)
             {
