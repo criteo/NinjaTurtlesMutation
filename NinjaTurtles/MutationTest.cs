@@ -318,6 +318,7 @@ namespace NinjaTurtles
         private bool MethodCallTargetDirectOrIndirect(MethodDefinition methodDefinition, IList<MethodReference> matchingMethods)
         {
             Console.WriteLine("                         IN: MethodCallTargetDirectOrIndirect, calling method [{0}], potential match [{1}]", methodDefinition.Name, string.Join("], [", matchingMethods.Select(mm => mm.FullName)));
+            Console.WriteLine("                             IL Instruct [[{0}]]", string.Join("], [", methodDefinition.Body.Instructions)); ////////////
             foreach (Instruction instruction in methodDefinition.Body.Instructions)
             {
                 if (!(instruction.OpCode == OpCodes.Call // Call method
@@ -547,7 +548,7 @@ namespace NinjaTurtles
                 System.Console.WriteLine("                  OUT _pT null: MutationTest.ValidateMethod()"); ////////////////
                 return MethodDefinitionResolver.ResolveMethod(type, TargetMethod, _parameterTypes);
             }
-            System.Console.WriteLine("                  OUT: MutationTest.ValidateMethod()"); ////////////////
+            System.Console.WriteLine("                  OUT: MutationTest.ValidateMethod(), TypeDefinition type: [{0}], string TargetMethod: [{1}], TypeReference[] _parameterTypeReferences: [[{2}]]", type, TargetMethod, string.Join("], [", _parameterTypeReferences.Select(_ptr => _ptr.ToString()))); ////////////////
             return MethodDefinitionResolver.ResolveMethod(type, TargetMethod, _parameterTypeReferences);
 	    }
 
