@@ -281,7 +281,6 @@ namespace NinjaTurtles
 	    {
 	        String          methodName;
 	        String[]        parts;
-	        //MethodReference reference;
             String          targetType = targetmethod.DeclaringType.FullName;
 
             Console.WriteLine("                      IN: MutationTest.AddTestsForType, MethodDefinition tm: {0}, IList<MethodReference> mm: [{1}], force: {2}, TypeDefinition t: {3}, ISet<string> res: {4}", targetmethod,
