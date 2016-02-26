@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata>
+    <id>DiffPlex</id>
+    <version>1.2.0</version>
+    <title>DiffPlex - a .NET Diff Generator</title>
+    <authors>Matthew Manela</authors>
+    <owners>Matthew Manela</owners>
+    <licenseUrl>http://diffplex.codeplex.com/license</licenseUrl>
+    <projectUrl>http://diffplex.codeplex.com/</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>DiffPlex is a diffing library that allows you to programatically create text diffs. DiffPlex is a fast and tested library which is used by CodePlex to provide its source code diffing functionality.</description>
+    <summary>DiffPlex is a diffing library that allows you to programatically create text diffs. DiffPlex is a fast and tested library which is used by CodePlex to provide its source code diffing functionality.</summary>
+    <releaseNotes />
+    <copyright />
+    <language />
+  </metadata>
+</package>
