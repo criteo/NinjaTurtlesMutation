@@ -226,7 +226,7 @@ Example:
                 .Where(m => m.HasBody && m.Name != Methods.STATIC_CONSTRUCTOR))
             {
                 string targetMethod = methodInfo.Name;
-                string methodReturnType = methodInfo.ReturnType.FullName; // ################
+                string methodReturnType = methodInfo.ReturnType.FullName;
                 var methodsGenerics = methodInfo.GenericParameters.ToArray();
                 var parameterTypes = methodInfo.Parameters.Select(p => p.ParameterType).ToArray();
                 bool runResultBuf = RunTests(matchedType.Assembly.Location, targetClass, methodReturnType, targetMethod, methodsGenerics, parameterTypes);
