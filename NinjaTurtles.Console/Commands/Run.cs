@@ -226,8 +226,10 @@ Example:
                 .Where(m => m.HasBody && m.Name != Methods.STATIC_CONSTRUCTOR))
             {
                 string targetMethod = methodInfo.Name;
+                string methodReturnType = methodInfo.ReturnType.FullName; // ################
+                var methodsGenerics = methodInfo.GenericParameters.ToArray();
                 var parameterTypes = methodInfo.Parameters.Select(p => p.ParameterType).ToArray();
-                bool runResultBuf = RunTests(matchedType.Assembly.Location, targetClass, targetMethod, parameterTypes);
+                bool runResultBuf = RunTests(matchedType.Assembly.Location, targetClass, methodReturnType, targetMethod, methodsGenerics, parameterTypes);
                 System.Console.WriteLine("  RunTests(AssemblyLoc: {0}, TargetClass: {1}, TargetMethod: {2}, paramTypes len: {3}) = {4}",    matchedType.Assembly.Location,
                                                                                                                                             targetClass,
                                                                                                                                             targetMethod,
@@ -273,7 +275,7 @@ Example:
             return result;
         }
 
-        private bool RunTests(string targetAssemblyLocation, string targetClass, string targetMethod, TypeReference[] parameterTypes)
+        private bool RunTests(string targetAssemblyLocation, string targetClass, string returnType, string targetMethod, GenericParameter[] methodGenerics, TypeReference[] parameterTypes)
         {
             System.Console.WriteLine("      IN: Command.RunTests(string, string, string, TypeReference[]) TAL:{0}, TC:{1}, TM:{2}, TR PT.len:{3}",    targetAssemblyLocation,
                                                                                                                                                 targetClass,
