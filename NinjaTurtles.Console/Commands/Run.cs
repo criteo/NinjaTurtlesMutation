@@ -156,11 +156,16 @@ Example:
                     }
                 }
                 System.Console.WriteLine("IN: options.Command.Execute() >> double using >> output path set >> verbosity set >> runner opt set"); /////////////
-                var runnerMethod = Options.Options.Any(o => o is TargetClass)
+/*                var runnerMethod = Options.Options.Any(o => o is TargetClass)
                                        ? (Options.Options.Any(o => o is TargetMethod)
                                               ? (Func<bool>)RunMutationTestsForClassAndMethod
                                               : RunMutationTestsForClass)
-                                       : RunAllMutationTestsInAssembly;
+                                       : RunAllMutationTestsInAssembly;*/
+                var runnerMethod = Options.Options.Any(o => o is TargetClass)
+                                                       ? (Options.Options.Any(o => o is TargetMethod)
+                                                              ? (Func<bool>)RunMutationTestsForClassAndMethod
+                                                              : RunMutationTestsForClass)
+                                                       : RunMutationTestsForAllClassAndMethods;
                 result = runnerMethod();
                 if (!Options.Options.Any(o => o is Verbose))
                 {
@@ -404,6 +409,16 @@ Exception details:
                 tests - failures,
                 failures);
             return tests > 0 && failures == 0;
+        }
+
+        private bool RunMutationTestsForAllClassAndMethods()
+        {
+            System.Console.WriteLine("This is a start...."); ////////////
+            var testAssembly = Assembly.LoadFrom(_testAssemblyLocation);
+            var matchedType = TypeResolver.ResolveTypeFromReferences(testAssembly, "PrimeFinderMutationPlayground.PrimeFinder");
+            System.Console.WriteLine("testassembly : [{0}], matched type : [{1}]", testAssembly, matchedType);
+            _message = @"The strict necessary";
+            return true;
         }
     }
 }
