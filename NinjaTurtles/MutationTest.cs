@@ -568,10 +568,10 @@ namespace NinjaTurtles
             if (_parameterTypes != null)
             {
                 System.Console.WriteLine("                  OUT _pT null: MutationTest.ValidateMethod()"); ////////////////
-                return MethodDefinitionResolver.ResolveMethod(type, TargetMethod, _parameterTypes);
+                return MethodDefinitionResolver.ResolveMethod(type, _returnType, TargetMethod, _genericParameters, _parameterTypes);
             }
             System.Console.WriteLine("                  OUT: MutationTest.ValidateMethod(), TypeDefinition type: [{0}], string TargetMethod: [{1}], TypeReference[] _parameterTypeReferences: [[{2}]]", type, TargetMethod, string.Join("], [", _parameterTypeReferences.Select(_ptr => _ptr.ToString()))); ////////////////
-            return MethodDefinitionResolver.ResolveMethod(type, TargetMethod, _parameterTypeReferences);
+            return MethodDefinitionResolver.ResolveMethod(type, _returnType, TargetMethod, _genericParameters, _parameterTypeReferences);
 	    }
 
 	    private TypeDefinition ResolveFromTypeCollection(Collection<TypeDefinition> types)
