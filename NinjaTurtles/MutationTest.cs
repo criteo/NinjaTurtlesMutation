@@ -50,7 +50,9 @@ namespace NinjaTurtles
 
 	    private readonly IList<Type> _mutationsToApply = new List<Type>();
 		private  string _testAssemblyLocation;
-	    private readonly Type[] _parameterTypes;
+        private readonly string _returnType;
+        private readonly GenericParameter[] _genericParameters;
+        private readonly Type[] _parameterTypes;
         private readonly TypeReference[] _parameterTypeReferences;
         private AssemblyDefinition _testAssembly;
 	    private Module _module;
@@ -70,8 +72,28 @@ namespace NinjaTurtles
 		    _parameterTypes = parameterTypes;
 		}
 
+        public MutationTest(string testAssemblyLocation, Type targetType, string returnType, string targetMethod, GenericParameter[] genericsParameters, Type[] parameterTypes)
+        {
+            _returnType = returnType;
+            _genericParameters = genericsParameters;
+            TargetType = targetType;
+            TargetMethod = targetMethod;
+            TestAssemblyLocation = testAssemblyLocation;
+            _parameterTypes = parameterTypes;
+        }
+
         public MutationTest(string testAssemblyLocation, Type targetType, string targetMethod, TypeReference[] parameterTypes)
         {
+            TargetType = targetType;
+            TargetMethod = targetMethod;
+            TestAssemblyLocation = testAssemblyLocation;
+            _parameterTypeReferences = parameterTypes;
+        }
+
+        public MutationTest(string testAssemblyLocation, Type targetType, string returnType, string targetMethod, GenericParameter[] genericsParameters, TypeReference[] parameterTypes)
+        {
+            _returnType = returnType;
+            _genericParameters = genericsParameters;
             TargetType = targetType;
             TargetMethod = targetMethod;
             TestAssemblyLocation = testAssemblyLocation;
