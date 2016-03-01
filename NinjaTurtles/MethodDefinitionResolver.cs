@@ -103,6 +103,9 @@ namespace NinjaTurtles
             {
                 _log.Error("Method \"{0}\" with specified parameter types is unrecognised.", methodName);
                 throw new ArgumentException(string.Format("Method \"{0}\" with specified parameter types is unrecognised.", methodName), "methodName");
+            }
+        }
+
         public static MethodDefinition ResolveMethod(TypeDefinition typeDefinition, string returnType, string methodName, GenericParameter[] methodGenerics, TypeReference[] parameterTypes)
         {
             Console.WriteLine("IN ResolveMethod: TypeDefinition [{0}], return type [{1}], methodName [{2}], generics [{3}], TypeReference[] fullname [[{4}]]", typeDefinition, returnType, methodName, string.Join("], [", methodGenerics.Select(g => g.FullName)), string.Join("], [", parameterTypes.Select(p => p.FullName)));
