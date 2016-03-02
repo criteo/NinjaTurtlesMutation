@@ -411,14 +411,47 @@ Exception details:
             return tests > 0 && failures == 0;
         }
 
+        private bool RunMutationTestsForType(Type type, string targetClass)
+        {
+            bool result = true;
+
+            var assemblyDefinition = AssemblyDefinition.ReadAssembly(type.Assembly.Location);
+            var targetType = assemblyDefinition.MainModule.Types.FirstOrDefault(t => t.FullName == targetClass);
+            foreach (var methodInfo in targetType.Methods.Where(m => m.HasBody && m.Name != Methods.STATIC_CONSTRUCTOR))
+            {
+                string targetMethod = methodInfo.Name;
+                string methodReturnType = methodInfo.ReturnType.FullName;
+                var methodsGenerics = methodInfo.GenericParameters.ToArray();
+                var parameterTypes = methodInfo.Parameters.Select(p => p.ParameterType).ToArray();
+                bool runResultBuf = RunTests(type.Assembly.Location, targetClass, methodReturnType, targetMethod, methodsGenerics, parameterTypes);
+                result &= runResultBuf;
+            }
+            return result;
+        }
+
         private bool RunMutationTestsForAllClassAndMethods()
         {
+            bool result = true;
+
             System.Console.WriteLine("This is a start...."); ////////////
+            var nspace = "PrimeFinderMutationPlayground";
             var testAssembly = Assembly.LoadFrom(_testAssemblyLocation);
-            var matchedTypes = TypeResolver.ResolveNamespaceTypesFromReferences(testAssembly, "PrimeFinderMutationPlayground.PrimeFinderNested");
+            var matchedTypes = TypeResolver.ResolveNamespaceTypesFromReferences(testAssembly, nspace); // ###############
             System.Console.WriteLine("testassembly : [{0}], matched types : [[{1}]]", testAssembly, string.Join("], [", matchedTypes.Select(t => t.FullName)));
+            if (matchedTypes.Length == 0)
+            {
+                _message = string.Format(@"No types found under {0}", nspace);
+                return false;
+            }
+            foreach (var type in matchedTypes)
+            {
+                System.Console.WriteLine("SWITCH TYPE FOR [{0}]", type.FullName); //////////
+                var resultBuf = RunMutationTestsForType(type, type.FullName);
+                System.Console.WriteLine("TEST RESULT IS [{0}]", resultBuf); /////////////
+                result &= resultBuf;
+            }
             _message = @"The strict necessary";
-            return true;
+            return result;
         }
     }
 }
