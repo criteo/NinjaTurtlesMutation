@@ -415,8 +415,8 @@ Exception details:
         {
             System.Console.WriteLine("This is a start...."); ////////////
             var testAssembly = Assembly.LoadFrom(_testAssemblyLocation);
-            var matchedType = TypeResolver.ResolveTypeFromReferences(testAssembly, "PrimeFinderMutationPlayground.PrimeFinder");
-            System.Console.WriteLine("testassembly : [{0}], matched type : [{1}]", testAssembly, matchedType);
+            var matchedTypes = TypeResolver.ResolveNamespaceTypesFromReferences(testAssembly, "PrimeFinderMutationPlayground.PrimeFinderNested");
+            System.Console.WriteLine("testassembly : [{0}], matched types : [[{1}]]", testAssembly, string.Join("], [", matchedTypes.Select(t => t.FullName)));
             _message = @"The strict necessary";
             return true;
         }
