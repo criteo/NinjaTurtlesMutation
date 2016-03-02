@@ -161,11 +161,12 @@ Example:
                                               ? (Func<bool>)RunMutationTestsForClassAndMethod
                                               : RunMutationTestsForClass)
                                        : RunAllMutationTestsInAssembly;*/
-                var runnerMethod = Options.Options.Any(o => o is TargetClass)
-                                                       ? (Options.Options.Any(o => o is TargetMethod)
-                                                              ? (Func<bool>)RunMutationTestsForClassAndMethod
-                                                              : RunMutationTestsForClass)
-                                                       : RunMutationTestsForAllClassAndMethods;
+                var runnerMethod = Options.Options.Any(o => o is TargetNamespace) ? RunMutationTestsForAllClassAndMethods
+                                    : Options.Options.Any(o => o is TargetClass)
+                                        ? (Options.Options.Any(o => o is TargetMethod)
+                                            ? (Func<bool>)RunMutationTestsForClassAndMethod
+                                                : RunMutationTestsForClass)
+                                                    : RunAllMutationTestsInAssembly;
                 result = runnerMethod();
                 if (!Options.Options.Any(o => o is Verbose))
                 {
@@ -434,10 +435,10 @@ Exception details:
             bool result = true;
 
             System.Console.WriteLine("This is a start...."); ////////////
-            var nspace = "PrimeFinderMutationPlayground";
+            var nspace = Options.Options.OfType<TargetNamespace>().Single().NamespaceName;
             var testAssembly = Assembly.LoadFrom(_testAssemblyLocation);
-            var matchedTypes = TypeResolver.ResolveNamespaceTypesFromReferences(testAssembly, nspace); // ###############
-            System.Console.WriteLine("testassembly : [{0}], matched types : [[{1}]]", testAssembly, string.Join("], [", matchedTypes.Select(t => t.FullName)));
+            var matchedTypes = TypeResolver.ResolveNamespaceTypesFromReferences(testAssembly, nspace);
+            System.Console.WriteLine("testassembly : [{0}], matched types : [[{1}]]", testAssembly, string.Join("], [", matchedTypes.Select(t => t.FullName))); ////////////////
             if (matchedTypes.Length == 0)
             {
                 _message = string.Format(@"No types found under {0}", nspace);

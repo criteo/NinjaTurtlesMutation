@@ -94,6 +94,7 @@
     <Compile Include="Commands\Run.cs" />
     <Compile Include="CommandWithOptions.cs" />
     <Compile Include="EmbeddedResourceResolver.cs" />
+    <Compile Include="Options\TargetNamespace.cs" />
     <Compile Include="Options\Runner.cs" />
     <Compile Include="Options\Format.cs" />
     <Compile Include="Options\Output.cs" />
