@@ -131,7 +131,7 @@ namespace NinjaTurtles
             catch (Exception ex)
             {
                 string message = string.Format("Failed to delete folder \"{0}\".", _folder);
-                _log.ErrorException(message, ex);
+                _log.Error(ex, message);
             }
 		}
 
