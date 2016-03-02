@@ -37,6 +37,27 @@ namespace NinjaTurtles
 
         #endregion
 
+        private static Assembly LoadReferencedAssembly(AssemblyName reference, String codeBaseFolder)
+        {
+            Assembly referencedAssembly = null;
+
+            try
+            {
+                referencedAssembly = Assembly.Load(reference);
+            }
+            catch (FileNotFoundException) { }
+            if (referencedAssembly != null)
+                return (referencedAssembly);
+            try
+            {
+                // ReSharper disable once AssignNullToNotNullAttribute
+                referencedAssembly = Assembly.LoadFile(Path.Combine(codeBaseFolder, reference.Name) + ".dll");
+            }
+            // ReSharper disable once EmptyGeneralCatchClause
+            catch { }
+            return (referencedAssembly);
+        }
+
         internal static Type ResolveTypeFromReferences(Assembly callingAssembly, string className)
 		{
             _log.Debug("Resolving type \"{0}\" in \"{1}\".", className, callingAssembly.GetName().Name);
@@ -47,11 +68,11 @@ namespace NinjaTurtles
             }
             return type;
 		}
-		
-		private static Type ResolveTypeFromReferences(Assembly assembly, string className, IList<string> consideredAssemblies)
+
+        private static Type ResolveTypeFromReferences(Assembly assembly, string className, IList<string> consideredAssemblies)
 		{
             _log.Trace("Searching for type \"{0}\" in \"{1}\".", className, assembly.GetName().Name);
-            var type = assembly.GetTypes().SingleOrDefault(t => t.FullName == className);
+            var type = assembly.GetLoadableTypes().SingleOrDefault(t => t.FullName == className);
             if (type != null)
             {
                 _log.Trace("Found type \"{0}\" in \"{1}\".", className, assembly.GetName().Name);
@@ -60,36 +81,19 @@ namespace NinjaTurtles
 		    var codeBaseFolder = Path.GetDirectoryName(assembly.Location);
             foreach (var reference in assembly.GetReferencedAssemblies())
             {
-				if (consideredAssemblies.Contains(reference.Name)) continue;
+				if (consideredAssemblies.Contains(reference.Name))
+                    continue;
 				consideredAssemblies.Add(reference.Name);
-                Assembly referencedAssembly = null;
-                try
-                {
-                    referencedAssembly = Assembly.Load(reference);
-                }
-                catch (FileNotFoundException) {}
+                Assembly referencedAssembly = LoadReferencedAssembly(reference, codeBaseFolder);
                 if (referencedAssembly == null)
-                {
-                    try
-                    {
-// ReSharper disable once AssignNullToNotNullAttribute
-                        referencedAssembly = Assembly.LoadFile(Path.Combine(codeBaseFolder, reference.Name) + ".dll");
-                    }
-// ReSharper disable once EmptyGeneralCatchClause
-                    catch
-                    {}
-                }
-                if (referencedAssembly != null)
-                {
-                    type = ResolveTypeFromReferences(referencedAssembly, className, consideredAssemblies);
-                    if (type != null)
-                    {
-                        return type;
-                    }
-                }
+                    continue;
+                type = ResolveTypeFromReferences(referencedAssembly, className, consideredAssemblies);
+                if (type == null)
+                    continue;
+                return type;
             }
             return null;
         }
-	}
+    }
 }
 
