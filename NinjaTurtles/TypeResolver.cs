@@ -98,7 +98,7 @@ namespace NinjaTurtles
         internal static Type[] ResolveNamespaceTypesFromReferences(Assembly callingAssembly, string nspace)
         {
             _log.Debug("Searching all types under \"{0}\" namespace in \"{1}\".", nspace, callingAssembly.GetName().Name);
-            List<Type> types = ResolveNamespaceTypesFromReferences(callingAssembly, nspace + ".", new List<string>());
+            List<Type> types = ResolveNamespaceTypesFromReferences(callingAssembly, nspace + ".", new List<string>(), callingAssembly.Location);
             if (types.Count == 0)
             {
                 _log.Error("Could not find ant types under \"{0}\" namespace.", nspace);
@@ -106,10 +106,10 @@ namespace NinjaTurtles
             return types.ToArray();
         }
 
-	    private static List<Type> ResolveNamespaceTypesFromReferences(Assembly assembly, string nspace, IList<string> consideredAssemblies)
+	    private static List<Type> ResolveNamespaceTypesFromReferences(Assembly assembly, string nspace, IList<string> consideredAssemblies, string testAssemblyLocation)
 	    {
             _log.Trace("Searching for types in namespace \"{0}\" in \"{1}\".", nspace, assembly.GetName().Name);
-	        List<Type> types = assembly.GetLoadableTypes().Where(t => t.FullName.StartsWith(nspace)).ToList();
+	        List<Type> types = assembly.GetLoadableTypes().Where(t => t.FullName.StartsWith(nspace) && t.Assembly.Location != testAssemblyLocation && t.IsClass && !t.IsNested).ToList();
             if (types.Count > 0)
                 _log.Trace("Found types \"{0}\" in \"{1}\".", string.Join("\", \"", types.Select(t => t.FullName)), assembly.GetName().Name);
 	        var codeBaseFolder = Path.GetDirectoryName(assembly.Location);
@@ -121,7 +121,7 @@ namespace NinjaTurtles
                 Assembly referencedAssembly = LoadReferencedAssembly(reference, codeBaseFolder);
 	            if (referencedAssembly == null)
 	                continue;
-                types.AddRange(ResolveNamespaceTypesFromReferences(referencedAssembly, nspace, consideredAssemblies));
+                types.AddRange(ResolveNamespaceTypesFromReferences(referencedAssembly, nspace, consideredAssemblies, testAssemblyLocation));
 	        }
 	        return types;
 	    }
