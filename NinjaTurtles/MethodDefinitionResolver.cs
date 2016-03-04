@@ -108,7 +108,6 @@ namespace NinjaTurtles
 
         public static MethodDefinition ResolveMethod(TypeDefinition typeDefinition, string returnType, string methodName, GenericParameter[] methodGenerics, TypeReference[] parameterTypes)
         {
-            Console.WriteLine("IN ResolveMethod: TypeDefinition [{0}], return type [{1}], methodName [{2}], generics [{3}], TypeReference[] fullname [[{4}]]", typeDefinition, returnType, methodName, string.Join("], [", methodGenerics.Select(g => g.FullName)), string.Join("], [", parameterTypes.Select(p => p.FullName)));
             if (parameterTypes == null)
             {
                 _log.Warn("\"ResolveMethod\" overload with parameter types called unnecessarily.");
@@ -125,13 +124,11 @@ namespace NinjaTurtles
                                         && m.GenericParameters.Select(g => g.FullName)
                                             .SequenceEqual(methodGenerics.Select(g => g.FullName)));
                 _log.Debug("Method \"{0}\" successfully resolved in \"{1}\".", methodName, typeDefinition.FullName);
-                Console.WriteLine("OUT ResolveMethod: TypeDefinition [{0}], methodName [{1}], TypeReference[] [[{2}]]", typeDefinition, methodName, string.Join<TypeReference>("], [", parameterTypes));
                 return methodDefinition;
             }
             catch (InvalidOperationException)
             {
                 _log.Error("Method \"{0}\" with specified parameter types is unrecognised.", methodName);
-                Console.WriteLine("OUT unrecognised ResolveMethod: TypeDefinition [{0}], methodName [{1}], TypeReference[] [[{2}]]", typeDefinition, methodName, string.Join<TypeReference>("], [", parameterTypes));
                 throw new ArgumentException(string.Format("Method \"{0}\" with specified parameter types is unrecognised. TypeDefinition: [{1}] TypeReference[]: [[{2}]]", methodName, typeDefinition, string.Join<TypeReference>("], [", parameterTypes)), "methodName");
             }
         }

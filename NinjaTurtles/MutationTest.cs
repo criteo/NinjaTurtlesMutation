@@ -116,7 +116,6 @@ namespace NinjaTurtles
 
 	    public void Run()
 		{
-            System.Console.WriteLine("              IN: MutationTest.Run(), _testAssemblyLocation: {0}, _reportFileName: {1}", _testAssemblyLocation, _reportFileName); ////////////////
 	        var errorReportingValue = TurnOffErrorReporting();
 
 	        MethodDefinition method = ValidateMethod();
@@ -125,7 +124,6 @@ namespace NinjaTurtles
 		    _comparer = new MethodReferenceComparer();
             var matchingMethods = new List<MethodReference>();
             AddMethod(method, matchingMethods);
-            Console.WriteLine("               Matched methods for [{0}] are [{1}]", method, string.Join("], [", matchingMethods)); //////////////
             int[] originalOffsets = method.Body.Instructions.Select(i => i.Offset).ToArray();
 		    _report = new MutationTestingReport();
             _testsToRun = GetMatchingTestsFromTree(method, matchingMethods);
@@ -163,7 +161,6 @@ namespace NinjaTurtles
 			}
 			if (failures > 0)
 			{
-                System.Console.WriteLine("              OUT MutationTestFailureEXCP: MutationTest.Run(), _testAssemblyLocation: {0}, _reportFileName: {1}", _testAssemblyLocation, _reportFileName); ////////////////
                 throw new MutationTestFailureException();
 			}
 		}
@@ -275,9 +272,6 @@ namespace NinjaTurtles
 
         private ISet<string> GetMatchingTestsFromTree(MethodDefinition targetmethod, IList<MethodReference> matchingMethods, bool force = false)
         {
-            System.Console.WriteLine("                  IN: MutationTest.GetMatchingTestsFromTree, MethodDefinition tm: {0}, IList<MethodReference> mm.count: {1}, force: {2}", targetmethod,
-                                                                                                                                                                    matchingMethods.Count,
-                                                                                                                                                                    force); ////////////////
             ISet<string> result = new HashSet<string>();
             foreach (var type in _testAssembly.MainModule.Types)
                 AddTestsForType(targetmethod, matchingMethods, force, type, result);
@@ -288,14 +282,8 @@ namespace NinjaTurtles
             if (result.Count == 0)
             {
                 Console.WriteLine("No matching tests found so mutation testing cannot be applied.");
-                System.Console.WriteLine("                  OUT MutationTestFailureEXCP: MutationTest.GetMatchingTestsFromTree, MethodDefinition tm: {0}, IList<MethodReference> mm.count: {1}, force: {2}",    targetmethod,
-                                                                                                                                                                                                    matchingMethods.Count,
-                                                                                                                                                                                                    force); ////////////////
                 throw new MutationTestFailureException("No matching tests were found to run.");
             }
-            System.Console.WriteLine("                  OUT: MutationTest.GetMatchingTestsFromTree, MethodDefinition tm: {0}, IList<MethodReference> mm.count: {1}, force: {2}", targetmethod,
-                                                                                                                                                                    matchingMethods.Count,
-                                                                                                                                                                    force); ////////////////
             return result;
 	    }
 
@@ -305,11 +293,6 @@ namespace NinjaTurtles
 	        String[]        parts;
             String          targetType = targetmethod.DeclaringType.FullName;
 
-            Console.WriteLine("                      IN: MutationTest.AddTestsForType, MethodDefinition tm: {0}, IList<MethodReference> mm: [{1}], force: {2}, TypeDefinition t: {3}, ISet<string> res: {4}", targetmethod,
-                                                                                                                                                                                                                           string.Join("], [", matchingMethods),
-                                                                                                                                                                                                                            force,
-                                                                                                                                                                                                                            type,
-                                                                                                                                                                                                                            string.Join(", ", result.ToArray())); ///////////////////
             foreach (MethodDefinition method in type.Methods.Where(m => m.HasBody))
             {
                 if (!force && !DoesMethodReferenceType(method, targetType))
@@ -326,21 +309,13 @@ namespace NinjaTurtles
             }
             if (type.NestedTypes != null)
             {
-                Console.WriteLine("                         Nested type founded: [{0}] (count is {1})", string.Join("], [", type.NestedTypes), type.NestedTypes.Count); //////////
                 foreach (TypeDefinition typeDefinition in type.NestedTypes)
                     AddTestsForType(targetmethod, matchingMethods, force, typeDefinition, result);
             }
-            Console.WriteLine("                      OUT: MutationTest.AddTestsForType, MethodDefinition tm: {0}, IList<MethodReference> mm: [{1}], force: {2}, TypeDefinition t: {3}, ISet<string> res: {4}", targetmethod,
-                                                                                                                                                                                                                            string.Join("], [", matchingMethods),
-                                                                                                                                                                                                                            force,
-                                                                                                                                                                                                                            type,
-                                                                                                                                                                                                                            string.Join(", ", result.ToArray())); ///////////////////
         }
 
         private bool MethodCallTargetDirectOrIndirect(MethodDefinition methodDefinition, IList<MethodReference> matchingMethods)
         {
-            Console.WriteLine("                         IN: MethodCallTargetDirectOrIndirect, calling method [{0}], potential match [{1}]", methodDefinition.Name, string.Join("], [", matchingMethods.Select(mm => mm.FullName)));
-            Console.WriteLine("                             IL Instruct [[{0}]]", string.Join("], [", methodDefinition.Body.Instructions)); ////////////
             foreach (Instruction instruction in methodDefinition.Body.Instructions)
             {
                 if (!(instruction.OpCode == OpCodes.Call // Call method
@@ -352,10 +327,8 @@ namespace NinjaTurtles
                     continue;
                 if (methodDefinition.CustomAttributes.Any(a => a.AttributeType.Name == "MutationTestAttribute"))
                     continue;
-                Console.WriteLine("                         OUT True: MethodCallTargetDirectOrIndirect, calling method [{0}], potential match [{1}]", methodDefinition.Name, string.Join("], [", matchingMethods.Select(mm => mm.FullName)));
                 return (true);
             }
-            Console.WriteLine("                         OUT False: MethodCallTargetDirectOrIndirect, calling method [{0}], potential match [{1}]", methodDefinition.Name, string.Join("], [", matchingMethods.Select(mm => mm.FullName)));
             return (false);
         }
 
@@ -561,16 +534,13 @@ namespace NinjaTurtles
 
 	    private MethodDefinition ValidateMethod()
 	    {
-            System.Console.WriteLine("                  IN: MutationTest.ValidateMethod()"); ////////////////
             _module = new Module(TargetType.Assembly.Location);
 
             var type = ResolveFromTypeCollection(_module.Definition.Types);
             if (_parameterTypes != null)
             {
-                System.Console.WriteLine("                  OUT _pT null: MutationTest.ValidateMethod()"); ////////////////
                 return MethodDefinitionResolver.ResolveMethod(type, _returnType, TargetMethod, _genericParameters, _parameterTypes);
             }
-            System.Console.WriteLine("                  OUT: MutationTest.ValidateMethod(), TypeDefinition type: [{0}], string TargetMethod: [{1}], TypeReference[] _parameterTypeReferences: [[{2}]]", type, TargetMethod, string.Join("], [", _parameterTypeReferences.Select(_ptr => _ptr.ToString()))); ////////////////
             return MethodDefinitionResolver.ResolveMethod(type, _returnType, TargetMethod, _genericParameters, _parameterTypeReferences);
 	    }
 
