@@ -136,14 +136,15 @@ namespace NinjaTurtles
 
 			int count = 0;
 			int failures = 0;
-			if (_mutationsToApply.Count == 0) PopulateDefaultTurtles();
-			foreach (var turtleType in _mutationsToApply)
+            if (_mutationsToApply.Count == 0) PopulateDefaultTurtles();
+
+            foreach (var turtleType in _mutationsToApply)
 			{
                 var turtle = (MethodTurtleBase)Activator.CreateInstance(turtleType);
                 Console.WriteLine(turtle.Description);
 
                 Parallel.ForEach(turtle.Mutate(method, _module, originalOffsets),
-                    new ParallelOptions { MaxDegreeOfParallelism = 4 },
+                    new ParallelOptions { MaxDegreeOfParallelism = -1 },
 // ReSharper disable AccessToModifiedClosure
         		    mutation => RunMutation(turtle, mutation, ref failures, ref count));
 // ReSharper restore AccessToModifiedClosure
