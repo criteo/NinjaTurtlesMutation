@@ -401,7 +401,6 @@ Exception details:
         {
             bool result = true;
 
-            System.Console.WriteLine("This is a start...."); ////////////
             var nspace = Options.Options.OfType<TargetNamespace>().Single().NamespaceName;
             var testAssembly = Assembly.LoadFrom(_testAssemblyLocation);
             var matchedTypes = TypeResolver.ResolveNamespaceTypesFromReferences(testAssembly, nspace);
