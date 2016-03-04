@@ -415,7 +415,9 @@ Exception details:
                 var resultBuf = RunMutationTestsForType(type, type.FullName);
                 result &= resultBuf;
             }
-            _message = @"The strict necessary";
+            if (!string.IsNullOrEmpty(_message))
+                return result;
+            _message = string.Format(@"Mutation testing {0}", result ? "passed" : "failed");
             return result;
         }
     }
