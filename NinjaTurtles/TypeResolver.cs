@@ -46,6 +46,7 @@ namespace NinjaTurtles
                 referencedAssembly = Assembly.Load(reference);
             }
             catch (FileNotFoundException) { }
+            catch (FileLoadException) { }
             if (referencedAssembly != null)
                 return (referencedAssembly);
             try
