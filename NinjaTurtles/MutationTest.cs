@@ -137,7 +137,6 @@ namespace NinjaTurtles
 			int count = 0;
 			int failures = 0;
             if (_mutationsToApply.Count == 0) PopulateDefaultTurtles();
-
             foreach (var turtleType in _mutationsToApply)
 			{
                 var turtle = (MethodTurtleBase)Activator.CreateInstance(turtleType);

@@ -185,7 +185,8 @@ namespace NinjaTurtles.Turtles
         /// <returns></returns>
         protected MutantMetaData DoYield(MethodDefinition method, Module module, string description, int index)
         {
-            var testDirectory = new TestDirectory(Path.GetDirectoryName(module.AssemblyLocation));
+            var toCopy = new List<string>() { method.DeclaringType.Module.ToString() };
+            var testDirectory = new TestDirectory(Path.GetDirectoryName(module.AssemblyLocation), toCopy);
             testDirectory.SaveAssembly(module);
             return new MutantMetaData(
                 module,
