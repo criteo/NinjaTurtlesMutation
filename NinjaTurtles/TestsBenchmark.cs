@@ -85,5 +85,12 @@ namespace NinjaTurtles
             return _runner.GetRunnerProcess(testDirectory, _testAssemblyLocation, testsMethods);
         }
 
+        public override string ToString()
+        {
+            var fullReport = "";
+            foreach (var bench in MethodsBenchIDictionary)
+                fullReport += "\n" + bench.Key + ": " + bench.Value;
+            return "Total ms:" + TotalMs + fullReport;
+        }
     }
 }
