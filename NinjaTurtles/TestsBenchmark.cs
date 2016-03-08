@@ -55,8 +55,10 @@ namespace NinjaTurtles
             processTotal.WaitForExit();
             totalMsWatch.Stop();
             TotalMs = totalMsWatch.ElapsedMilliseconds;
-            Parallel.ForEach(testsMethods, new ParallelOptions {MaxDegreeOfParallelism = -1},
-                testMethod => IndividualMethodBench(testDir, testMethod));
+            foreach (var testMethod in testsMethods)
+                IndividualMethodBench(testDir, testMethod);
+            /*Parallel.ForEach(testsMethods, new ParallelOptions {MaxDegreeOfParallelism = -1},
+                testMethod => IndividualMethodBench(testDir, testMethod));*/
             return TotalMs;
         }
 
