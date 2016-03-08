@@ -26,6 +26,12 @@ namespace NinjaTurtles
             _testAssemblyLocation = testAssemblyLocation;
         }
 
+        public TestsBenchmark(string testAssemblyLocation, IEnumerable<string> testsMethods) : this(testAssemblyLocation)
+        {
+            foreach (var testMethod in testsMethods)
+                MethodsBenchIDictionary[testMethod] = -1;
+        }
+
         public IList<string> GetTestsName()
         {
             return new List<string>(MethodsBenchIDictionary.Keys);
