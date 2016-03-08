@@ -64,6 +64,8 @@ namespace NinjaTurtles
 	    private MethodReferenceComparer _comparer;
 	    private static readonly Regex _automaticallyGeneratedNestedClassMatcher = new Regex("^\\<([A-Za-z0-9@_]+)\\>");
 
+        private TestsBenchmark _benchmark;
+
 	    internal MutationTest(string testAssemblyLocation, Type targetType, string targetMethod, Type[] parameterTypes)
 		{
 			TargetType = targetType;
@@ -127,7 +129,8 @@ namespace NinjaTurtles
             int[] originalOffsets = method.Body.Instructions.Select(i => i.Offset).ToArray();
 		    _report = new MutationTestingReport();
             _testsToRun = GetMatchingTestsFromTree(method, matchingMethods);
-
+            _benchmark = new TestsBenchmark(_testAssemblyLocation, _testsToRun);
+	        _benchmark.LaunchBenchmark();
 		    Console.WriteLine(
                 "Suite of {0} tests identified for {1}.{2}",
                 _testsToRun.Count(),
@@ -463,7 +466,8 @@ namespace NinjaTurtles
             var process = GetTestRunnerProcess(mutation.TestDirectory);
 
             process.Start();
-	        bool exitedInTime = process.WaitForExit(30000); //Math.Min(30000, (int)(5 * _benchmark.TotalMilliseconds)));
+	        //bool exitedInTime = process.WaitForExit(30000); //Math.Min(30000, (int)(5 * _benchmark.TotalMilliseconds)));
+            bool exitedInTime = process.WaitForExit((int)(1.05 * _benchmark.TotalMs));
 			int exitCode = -1;
 
 			try
