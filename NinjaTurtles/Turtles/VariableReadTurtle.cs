@@ -200,7 +200,9 @@ namespace NinjaTurtles.Turtles
             {
                 if (instruction.OpCode == OpCodes.Ldarg)
                 {
-                    var parameterDefinition = (ParameterDefinition)instruction.Operand;
+                    var parameterDefinition = instruction.Operand as ParameterDefinition;
+                    if (parameterDefinition == null)
+                        continue;
                     int sequence = parameterDefinition.Sequence;
                     if (!variables.ContainsKey(parameterDefinition.ParameterType)) continue;
                     var variable =
@@ -213,7 +215,9 @@ namespace NinjaTurtles.Turtles
                 }
                 if (instruction.OpCode == OpCodes.Ldloc)
                 {
-                    var variableDefinition = (VariableDefinition)instruction.Operand;
+                    var variableDefinition = instruction.Operand as VariableDefinition;
+                    if (variableDefinition == null)
+                        continue;
                     int index = variableDefinition.Index;
                     if (!variables.ContainsKey(variableDefinition.VariableType)) continue;
                     var variable =
@@ -226,7 +230,9 @@ namespace NinjaTurtles.Turtles
                 }
                 if (instruction.OpCode == OpCodes.Ldfld)
                 {
-                    var fieldDefinition = (FieldDefinition)instruction.Operand;
+                    var fieldDefinition = instruction.Operand as FieldDefinition;
+                    if (fieldDefinition == null)
+                        continue;
                     string name = fieldDefinition.Name;
                     if (!variables.ContainsKey(fieldDefinition.FieldType)) continue;
                     var variable =
