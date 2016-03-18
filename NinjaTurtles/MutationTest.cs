@@ -40,6 +40,7 @@ using Mono.Collections.Generic;
 using NinjaTurtles.Reporting;
 using NinjaTurtles.TestRunners;
 using NinjaTurtles.Turtles;
+using NinjaTurtles.ManagedTestRunners;
 
 namespace NinjaTurtles
 {
@@ -145,11 +146,15 @@ namespace NinjaTurtles
                 var turtle = (MethodTurtleBase)Activator.CreateInstance(turtleType);
                 Console.WriteLine(turtle.Description);
 
-                Parallel.ForEach(turtle.Mutate(method, _module, originalOffsets),
+/*                Parallel.ForEach(turtle.Mutate(method, _module, originalOffsets),
                     new ParallelOptions { MaxDegreeOfParallelism = 4 },
 // ReSharper disable AccessToModifiedClosure
         		    mutation => RunMutation(turtle, mutation, ref failures, ref count));
-// ReSharper restore AccessToModifiedClosure
+// ReSharper restore AccessToModifiedClosure*/
+                foreach (var mutation in turtle.Mutate(method, _module, originalOffsets))
+                {
+                    RunMutation(turtle, mutation, ref failures, ref count);
+                }
 			}
 
             _report.RegisterMethod(method);
@@ -463,27 +468,18 @@ namespace NinjaTurtles
 
 	    private bool CheckTestProcessFails(MethodTurtleBase turtle, MutantMetaData mutation)
 		{
-            var process = GetTestRunnerProcess(mutation.TestDirectory);
+            //var process = GetTestRunnerProcess(mutation.TestDirectory);
+            var process = new NUnitManagedTestRunner(mutation.TestDirectory, TestAssemblyLocation, _testsToRun);
 
             process.Start();
 	        //bool exitedInTime = process.WaitForExit(30000); //Math.Min(30000, (int)(5 * _benchmark.TotalMilliseconds)));
             bool exitedInTime = process.WaitForExit((int)(1.1 * _benchmark.TotalMs));
 			int exitCode = -1;
 
-			try
-			{
-				if (!exitedInTime)
-				{
-					KillProcessAndChildren(process.Id);
-				}
-				exitCode = process.ExitCode;
-			}
-// ReSharper disable EmptyGeneralCatchClause
-			catch {}
-// ReSharper restore EmptyGeneralCatchClause
+            exitCode = process.ExitCode;
 
             bool testSuitePassed = exitCode == 0 && exitedInTime;
-            
+            NUnitManagedTestRunner.WriteSummaryReport(process.Result); /////////
             string result = string.Format(" Mutant: {0}. {1}",
 			                  mutation.Description,
 			                  testSuitePassed
