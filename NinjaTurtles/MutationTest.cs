@@ -146,7 +146,7 @@ namespace NinjaTurtles
                 Console.WriteLine(turtle.Description);
 
                 Parallel.ForEach(turtle.Mutate(method, _module, originalOffsets),
-                    new ParallelOptions { MaxDegreeOfParallelism = -1 },
+                    new ParallelOptions { MaxDegreeOfParallelism = 4 },
 // ReSharper disable AccessToModifiedClosure
         		    mutation => RunMutation(turtle, mutation, ref failures, ref count));
 // ReSharper restore AccessToModifiedClosure
@@ -467,7 +467,7 @@ namespace NinjaTurtles
 
             process.Start();
 	        //bool exitedInTime = process.WaitForExit(30000); //Math.Min(30000, (int)(5 * _benchmark.TotalMilliseconds)));
-            bool exitedInTime = process.WaitForExit((int)(1.05 * _benchmark.TotalMs));
+            bool exitedInTime = process.WaitForExit((int)(1.1 * _benchmark.TotalMs));
 			int exitCode = -1;
 
 			try
