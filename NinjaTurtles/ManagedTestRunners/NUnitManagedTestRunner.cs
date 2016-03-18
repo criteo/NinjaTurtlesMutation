@@ -64,7 +64,8 @@ namespace NinjaTurtles.ManagedTestRunners
             TestExecutionContext.CurrentContext.TestPackage.Settings.Add("StopOnError", true);
             string[] tofilter = _testsToRun;
             TestFilter filter = new SimpleNameFilter(tofilter);
-            Result = _remoteTestRunner.Run(new NullListener(), filter, false, LoggingThreshold.Off);
+            //Result = _remoteTestRunner.Run(new NullListener(), filter, false, LoggingThreshold.Off);
+            Result = _remoteTestRunner.Run(new NullListener(), TestFilter.Empty, false, LoggingThreshold.Off);
             ExitCode = Result.IsSuccess ? 0 : 1;
             Console.SetOut(currentOut);
         }
