@@ -36,7 +36,8 @@ using Microsoft.Win32;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 using Mono.Collections.Generic;
-
+using NinjaTurtles.AppDomainIsolation;
+using NinjaTurtles.AppDomainIsolation.Adaptor;
 using NinjaTurtles.Reporting;
 using NinjaTurtles.TestRunners;
 using NinjaTurtles.Turtles;
@@ -468,18 +469,15 @@ namespace NinjaTurtles
 
 	    private bool CheckTestProcessFails(MethodTurtleBase turtle, MutantMetaData mutation)
 		{
-            //var process = GetTestRunnerProcess(mutation.TestDirectory);
-            var process = new NUnitManagedTestRunner(mutation.TestDirectory, TestAssemblyLocation, _testsToRun);
-
-            process.Start();
-	        //bool exitedInTime = process.WaitForExit(30000); //Math.Min(30000, (int)(5 * _benchmark.TotalMilliseconds)));
-            bool exitedInTime = process.WaitForExit((int)(1.1 * _benchmark.TotalMs));
-			int exitCode = -1;
-
-            exitCode = process.ExitCode;
-
+	        bool exitedInTime = false;
+	        int exitCode = -1;
+            using (Isolated<NunitManagedTestRunnerAdaptor> runner = new Isolated<NunitManagedTestRunnerAdaptor>())
+	        {
+                runner.Instance.Start(Path.Combine(mutation.TestDirectory.FullName, Path.GetFileName(TestAssemblyLocation)));
+                exitedInTime = runner.Instance.WaitForExit((int)(1.1 * _benchmark.TotalMs));
+	            exitCode = runner.Instance.ExitCode;
+	        }
             bool testSuitePassed = exitCode == 0 && exitedInTime;
-            NUnitManagedTestRunner.WriteSummaryReport(process.Result); /////////
             string result = string.Format(" Mutant: {0}. {1}",
 			                  mutation.Description,
 			                  testSuitePassed

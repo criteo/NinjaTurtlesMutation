@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using NUnit.Core;
@@ -13,13 +12,21 @@ namespace NinjaTurtles.ManagedTestRunners
 {
     class NUnitManagedTestRunner : IManagedTestRunner
     {
-        private readonly string _testAssemblyLocation;
-        private readonly string[] _testsToRun;
-        private RemoteTestRunner _remoteTestRunner;
+        public int ExitCode;
+        public TestResult Result;
+        
+        private string[] _testsToRun;
+        private string _testAssemblyLocation;
+        private readonly RemoteTestRunner _remoteTestRunner;
         private Task _task;
 
-        public int ExitCode { get; private set; }
-        public TestResult Result { get; private set; }
+        public NUnitManagedTestRunner()
+        {
+            _testAssemblyLocation = null;
+            _testsToRun = new string[0];
+            _remoteTestRunner = new RemoteTestRunner();
+            ExitCode = -1;
+        }
 
         public NUnitManagedTestRunner(TestDirectory testDirectory, string testAssemblyLocation, IEnumerable<string> testsToRun)
         {
@@ -31,8 +38,33 @@ namespace NinjaTurtles.ManagedTestRunners
             ExitCode = -1;
         }
 
+        public NUnitManagedTestRunner(string testAssemblyLocation)
+        {
+            _testAssemblyLocation = testAssemblyLocation;
+            _testsToRun = new string[0];
+            _remoteTestRunner = new RemoteTestRunner();
+            ExitCode = -1;
+        }
+
         public bool Start()
         {
+            _task = new Task(DoTests);
+            _task.Start();
+            return true;
+        }
+
+        public bool Start(string testAssemblyLocation)
+        {
+            _testAssemblyLocation = testAssemblyLocation;
+            _task = new Task(DoTests);
+            _task.Start();
+            return true;
+        }
+
+        public bool Start(string testAssemblyLocation, IEnumerable<string> testsToRun)
+        {
+            _testAssemblyLocation = testAssemblyLocation;
+            _testsToRun = testsToRun.ToArray();
             _task = new Task(DoTests);
             _task.Start();
             return true;
@@ -56,16 +88,19 @@ namespace NinjaTurtles.ManagedTestRunners
 
         private void DoTests()
         {
-            Console.WriteLine(_testAssemblyLocation); //////////
             var currentOut = Console.Out;
             TestPackage testPackage = new TestPackage(_testAssemblyLocation);
 
             _remoteTestRunner.Load(testPackage);
             TestExecutionContext.CurrentContext.TestPackage.Settings.Add("StopOnError", true);
-            string[] tofilter = _testsToRun;
-            TestFilter filter = new SimpleNameFilter(tofilter);
-            //Result = _remoteTestRunner.Run(new NullListener(), filter, false, LoggingThreshold.Off);
-            Result = _remoteTestRunner.Run(new NullListener(), TestFilter.Empty, false, LoggingThreshold.Off);
+            if (_testsToRun.Length > 0)
+            {
+                string[] tofilter = _testsToRun;
+                TestFilter filter = new SimpleNameFilter(tofilter);
+                Result = _remoteTestRunner.Run(new NullListener(), filter, false, LoggingThreshold.Off);
+            }
+            else
+                Result = _remoteTestRunner.Run(new NullListener(), TestFilter.Empty, false, LoggingThreshold.Off);
             ExitCode = Result.IsSuccess ? 0 : 1;
             Console.SetOut(currentOut);
         }
