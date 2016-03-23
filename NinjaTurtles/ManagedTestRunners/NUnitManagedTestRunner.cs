@@ -81,7 +81,7 @@ namespace NinjaTurtles.ManagedTestRunners
                 summary.TestsNotRun, summary.NotRunnable, summary.Ignored, summary.Skipped);
             Console.WriteLine();
 
-            Console.WriteLine("IsSuccess: {0}\nMsg: {1}", result.IsSuccess, result.Results.ToString());
+            Console.WriteLine("IsSuccess: {0}", result.IsSuccess);
         }
     }
 }
