@@ -7,6 +7,8 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using NinjaTurtles.AppDomainIsolation;
+using NinjaTurtles.AppDomainIsolation.Adaptor;
 using NinjaTurtles.TestRunners;
 
 namespace NinjaTurtles
@@ -48,13 +50,7 @@ namespace NinjaTurtles
         {
             IList<string> testsMethods = GetTestsName();
             var testDir = new TestDirectory(Path.GetDirectoryName(_testAssemblyLocation));
-            var processTotal = GetTestRunnerProcess(testDir, testsMethods);
-            var totalMsWatch = Stopwatch.StartNew();
-            
-            processTotal.Start();
-            processTotal.WaitForExit();
-            totalMsWatch.Stop();
-            TotalMs = totalMsWatch.ElapsedMilliseconds;
+            TotalMs = FullSetBench();
             foreach (var testMethod in testsMethods)
                 IndividualMethodBench(testDir, testMethod);
             /*Parallel.ForEach(testsMethods, new ParallelOptions {MaxDegreeOfParallelism = -1},
@@ -62,16 +58,33 @@ namespace NinjaTurtles
             return TotalMs;
         }
 
+        private long FullSetBench()
+        {
+            long elapsedMs = 0;
+            using (Isolated<NunitManagedTestRunnerAdaptor> runner = new Isolated<NunitManagedTestRunnerAdaptor>())
+            {
+                var watch = Stopwatch.StartNew();
+                runner.Instance.Start(_testAssemblyLocation);
+                runner.Instance.WaitForExit();
+                watch.Stop();
+                elapsedMs = watch.ElapsedMilliseconds;
+            }
+            return elapsedMs;
+        }
+
         private long IndividualMethodBench(TestDirectory testDirectory, string testMethod)
         {
             var testToRun = new List<string>() {testMethod};
-            var process = GetTestRunnerProcess(testDirectory, testToRun);
-            var watch = Stopwatch.StartNew();
-
-            process.Start();
-            process.WaitForExit();
-            watch.Stop();
-            MethodsBenchIDictionary[testMethod] = watch.ElapsedMilliseconds;
+            long elapsedMs = 0;
+            using (Isolated<NunitManagedTestRunnerAdaptor> runner = new Isolated<NunitManagedTestRunnerAdaptor>())
+            {
+                var watch = Stopwatch.StartNew();
+                runner.Instance.Start(_testAssemblyLocation, testToRun);
+                runner.Instance.WaitForExit();
+                watch.Stop();
+                elapsedMs = watch.ElapsedMilliseconds;
+            }
+            MethodsBenchIDictionary[testMethod] = elapsedMs;
             return MethodsBenchIDictionary[testMethod];
         }
 
