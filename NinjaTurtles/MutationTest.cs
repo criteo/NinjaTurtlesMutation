@@ -332,7 +332,10 @@ namespace NinjaTurtles
                       || instruction.OpCode == OpCodes.Newobj // Allocate an uninitialized object or value type and call ctor
                       || instruction.OpCode == OpCodes.Ldftn)) // Push a pointer to a method referenced by method, on the stack
                     continue;
-                if (!matchingMethods.Any(m => _comparer.Equals(m, ((MethodReference)instruction.Operand).Resolve())))  // At least one matching method correspond to the instruction's operand
+                var operandAsMethodReference = (MethodReference) instruction.Operand;
+                var operandAsMethodDefinition = operandAsMethodReference.Resolve();
+                var operandAsComparableMethod = operandAsMethodDefinition ?? operandAsMethodReference;
+                if (!matchingMethods.Any(m => _comparer.Equals(m, operandAsComparableMethod)))  // At least one matching method correspond to the instruction's operand
                     continue;
                 if (methodDefinition.CustomAttributes.Any(a => a.AttributeType.Name == "MutationTestAttribute"))
                     continue;
