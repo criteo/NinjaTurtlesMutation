@@ -472,8 +472,9 @@ namespace NinjaTurtles
 	        bool exitedInTime = false;
 	        int exitCode = -1;
             using (Isolated<NunitManagedTestRunnerAdaptor> runner = new Isolated<NunitManagedTestRunnerAdaptor>())
-	        {
-                runner.Instance.Start(Path.Combine(mutation.TestDirectory.FullName, Path.GetFileName(TestAssemblyLocation)));
+            {
+                var mutantPath = Path.Combine(mutation.TestDirectory.FullName, Path.GetFileName(TestAssemblyLocation));
+                runner.Instance.Start(mutantPath, _testsToRun);
                 exitedInTime = runner.Instance.WaitForExit((int)(1.1 * _benchmark.TotalMs));
 	            exitCode = runner.Instance.ExitCode;
 	        }
