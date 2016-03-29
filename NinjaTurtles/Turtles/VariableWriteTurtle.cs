@@ -82,12 +82,18 @@ namespace NinjaTurtles.Turtles
                     int oldIndex = -1;
                     if (instruction.OpCode == OpCodes.Stloc)
                     {
-                        int variableIndex = ((VariableDefinition)instruction.Operand).Index;
+                        var variableDefinition = instruction.Operand as VariableDefinition;
+                        if (variableDefinition == null)
+                            continue;
+                        int variableIndex = variableDefinition.Index;
                         oldIndex = variables.FindIndex(v => v.Type == VariableType.Local && v.Index == variableIndex);
                     }
                     if (instruction.OpCode == OpCodes.Stfld)
                     {
-                        string fieldName = ((FieldDefinition)instruction.Operand).Name;
+                        var fieldDefinition = instruction.Operand as FieldDefinition;
+                        if (fieldDefinition == null)
+                            continue;
+                        string fieldName = fieldDefinition.Name;
                         oldIndex = variables.FindIndex(v => v.Type == VariableType.Field && v.Name == fieldName);
                     }
 
@@ -162,7 +168,9 @@ namespace NinjaTurtles.Turtles
             {
                 if (instruction.OpCode == OpCodes.Ldloc)
                 {
-                    var variableDefinition = (VariableDefinition)instruction.Operand;
+                    var variableDefinition = instruction.Operand as VariableDefinition;
+                    if (variableDefinition == null)
+                        continue;
                     int index = variableDefinition.Index;
                     if (!variables.ContainsKey(variableDefinition.VariableType)) continue;
                     var variable =
@@ -175,7 +183,9 @@ namespace NinjaTurtles.Turtles
                 }
                 if (instruction.OpCode == OpCodes.Ldfld)
                 {
-                    var fieldDefinition = (FieldDefinition)instruction.Operand;
+                    var fieldDefinition = instruction.Operand as FieldDefinition;
+                    if (fieldDefinition == null)
+                        continue;
                     string name = fieldDefinition.Name;
                     if (!variables.ContainsKey(fieldDefinition.FieldType)) continue;
                     var variable =

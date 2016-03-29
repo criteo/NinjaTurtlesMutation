@@ -88,17 +88,26 @@ namespace NinjaTurtles.Turtles
                     int oldIndex = -1;
                     if (instruction.OpCode == OpCodes.Ldarg)
                     {
-                        int parameterIndex = ((ParameterDefinition)instruction.Operand).Sequence;
+                        var parameterDefinition = instruction.Operand as ParameterDefinition;
+                        if (parameterDefinition == null)
+                            continue;
+                        int parameterIndex = parameterDefinition.Sequence;
                         oldIndex = variables.FindIndex(v => v.Type == VariableType.Parameter && v.Index == parameterIndex);
                     }
                     if (instruction.OpCode == OpCodes.Ldloc)
                     {
-                        int variableIndex = ((VariableDefinition)instruction.Operand).Index;
+                        var variableDefinition = instruction.Operand as VariableDefinition;
+                        if (variableDefinition == null)
+                            continue;
+                        int variableIndex = variableDefinition.Index;
                         oldIndex = variables.FindIndex(v => v.Type == VariableType.Local && v.Index == variableIndex);
                     }
                     if (instruction.OpCode == OpCodes.Ldfld)
                     {
-                        string fieldName = ((FieldDefinition)instruction.Operand).Name;
+                        var fieldDefinition = instruction.Operand as FieldDefinition;
+                        if (fieldDefinition == null)
+                            continue;
+                        string fieldName = fieldDefinition.Name;
                         oldIndex = variables.FindIndex(v => v.Type == VariableType.Field && v.Name == fieldName);
                     }
 
