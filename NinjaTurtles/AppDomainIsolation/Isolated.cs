@@ -7,7 +7,7 @@ namespace NinjaTurtles.AppDomainIsolation
     /// in a different AppDomain than the calling code
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public sealed class Isolated<T> : IDisposable where T : MarshalByRefObject
+    public sealed class Isolated<T> : IDisposable where T : Adaptor.Adaptor
     {
         private AppDomain _domain;
         private T _instance;
@@ -35,6 +35,17 @@ namespace NinjaTurtles.AppDomainIsolation
         }
 
         /// <summary>
+        /// Instantiate a new isolated T in a AppDomain defined with the string parameter
+        /// </summary>
+        public Isolated(string id)
+        {
+            _domain = AppDomain.CreateDomain("Isolated:" + id + " " + Guid.NewGuid(), null,
+                AppDomain.CurrentDomain.SetupInformation);
+            var instanceType = typeof(T);
+            _instance = (T)_domain.CreateInstanceAndUnwrap(instanceType.Assembly.FullName, instanceType.FullName);
+        }
+
+        /// <summary>
         /// Access the internal T instance
         /// </summary>
         public T Instance
@@ -49,6 +60,8 @@ namespace NinjaTurtles.AppDomainIsolation
         {
             if (_domain != null)
             {
+                if (!_instance.IsCompleted())
+                    _instance.WaitForExit();
                 AppDomain.Unload(_domain);
                 _domain = null;
             }

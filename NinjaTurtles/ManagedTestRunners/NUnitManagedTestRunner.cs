@@ -105,6 +105,11 @@ namespace NinjaTurtles.ManagedTestRunners
             Console.SetOut(currentOut);
         }
 
+        public bool IsCompleted()
+        {
+            return _task.IsCompleted;
+        }
+
         public static void WriteSummaryReport(TestResult result)
         {
             var summary = new ResultSummarizer(result);

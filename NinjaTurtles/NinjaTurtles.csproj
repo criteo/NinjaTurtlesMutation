@@ -77,6 +77,7 @@
     <Compile Include="..\GlobalAssemblyInfo.cs">
       <Link>Properties\GlobalAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="AppDomainIsolation\Adaptor\Adaptor.cs" />
     <Compile Include="AppDomainIsolation\Adaptor\NunitManagedTestRunnerAdaptor.cs" />
     <Compile Include="AppDomainIsolation\Isolated.cs" />
     <Compile Include="AssemblyExtensions.cs" />
