@@ -24,6 +24,7 @@ namespace NinjaTurtles.ManagedTestRunners
         {
             _testAssemblyLocation = null;
             _testsToRun = new string[0];
+            Result = null;
             _remoteTestRunner = new RemoteTestRunner();
             ExitCode = -1;
         }
@@ -35,6 +36,7 @@ namespace NinjaTurtles.ManagedTestRunners
             _testAssemblyLocation = testAssemblyMutantLocation;
             _testsToRun = testsToRun.ToArray();
             _remoteTestRunner = new RemoteTestRunner();
+            Result = null;
             ExitCode = -1;
         }
 
@@ -43,6 +45,7 @@ namespace NinjaTurtles.ManagedTestRunners
             _testAssemblyLocation = testAssemblyLocation;
             _testsToRun = new string[0];
             _remoteTestRunner = new RemoteTestRunner();
+            Result = null;
             ExitCode = -1;
         }
 
