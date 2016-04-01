@@ -61,8 +61,9 @@ namespace NinjaTurtles.AppDomainIsolation
             if (_domain != null)
             {
                 if (!_instance.IsCompleted())
-                    _instance.WaitForExit();
-                AppDomain.Unload(_domain);
+                    _instance.WaitForExit(50);
+                try { AppDomain.Unload(_domain); }
+                catch (Exception ex) { Console.Error.WriteLine("A AppDomain unloading goes wrong:\n" + ex); }
                 _domain = null;
             }
         }
