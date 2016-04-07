@@ -30,6 +30,7 @@ using System.Xml.Xsl;
 using Mono.Cecil;
 
 using NinjaTurtles.Console.Options;
+using NinjaTurtles.Console.Reporting;
 
 namespace NinjaTurtles.Console.Commands
 {
@@ -38,6 +39,7 @@ namespace NinjaTurtles.Console.Commands
         private string _testAssemblyLocation;
         private string _message;
         private Type _runnerType;
+        private MutationTestingReportSummary _report = new MutationTestingReportSummary();
 
         protected override string HelpText
         {
@@ -168,18 +170,20 @@ Example:
                     FormatOutput(outputPath);
                 }
                 OutputWriter.WriteLine();
-                ReportResult(result);
+                ReportResult(result, _report);
                 return result;
             }
         }
 
-        private void ReportResult(bool result)
+        private void ReportResult(bool result, MutationTestingReportSummary reportSummary = null)
         {
             var statusColor = result
                                   ? ConsoleColor.Green
                                   : ConsoleColor.Red;
             using (new OutputWriterHighlight(statusColor))
             {
+                if (reportSummary != null)
+                    OutputWriter.WriteLine(reportSummary.ToString());
                 OutputWriter.WriteLine(_message);
             }
         }
@@ -306,6 +310,7 @@ Exception details:
 
 " + ex;
             }
+            _report.MergeMutationTestReport(mutationTest.Report);
             return result;
         }
 
