@@ -118,6 +118,8 @@ namespace NinjaTurtles
 	        }
 	    }
 
+        public MutationTestingReport Report { get { return _report; } }
+
 	    public void Run()
 		{
 	        var errorReportingValue = TurnOffErrorReporting();

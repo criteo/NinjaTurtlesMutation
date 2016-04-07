@@ -38,6 +38,9 @@ namespace NinjaTurtles.Reporting
     {
         private readonly ReaderWriterLockSlim _readerWriterLock = new ReaderWriterLockSlim();
 
+        private int _mutantsCount;
+        private int _mutantsKilledCount;
+
         /// <summary>
         /// Initializes a new instance of <see cref="MutationTestingReport" />.
         /// </summary>
@@ -45,6 +48,8 @@ namespace NinjaTurtles.Reporting
         {
             SourceFiles = new List<SourceFile>();
             _readerWriterLock = new ReaderWriterLockSlim();
+            _mutantsCount = 0;
+            _mutantsKilledCount = 0;
         }
 
         /// <summary>
@@ -52,6 +57,16 @@ namespace NinjaTurtles.Reporting
         /// this report.
         /// </summary>
         public List<SourceFile> SourceFiles { get; set; }
+
+        /// <summary>
+        /// Total number of mutants reported
+        /// </summary>
+        public int MutantsCount { get { return _mutantsCount; } }
+
+        /// <summary>
+        /// Total number of dead mutants reported
+        /// </summary>
+        public int MutantsKilledCount { get { return _mutantsKilledCount; } }
 
         internal void MergeFromFile(string fileName)
         {
@@ -110,6 +125,8 @@ namespace NinjaTurtles.Reporting
         internal void AddResult(Mono.Cecil.Cil.SequencePoint sequencePoint, MutantMetaData mutantMetaData, bool mutantKilled)
         {
             if (sequencePoint == null || sequencePoint.Document == null) return;
+            _mutantsCount++;
+            _mutantsKilledCount += (mutantKilled ? 1 : 0);
             string sourceFileUrl = sequencePoint.Document.Url;
             _readerWriterLock.EnterUpgradeableReadLock();
             try
