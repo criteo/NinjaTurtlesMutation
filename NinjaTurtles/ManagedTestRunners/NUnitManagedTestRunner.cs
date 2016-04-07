@@ -30,28 +30,25 @@ namespace NinjaTurtles.ManagedTestRunners
             ExitCode = -1;
         }
 
-        public NUnitManagedTestRunner(string testAssemblyLocation)
+        public NUnitManagedTestRunner(string testAssemblyLocation) : this()
         {
-            _task = new Task(DoTests);
             _testAssemblyLocation = testAssemblyLocation;
-            _testsToRun = null;
             InitAndLoadTestPackage();
-            _remoteTestRunner = new RemoteTestRunner();
-            Result = null;
-            ExitCode = -1;
         }
 
-        public NUnitManagedTestRunner(TestDirectory testDirectory, string testAssemblyLocation, IEnumerable<string> testsToRun)
+        public NUnitManagedTestRunner(TestDirectory testDirectory, string testAssemblyLocation, IEnumerable<string> testsToRun) : this(Path.Combine(testDirectory.FullName, Path.GetFileName(testAssemblyLocation)))
         {
-            var testAssemblyMutantLocation = Path.Combine(testDirectory.FullName, Path.GetFileName(testAssemblyLocation));
-
-            _task = new Task(DoTests);
-            _testAssemblyLocation = testAssemblyMutantLocation;
             _testsToRun = testsToRun.ToArray();
-            _remoteTestRunner = new RemoteTestRunner();
-            InitAndLoadTestPackage();
-            Result = null;
-            ExitCode = -1;
+        }
+
+        private void InitAndLoadTestPackage()
+        {
+            if (_testAssemblyLocation == null)
+                throw new Exception("No test assembly to load");
+            TestPackage testPackage = new TestPackage(_testAssemblyLocation);
+
+            _remoteTestRunner.Load(testPackage);
+            TestExecutionContext.CurrentContext.TestPackage.Settings.Add("StopOnError", true);
         }
 
         public bool Start()
@@ -91,16 +88,6 @@ namespace NinjaTurtles.ManagedTestRunners
                 return (true);
             _remoteTestRunner.CancelRun();
             return (false);
-        }
-
-        private void InitAndLoadTestPackage()
-        {
-            if (_testAssemblyLocation == null)
-                throw new Exception("No test assembly to load");
-            TestPackage testPackage = new TestPackage(_testAssemblyLocation);
-
-            _remoteTestRunner.Load(testPackage);
-            TestExecutionContext.CurrentContext.TestPackage.Settings.Add("StopOnError", true);
         }
 
         private void DoTests()
