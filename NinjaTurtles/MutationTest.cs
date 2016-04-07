@@ -130,7 +130,16 @@ namespace NinjaTurtles
             AddMethod(method, matchingMethods);
             int[] originalOffsets = method.Body.Instructions.Select(i => i.Offset).ToArray();
 		    _report = new MutationTestingReport();
-            _testsToRun = GetMatchingTestsFromTree(method, matchingMethods);
+	        try
+	        {
+	            _testsToRun = GetMatchingTestsFromTree(method, matchingMethods);
+	        }
+	        catch (MutationTestFailureException)
+	        {
+	            _report.RegisterMethod(method);
+                _reportingStrategy.WriteReport(_report, _reportFileName);
+	            throw;
+	        }
             _benchmark = new TestsBenchmark(_testAssemblyLocation, _testsToRun);
 	        _benchmark.LaunchBenchmark();
 		    Console.WriteLine(
