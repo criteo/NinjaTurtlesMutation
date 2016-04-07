@@ -24,10 +24,15 @@ namespace NinjaTurtles.Console.Reporting
             _mutantsKilledCount += report.MutantsKilledCount;
         }
 
+        public double GetMutationScore()
+        {
+            return (_mutantsCount > 0 ? _mutantsKilledCount/(double) _mutantsCount : 0);
+        }
+
         public override string ToString()
         {
             StringBuilder builder = new StringBuilder();
-            double mutationScore = _mutantsKilledCount/(double)_mutantsCount;
+            double mutationScore = GetMutationScore();
 
             builder.AppendFormat("Mutation score: {0:0.##} ({1} / {2})", mutationScore, _mutantsKilledCount, _mutantsCount);
             return builder.ToString();
