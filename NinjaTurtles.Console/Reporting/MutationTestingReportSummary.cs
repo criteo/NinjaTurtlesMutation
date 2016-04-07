@@ -29,7 +29,7 @@ namespace NinjaTurtles.Console.Reporting
             StringBuilder builder = new StringBuilder();
             double mutationScore = _mutantsKilledCount/(double)_mutantsCount;
 
-            builder.AppendFormat("Mutation score: {0} ({1} / {2})", mutationScore, _mutantsKilledCount, _mutantsCount);
+            builder.AppendFormat("Mutation score: {0:0.##} ({1} / {2})", mutationScore, _mutantsKilledCount, _mutantsCount);
             return builder.ToString();
         }
     }
