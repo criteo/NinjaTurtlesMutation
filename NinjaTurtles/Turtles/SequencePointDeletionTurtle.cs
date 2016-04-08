@@ -91,7 +91,7 @@ namespace NinjaTurtles.Turtles
 
                     var codes = string.Join(", ", sequence.Values.Select(o => o.Code));
                     var description = string.Format("{0:x4}: deleting {1}", originalOffsets[startIndex], codes);
-                    MutantMetaData mutation = DoYield(method, module, description, startIndex);
+                    MutantMetaData mutation = DoYield(method, module, description, Description, startIndex);
                     yield return mutation;
 
                     method.Body.Instructions[startIndex].OpCode = originalOpCode;

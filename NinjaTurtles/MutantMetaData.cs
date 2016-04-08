@@ -38,6 +38,11 @@ namespace NinjaTurtles
         public string Description { get; private set; }
 
         /// <summary>
+        /// Gets the generic description of the mutation test being run.
+        /// </summary>
+        public string GenericDescription { get; private set; }
+
+        /// <summary>
         /// Gets the Module containing the mutated method.
         /// </summary>
         internal Module Module { get; private set; }
@@ -69,6 +74,25 @@ namespace NinjaTurtles
         {
             Module = module;
             Description = description;
+            MethodDefinition = methodDefinition;
+            ILIndex = ilIndex;
+            TestDirectory = testDirectory;
+        }
+
+        /// <summary>
+        /// Constructs the immutable MutantMetaData class.
+        /// </summary>
+        /// <param name="module"></param>
+        /// <param name="description"></param>
+        /// <param name="genericDescription"></param>
+        /// <param name="methodDefinition"></param>
+        /// <param name="ilIndex"></param>
+        /// <param name="testDirectory"></param>
+        public MutantMetaData(Module module, string description, string genericDescription, MethodDefinition methodDefinition, int ilIndex, TestDirectory testDirectory)
+        {
+            Module = module;
+            Description = description;
+            GenericDescription = genericDescription;
             MethodDefinition = methodDefinition;
             ILIndex = ilIndex;
             TestDirectory = testDirectory;

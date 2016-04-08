@@ -153,7 +153,7 @@ namespace NinjaTurtles.Turtles
                                 originalVariable.Name,
                                 variable.Name);
 
-                        var mutantMetaData = DoYield(method, module, description, index);
+                        var mutantMetaData = DoYield(method, module, description, Description, index);
                         yield return mutantMetaData;
                     }
                     instruction.OpCode = originalOpCode;

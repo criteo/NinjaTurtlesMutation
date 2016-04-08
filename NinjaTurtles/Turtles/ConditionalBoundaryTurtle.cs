@@ -83,7 +83,7 @@ namespace NinjaTurtles.Turtles
                     instruction.OpCode = instruction.OpCode == OpCodes.Clt ? OpCodes.Cgt : OpCodes.Clt;
 
                     var description = string.Format("{0:x4}: {1} => not {2}", originalOffsets[index], originalCode, instruction.OpCode.Code);
-                    yield return DoYield(method, module, description, index);
+                    yield return DoYield(method, module, description, Description, index);
 
                     instruction.OpCode = instruction.OpCode == OpCodes.Clt ? OpCodes.Cgt : OpCodes.Clt;
 
