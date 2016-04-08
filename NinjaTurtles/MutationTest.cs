@@ -499,11 +499,25 @@ namespace NinjaTurtles
 		    if (testSuitePassed)
             {
                 mutation.TestDirectory.DoNotDelete = true;
-                result = string.Format("{0}\nOriginal source code around surviving mutant (in {1}):\n{2}\nFiles left for inspection in: {3}",
-                    result,
-                    mutation.MethodDefinition.GetOriginalSourceFileName(mutation.ILIndex),
-                    mutation.GetOriginalSourceCode(mutation.ILIndex),
-                    mutation.TestDirectoryName);
+                var sourceFilename = mutation.MethodDefinition.GetOriginalSourceFileName(mutation.ILIndex);
+                var testDirectoryPath = mutation.TestDirectoryName;
+                if (sourceFilename != null)
+                {
+                    var sourceCode = mutation.GetOriginalSourceCode(mutation.ILIndex);
+                    result =
+                        string.Format(
+                            "{0}\nOriginal source code around surviving mutant (in {1}):\n{2}\nFiles left for inspection in: {3}",
+                            result,
+                            sourceFilename,
+                            sourceCode,
+                            testDirectoryPath);
+                }
+                else
+                    result = string.Format(
+                            "{0}\nOriginal source code couldn't be retrieve\nFiles left for inspection in: {1}",
+                            result,
+                            testDirectoryPath);
+
             }
 
             Console.WriteLine(result);

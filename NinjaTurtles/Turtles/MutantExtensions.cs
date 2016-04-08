@@ -23,7 +23,12 @@ namespace NinjaTurtles.Turtles
 
         internal static string GetOriginalSourceFileName(this MethodDefinition _method, int index)
         {
-            var sequencePoint = _method.GetCurrentSequencePoint(index);
+            var sequencePoint = _method.GetCurrentSequencePoint(index);/* ?? _method.Body.Instructions
+                .Where(instruction => instruction.SequencePoint == null || instruction.SequencePoint.StartLine == 0xfeefee)
+                .Select(instruction => instruction.SequencePoint)
+                .FirstOrDefault();*/
+            if (sequencePoint == null)
+                return (null);
             return Path.GetFileName(sequencePoint.Document.Url);
         }
     }
