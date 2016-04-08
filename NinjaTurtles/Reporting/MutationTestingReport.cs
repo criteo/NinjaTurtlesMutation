@@ -66,6 +66,7 @@ namespace NinjaTurtles.Reporting
         /// <summary>
         /// True if the targeted method has matching tests
         /// </summary>
+        [XmlIgnore]
         public bool TestsFounded = false;
 
         /// <summary>
