@@ -14,13 +14,13 @@ namespace NinjaTurtles.Console.Reporting
 
         public string Filename { get; set; }
 
-        public SortedList<int, SequencePointReportSummary> SequencePoints;
+        public IList<SequencePointReportSummary> SequencePoints;
 
         public SourceFileReportSummary(SourceFile sourceFile)
         {
             Url = sourceFile.Url;
             Filename = sourceFile.FileName;
-            SequencePoints = new SortedList<int, SequencePointReportSummary>();
+            SequencePoints = new List<SequencePointReportSummary>();
             MergeSequencePoints(sourceFile);
         }
 
@@ -30,11 +30,11 @@ namespace NinjaTurtles.Console.Reporting
             {
                 if (sequencePoint.AppliedMutants.All(am => am.Killed))
                     continue;
-                var sequencePointAlreadyCreated = SequencePoints.ContainsKey(sequencePoint.StartLine);
-                if (!sequencePointAlreadyCreated)
-                    SequencePoints.Add(sequencePoint.StartLine, new SequencePointReportSummary(sequencePoint));
+                var alreadyRecordedSeqPoint = SequencePoints.FirstOrDefault(sp => sp.StartLine == sequencePoint.StartLine)
+                if (alreadyRecordedSeqPoint == null)
+                    SequencePoints.Add(new SequencePointReportSummary(sequencePoint));
                 else
-                    SequencePoints[sequencePoint.StartLine].MergeAppliedMutant(sequencePoint);
+                    alreadyRecordedSeqPoint.MergeAppliedMutant(sequencePoint);
             }
         }
     }

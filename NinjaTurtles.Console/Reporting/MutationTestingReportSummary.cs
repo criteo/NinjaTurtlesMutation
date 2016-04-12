@@ -76,9 +76,9 @@ namespace NinjaTurtles.Console.Reporting
             foreach (var sourceFile in _survivingMutantsSources)
             {
                 builder.AppendFormat("{0}\n", sourceFile.Url);
-                foreach (var mutantLineNumber in sourceFile.SequencePoints.Keys)
+                foreach (var sequencePoint in sourceFile.SequencePoints.OrderBy(sp => sp.StartLine))
                 {
-                    builder.AppendFormat("  Line {0,-3}\n", mutantLineNumber);
+                    builder.AppendFormat("  Line {0,-3}\n", sequencePoint.StartLine);
                 }
             }
         }
