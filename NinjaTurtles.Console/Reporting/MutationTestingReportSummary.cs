@@ -72,12 +72,14 @@ namespace NinjaTurtles.Console.Reporting
         {
             if (_survivingMutantsSources.Count == 0)
                 return;
-            builder.Append("Surviving mutants info:\n");
+            builder.Append("Surviving mutants:\n");
             foreach (var sourceFile in _survivingMutantsSources)
             {
                 builder.AppendFormat("{0}\n", sourceFile.Url);
-                foreach (var sequencePointReportSummary in sourceFile.SequencePoints)
-                    builder.AppendFormat("  line {0,-3}\n", sequencePointReportSummary.StartLine);
+                foreach (var mutantLineNumber in sourceFile.SequencePoints.Keys)
+                {
+                    builder.AppendFormat("  Line {0,-3}\n", mutantLineNumber);
+                }
             }
         }
 
