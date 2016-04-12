@@ -112,6 +112,7 @@
     <Compile Include="OutputWriterHighlight.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Reporting\MutantReportSummary.cs" />
     <Compile Include="Reporting\MutationTestingReportSummary.cs" />
     <Compile Include="Reporting\SequencePointReportSummary.cs" />
     <Compile Include="Reporting\SourceFileReportSummary.cs" />

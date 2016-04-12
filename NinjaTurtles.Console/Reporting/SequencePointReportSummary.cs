@@ -11,9 +11,12 @@ namespace NinjaTurtles.Console.Reporting
     {
         public int StartLine { get; set; }
 
+        public IList<MutantReportSummary> MutantReports;
+
         public SequencePointReportSummary(SequencePoint sequencePoint)
         {
             StartLine = sequencePoint.StartLine;
+            MutantReports = new List<MutantReportSummary>();
             MergeAppliedMutant(sequencePoint);
         }
 
@@ -21,7 +24,12 @@ namespace NinjaTurtles.Console.Reporting
         {
             if (sequencePoint.StartLine != StartLine)
                 throw new Exception("Merging non matching sequence point summary");
-            return;
+            foreach (var appliedMutant in sequencePoint.AppliedMutants.Where(am => !am.Killed))
+            {
+                if (MutantReports.Any(mr => mr.Description == appliedMutant.Description && mr.GenericDescription == appliedMutant.GenericDescription))
+                    continue;
+                MutantReports.Add(new MutantReportSummary(appliedMutant));
+            }
         }
     }
 }

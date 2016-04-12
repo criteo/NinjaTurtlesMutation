@@ -79,8 +79,19 @@ namespace NinjaTurtles.Console.Reporting
                 foreach (var sequencePoint in sourceFile.SequencePoints.OrderBy(sp => sp.StartLine))
                 {
                     builder.AppendFormat("  Line {0,-3}\n", sequencePoint.StartLine);
+                    IEnumerable<IGrouping<string, MutantReportSummary>> groupedMutants = sequencePoint.MutantReports.GroupBy(mutant => mutant.GenericDescription);
+                    foreach (IGrouping<string, MutantReportSummary> mutantsReportsGrouped in groupedMutants)
+                    {
+                        builder.AppendFormat("      {0} {1}\n", mutantsReportsGrouped.Key.PadRight(65), "(" + mutantsReportsGrouped.Count() + ")");
+                        foreach (var mutantReport in mutantsReportsGrouped)
+                            builder.AppendFormat("          {0}\n", mutantReport.Description);
+                        builder.Append("\n");
+                    }
+                    builder.Append("\n");
                 }
+                builder.Append("\n");
             }
+            builder.Append("\n");
         }
 
         public override string ToString()

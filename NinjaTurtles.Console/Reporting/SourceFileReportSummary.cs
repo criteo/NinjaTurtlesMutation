@@ -30,7 +30,8 @@ namespace NinjaTurtles.Console.Reporting
             {
                 if (sequencePoint.AppliedMutants.All(am => am.Killed))
                     continue;
-                var alreadyRecordedSeqPoint = SequencePoints.FirstOrDefault(sp => sp.StartLine == sequencePoint.StartLine)
+                var alreadyRecordedSeqPoint =
+                    SequencePoints.FirstOrDefault(sp => sp.StartLine == sequencePoint.StartLine);
                 if (alreadyRecordedSeqPoint == null)
                     SequencePoints.Add(new SequencePointReportSummary(sequencePoint));
                 else
