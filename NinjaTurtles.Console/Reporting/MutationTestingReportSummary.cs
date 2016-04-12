@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using NinjaTurtles.Reporting;
@@ -30,10 +31,13 @@ namespace NinjaTurtles.Console.Reporting
         {
             foreach (var sourceFile in report.SourceFiles)
             {
-                if (_survivingMutantsSources.Any(s => s.Url == sourceFile.Url) ||
-                    sourceFile.SequencePoints.All(sp => sp.AppliedMutants.All(am => am.Killed)))
+                if (sourceFile.SequencePoints.All(sp => sp.AppliedMutants.All(am => am.Killed)))
                     continue;
-                _survivingMutantsSources.Add(new SourceFileReportSummary(sourceFile));
+                var matchingSourceFile = _survivingMutantsSources.FirstOrDefault(sf => sf.Url == sourceFile.Url);
+                if (matchingSourceFile == null)
+                    _survivingMutantsSources.Add(new SourceFileReportSummary(sourceFile));
+                else
+                    matchingSourceFile.MergeSequencePoints(sourceFile);
             }
         }
 
@@ -72,6 +76,8 @@ namespace NinjaTurtles.Console.Reporting
             foreach (var sourceFile in _survivingMutantsSources)
             {
                 builder.AppendFormat("{0}\n", sourceFile.Url);
+                foreach (var sequencePointReportSummary in sourceFile.SequencePoints)
+                    builder.AppendFormat("  line {0,-3}\n", sequencePointReportSummary.StartLine);
             }
         }
 
