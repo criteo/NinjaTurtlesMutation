@@ -115,13 +115,23 @@
     						<xsl:when test=".//AppliedMutant">
 								<xsl:value-of select="100 * count(.//AppliedMutant[@Killed='true']) div count(.//AppliedMutant)" />
 							</xsl:when>
-							<xsl:otherwise>100</xsl:otherwise>
+							<xsl:otherwise>0</xsl:otherwise>
+						</xsl:choose>
+
+					</xsl:variable>
+            <xsl:variable name="mutant_report">
+						<xsl:choose>
+    						<xsl:when test=".//AppliedMutant">
+                  <xsl:value-of select="count(.//AppliedMutant[@Killed='true'])" /> /
+                  <xsl:value-of select="count(.//AppliedMutant)" />
+							</xsl:when>
+							<xsl:otherwise>No mutation</xsl:otherwise>
 						</xsl:choose>
 					</xsl:variable>
+
   					<div class="bar-value" style="background: #dfd; width: {$width}%">
     					<div class="bar-text" >
-    						<xsl:value-of select="count(.//AppliedMutant[@Killed='true'])" /> /
-    						<xsl:value-of select="count(.//AppliedMutant)" />
+    						<xsl:value-of select="$mutant_report" />
     					</div>
     				</div>
     			</div>
