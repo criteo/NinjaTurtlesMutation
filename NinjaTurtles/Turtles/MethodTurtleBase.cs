@@ -196,6 +196,44 @@ namespace NinjaTurtles.Turtles
                 testDirectory
             );
         }
-        
+
+        /// <summary>
+        /// A helper method that copies the test folder, and saves the mutated
+        /// assembly under test into it before returning an instance of
+        /// <see cref="MutantMetaData" />.
+        /// </summary>
+        /// <param name="method">
+        /// A <see cref="MethodDefinition" /> for the method on which mutation
+        /// testing is to be carried out.
+        /// </param>
+        /// <param name="module">
+        /// A <see cref="Module" /> representing the main module of the
+        /// containing assembly.
+        /// </param>
+        /// <param name="description">
+        /// A description of the mutation that has been applied.
+        /// </param>
+        /// <param name="genericDescription">
+        /// A generic description of the mutation that has been applied.
+        /// </param>
+        /// <param name="index">
+        /// The index of the (first) IL instruction at which the mutation was
+        /// applied.
+        /// </param>
+        /// <returns></returns>
+        protected MutantMetaData DoYield(MethodDefinition method, Module module, string description, string genericDescription, int index)
+        {
+            var toCopy = new List<string>() { method.DeclaringType.Module.ToString() };
+            var testDirectory = new TestDirectory(Path.GetDirectoryName(module.AssemblyLocation), toCopy);
+            testDirectory.SaveAssembly(module);
+            return new MutantMetaData(
+                module,
+                description,
+                genericDescription,
+                method,
+                index,
+                testDirectory
+            );
+        }
     }
 }

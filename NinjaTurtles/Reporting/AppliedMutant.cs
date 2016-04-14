@@ -31,8 +31,15 @@ namespace NinjaTurtles.Reporting
     public class AppliedMutant
     {
         /// <summary>
+        /// Gets or sets a generic description of the mutant.
+        /// </summary>
+        [XmlAttribute]
+        public string GenericDescription { get; set; }
+
+        /// <summary>
         /// Gets or sets a description of the mutant.
         /// </summary>
+        [XmlAttribute]
         public string Description { get; set; }
 
         /// <summary>

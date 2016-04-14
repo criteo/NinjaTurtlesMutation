@@ -115,13 +115,23 @@
     						<xsl:when test=".//AppliedMutant">
 								<xsl:value-of select="100 * count(.//AppliedMutant[@Killed='true']) div count(.//AppliedMutant)" />
 							</xsl:when>
-							<xsl:otherwise>100</xsl:otherwise>
+							<xsl:otherwise>0</xsl:otherwise>
+						</xsl:choose>
+
+					</xsl:variable>
+            <xsl:variable name="mutant_report">
+						<xsl:choose>
+    						<xsl:when test=".//AppliedMutant">
+                  <xsl:value-of select="count(.//AppliedMutant[@Killed='true'])" /> /
+                  <xsl:value-of select="count(.//AppliedMutant)" />
+							</xsl:when>
+							<xsl:otherwise>No mutation</xsl:otherwise>
 						</xsl:choose>
 					</xsl:variable>
+
   					<div class="bar-value" style="background: #dfd; width: {$width}%">
     					<div class="bar-text" >
-    						<xsl:value-of select="count(.//AppliedMutant[@Killed='true'])" /> /
-    						<xsl:value-of select="count(.//AppliedMutant)" />
+    						<xsl:value-of select="$mutant_report" />
     					</div>
     				</div>
     			</div>
@@ -148,11 +158,23 @@
         <pre class="brush:csharp">
             <xsl:text disable-output-escaping="yes">&lt;span class="title"&gt;Line: Mutants: Source code                                                                       &lt;/span&gt;
 </xsl:text>
-            <xsl:apply-templates select="Lines/Line" />
+          <xsl:apply-templates select="Lines/Line" />
         </pre>
-    </xsl:template>
-    
-    <xsl:template match="Line">
+        <xsl:apply-templates select="SequencePoints/SequencePoint/AppliedMutants/AppliedMutant[@Killed='false']">
+          <xsl:sort select="../../@StartLine" data-type="number" order="ascending"/>
+        </xsl:apply-templates>
+      </xsl:template>
+
+  <xsl:template match="AppliedMutant">
+    <xsl:variable name="startline" select="../../@StartLine"/>
+    <xsl:variable name="genericDescription" select="@GenericDescription"/>
+    <span class="red">
+      Line <xsl:value-of select="$startline"/>: <xsl:value-of select="$genericDescription"/>
+    </span>
+    <br/>
+  </xsl:template>
+
+  <xsl:template match="Line">
         <xsl:variable name="lineNumber" select="@Number" />
         <xsl:variable name="sequencePoints" select="count(../..//SequencePoint[number(@StartLine) &lt;= number($lineNumber) and number(@EndLine) &gt;= number($lineNumber)])" />
         <xsl:variable name="totalMutants" select="count(../..//SequencePoint[number(@StartLine) &lt;= number($lineNumber) and number(@EndLine) &gt;= number($lineNumber)]//AppliedMutant)" />

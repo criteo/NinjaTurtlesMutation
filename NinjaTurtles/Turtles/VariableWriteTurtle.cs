@@ -128,7 +128,7 @@ namespace NinjaTurtles.Turtles
                                 originalVariable.Name,
                                 variable.Name);
 
-                        yield return DoYield(method, module, description, index);
+                        yield return DoYield(method, module, description, Description, index);
 
                     }
                     instruction.OpCode = originalOpCode;

@@ -81,7 +81,7 @@ namespace NinjaTurtles.Turtles
                     {
                         instruction.OpCode = opCode;
                         var description = string.Format("{0:x4}: {1} => {2}", originalOffsets[index], originalOpCode.Code, opCode.Code);
-                        MutantMetaData mutation = DoYield(method, module, description, index);
+                        MutantMetaData mutation = DoYield(method, module, description, Description, index);
                         yield return mutation;
                     }
 

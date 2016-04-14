@@ -121,6 +121,7 @@ namespace NinjaTurtles.Reporting
                     _readerWriterLock.EnterWriteLock();
                     AppliedMutants.Add(new AppliedMutant
                                              {
+                                                 GenericDescription = mutantMetaData.GenericDescription,
                                                  Description = mutantMetaData.Description,
                                                  Killed = mutantKilled
                                              });

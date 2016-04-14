@@ -38,20 +38,57 @@ namespace NinjaTurtles.Reporting
     {
         private readonly ReaderWriterLockSlim _readerWriterLock = new ReaderWriterLockSlim();
 
+        private int _mutantsCount;
+        private int _mutantsKilledCount;
+
+        private readonly string _methodFullname;
+
         /// <summary>
         /// Initializes a new instance of <see cref="MutationTestingReport" />.
         /// </summary>
-        public MutationTestingReport()
+        private MutationTestingReport()
         {
             SourceFiles = new List<SourceFile>();
             _readerWriterLock = new ReaderWriterLockSlim();
+            _mutantsCount = 0;
+            _mutantsKilledCount = 0;
         }
+
+        /// <summary>
+        /// Initializes a new instance of <see cref="MutationTestingReport" />.
+        /// </summary>
+        /// <param name="testedMethod"></param>
+        public MutationTestingReport(MethodDefinition testedMethod) : this()
+        {
+            _methodFullname = testedMethod.FullName;
+        }
+
+        /// <summary>
+        /// True if the targeted method has matching tests
+        /// </summary>
+        [XmlIgnore]
+        public bool TestsFounded = false;
 
         /// <summary>
         /// Gets or sets a list of the <see cref="SourceFile" />s covered by
         /// this report.
         /// </summary>
         public List<SourceFile> SourceFiles { get; set; }
+
+        /// <summary>
+        /// Total number of mutants reported
+        /// </summary>
+        public int MutantsCount { get { return _mutantsCount; } }
+
+        /// <summary>
+        /// Total number of dead mutants reported
+        /// </summary>
+        public int MutantsKilledCount { get { return _mutantsKilledCount; } }
+
+        /// <summary>
+        /// The name of the tested method
+        /// </summary>
+        public string MethodFullname { get { return _methodFullname; } }
 
         internal void MergeFromFile(string fileName)
         {
@@ -110,6 +147,8 @@ namespace NinjaTurtles.Reporting
         internal void AddResult(Mono.Cecil.Cil.SequencePoint sequencePoint, MutantMetaData mutantMetaData, bool mutantKilled)
         {
             if (sequencePoint == null || sequencePoint.Document == null) return;
+            _mutantsCount++;
+            _mutantsKilledCount += (mutantKilled ? 1 : 0);
             string sourceFileUrl = sequencePoint.Document.Url;
             _readerWriterLock.EnterUpgradeableReadLock();
             try
