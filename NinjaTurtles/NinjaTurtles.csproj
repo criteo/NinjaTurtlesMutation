@@ -138,6 +138,7 @@
     <None Include="..\ReportXslt.xslt">
       <Link>ReportXslt.xslt</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </None>
   </ItemGroup>
   <Import Project="$(SolutionDir)\.nuget\nuget.targets" />

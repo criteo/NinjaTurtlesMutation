@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -19,6 +20,8 @@ namespace NinjaTurtles.ManagedTestRunners
         private string _testAssemblyLocation;
         private readonly RemoteTestRunner _remoteTestRunner;
         private Task _task;
+
+        private const double POLL_TIME_FACTOR = 0.1;
 
         public NUnitManagedTestRunner()
         {
@@ -83,11 +86,24 @@ namespace NinjaTurtles.ManagedTestRunners
         {
             if (ExitCode != -1)
                 return (true);
-            Thread.Sleep(ms);
+            TimedExitCodePolling(ms, ms * POLL_TIME_FACTOR);
             if (ExitCode != -1)
                 return (true);
             _remoteTestRunner.CancelRun();
             return (false);
+        }
+
+        private void TimedExitCodePolling(int maxWaitMs, double pollSleepMs)
+        {
+            var watch = Stopwatch.StartNew();
+            int pollSleepIntMs = (int)Math.Ceiling(pollSleepMs);
+
+            while (watch.ElapsedMilliseconds < maxWaitMs)
+            {
+                Thread.Sleep(pollSleepIntMs);
+                if (ExitCode != -1)
+                    return ;
+            }
         }
 
         private void DoTests()
