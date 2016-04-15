@@ -8,7 +8,7 @@ using NUnit.Core;
 
 namespace NinjaTurtles.AppDomainIsolation.Adaptor
 {
-    internal class NunitManagedTestRunnerAdaptor : Adaptor
+    public class NunitManagedTestRunnerAdaptor : Adaptor
     {
         private readonly NUnitManagedTestRunner _runner = new NUnitManagedTestRunner();
 

@@ -23,6 +23,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.IO.Pipes;
 using System.Linq;
 using System.Management;
 using System.Security;
@@ -65,6 +66,12 @@ namespace NinjaTurtles
 	    private string _reportFileName;
 	    private MethodReferenceComparer _comparer;
 	    private static readonly Regex _automaticallyGeneratedNestedClassMatcher = new Regex("^\\<([A-Za-z0-9@_]+)\\>");
+
+        private Process testRunner;
+        private AnonymousPipeServerStream testRunnerPipeIn;
+        private AnonymousPipeServerStream testRunnerPipeOut;
+        private StreamReader testRunnerStreamIn;
+        private StreamWriter testRunnerStreamOut;
 
         private TestsBenchmark _benchmark;
 
@@ -155,6 +162,7 @@ namespace NinjaTurtles
 			int count = 0;
 			int failures = 0;
             if (_mutationsToApply.Count == 0) PopulateDefaultTurtles();
+            InitTestRunner();
             foreach (var turtleType in _mutationsToApply)
 			{
                 var turtle = (MethodTurtleBase)Activator.CreateInstance(turtleType);
@@ -176,6 +184,7 @@ namespace NinjaTurtles
 
             RestoreErrorReporting(errorReportingValue);
 
+	        DisposeTestRunner();
 	        if (count == 0)
 			{
 				Console.WriteLine("No valid mutations found (this is fine).");
@@ -186,6 +195,31 @@ namespace NinjaTurtles
                 throw new MutationTestFailureException();
 			}
 		}
+
+        private void InitTestRunner()
+        {
+            testRunnerPipeIn = new AnonymousPipeServerStream(PipeDirection.In, HandleInheritability.Inheritable);
+            testRunnerPipeOut = new AnonymousPipeServerStream(PipeDirection.Out, HandleInheritability.Inheritable);
+            testRunnerStreamIn = new StreamReader(testRunnerPipeIn);
+            testRunnerStreamOut = new StreamWriter(testRunnerPipeOut);
+            testRunner = new Process();
+            testRunner.StartInfo.FileName = "testrunner.exe";
+            testRunner.StartInfo.UseShellExecute = false;
+            testRunner.StartInfo.Arguments = testRunnerPipeOut.GetClientHandleAsString() + " " +
+                                             testRunnerPipeIn.GetClientHandleAsString();
+            testRunner.Start();
+            testRunnerPipeOut.DisposeLocalCopyOfClientHandle();
+            testRunnerPipeIn.DisposeLocalCopyOfClientHandle();
+        }
+
+        private void DisposeTestRunner()
+        {
+            testRunner.Kill();
+            testRunnerStreamIn.Dispose();
+            testRunnerStreamOut.Dispose();
+            testRunnerPipeIn.Dispose();
+            testRunnerPipeOut.Dispose();
+        }
 
         private static void RestoreErrorReporting(object errorReportingValue)
         {
@@ -492,15 +526,22 @@ namespace NinjaTurtles
 
 	    private bool CheckTestProcessFails(MethodTurtleBase turtle, MutantMetaData mutation)
 		{
-	        bool exitedInTime = false;
-	        int exitCode = -1;
+            /*
+             * TestDescription testDescription = new TestDescription(Path.Combine(mutation.TestDirectory.FullName, Path.GetFileName(TestAssemblyLocation)), _testsToRun, _benchmark.TotalMs);
+             * SendTestDscript(this.sw, testDescript)
+             * try testDescript = ReadTestDescript(this.sr); set exitCode && exitedInTime accordingly
+             * catch IOException set bad exitcode and EIT, respawn testrunner
+             * finally set testSuitePassed
+             */
+            /*bool exitedInTime = false;
+            int exitCode = -1;
             using (Isolated<NunitManagedTestRunnerAdaptor> runner = new Isolated<NunitManagedTestRunnerAdaptor>())
             {
                 var mutantPath = Path.Combine(mutation.TestDirectory.FullName, Path.GetFileName(TestAssemblyLocation));
                 runner.Instance.Start(mutantPath, _testsToRun);
                 exitedInTime = runner.Instance.WaitForExit((int)(1.1 * _benchmark.TotalMs));
-	            exitCode = runner.Instance.ExitCode;
-	        }
+                exitCode = runner.Instance.ExitCode;
+            }*/
             bool testSuitePassed = exitCode == 0 && exitedInTime;
             string result = string.Format(" Mutant: {0}. {1}",
 			                  mutation.Description,
