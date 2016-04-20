@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.IO.Pipes;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using NinjaTurtles.AppDomainIsolation;
 using NinjaTurtles.AppDomainIsolation.Adaptor;
 using NinjaTurtles.ServiceTestRunnerLib;
@@ -18,12 +14,14 @@ namespace NinjaTurtles.TestRunnerService
         {
             if (args.Length != 2)
                 return;
+            AppDomain.CurrentDomain.UnhandledException += UnexpectedExceptionHandler;
             try
             {
                 using (PipeStream receivePipe = new AnonymousPipeClientStream(PipeDirection.In, args[0]))
                 using (PipeStream sendPipe = new AnonymousPipeClientStream(PipeDirection.Out, args[1]))
                 using (StreamWriter sendStream = new StreamWriter(sendPipe))
                 using (StreamReader receiveStream = new StreamReader(receivePipe))
+                using (new ErrorModeContext(ErrorModes.FailCriticalErrors | ErrorModes.NoGpFaultErrorBox))
                 {
                     while (true)
                     {
@@ -45,6 +43,11 @@ namespace NinjaTurtles.TestRunnerService
             }
         }
 
+        private static void UnexpectedExceptionHandler(object sender, UnhandledExceptionEventArgs args)
+        {
+            Environment.Exit(3);
+        }
+
         private static void RunDescribedTests(TestDescription testDescription)
         {
             bool exitedInTime;
@@ -58,11 +61,6 @@ namespace NinjaTurtles.TestRunnerService
                 exitCode = runner.Instance.ExitCode;
             }
 
-            /*var mutantPath = testDescription.AssemblyPath;
-            var runner = new NUnitManagedTestRunner();
-            runner.Start(mutantPath, testDescription.TestsToRun);
-            exitedInTime = runner.WaitForExit((int)(1.1 * testDescription.TotalMsBench));
-            exitCode = runner.ExitCode;*/
             testDescription.ExitedInTime = exitedInTime;
             testDescription.TestsPass = (exitCode == 0);
         }

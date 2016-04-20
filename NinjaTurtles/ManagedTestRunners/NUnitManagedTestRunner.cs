@@ -111,16 +111,9 @@ namespace NinjaTurtles.ManagedTestRunners
             var currentOut = Console.Out;
 
             TestFilter filter = (_testsToRun != null ? new SimpleNameFilter(_testsToRun) : TestFilter.Empty);
-            try
-            {
-                Result = _remoteTestRunner.Run(new NullListener(), filter, false, LoggingThreshold.Off);
-                ExitCode = Result.IsSuccess ? 0 : 1;
-            }
-            catch (Exception)
-            {
-                ExitCode = 1;
-            }
-
+            Result = _remoteTestRunner.Run(new NullListener(), filter, false, LoggingThreshold.Off);
+            ExitCode = Result.IsSuccess ? 0 : 1;
+            ExitCode = 1;
             Console.SetOut(currentOut);
         }
 
