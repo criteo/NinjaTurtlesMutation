@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace NinjaTurtles.TestRunnerService
+namespace NinjaTurtles.ServiceTestRunnerLib
 {
     /// <summary>
     /// This class describe a test run
@@ -50,10 +50,10 @@ namespace NinjaTurtles.TestRunnerService
         /// <param name="assemblyPath"></param>
         /// <param name="testsToRun"></param>
         /// <param name="totalMsBench"></param>
-        public TestDescription(string assemblyPath, List<string> testsToRun, long totalMsBench) : this()
+        public TestDescription(string assemblyPath, IEnumerable<string> testsToRun, long totalMsBench) : this()
         {
             AssemblyPath = assemblyPath;
-            TestsToRun = testsToRun;
+            TestsToRun = new List<string>(testsToRun);
             TotalMsBench = totalMsBench;
         }
     }

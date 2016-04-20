@@ -40,9 +40,10 @@ using Mono.Collections.Generic;
 using NinjaTurtles.AppDomainIsolation;
 using NinjaTurtles.AppDomainIsolation.Adaptor;
 using NinjaTurtles.Reporting;
+using NinjaTurtles.ServiceTestRunnerLib;
+using NinjaTurtles.ServiceTestRunnerLib.Utilities;
 using NinjaTurtles.TestRunners;
 using NinjaTurtles.Turtles;
-using NinjaTurtles.ManagedTestRunners;
 
 namespace NinjaTurtles
 {
@@ -214,7 +215,11 @@ namespace NinjaTurtles
 
         private void DisposeTestRunner()
         {
-            testRunner.Kill();
+            try
+            {
+                testRunner.Kill();
+            }
+            catch {}
             testRunnerStreamIn.Dispose();
             testRunnerStreamOut.Dispose();
             testRunnerPipeIn.Dispose();
@@ -526,22 +531,23 @@ namespace NinjaTurtles
 
 	    private bool CheckTestProcessFails(MethodTurtleBase turtle, MutantMetaData mutation)
 		{
-            /*
-             * TestDescription testDescription = new TestDescription(Path.Combine(mutation.TestDirectory.FullName, Path.GetFileName(TestAssemblyLocation)), _testsToRun, _benchmark.TotalMs);
-             * SendTestDscript(this.sw, testDescript)
-             * try testDescript = ReadTestDescript(this.sr); set exitCode && exitedInTime accordingly
-             * catch IOException set bad exitcode and EIT, respawn testrunner
-             * finally set testSuitePassed
-             */
-            /*bool exitedInTime = false;
-            int exitCode = -1;
-            using (Isolated<NunitManagedTestRunnerAdaptor> runner = new Isolated<NunitManagedTestRunnerAdaptor>())
-            {
-                var mutantPath = Path.Combine(mutation.TestDirectory.FullName, Path.GetFileName(TestAssemblyLocation));
-                runner.Instance.Start(mutantPath, _testsToRun);
-                exitedInTime = runner.Instance.WaitForExit((int)(1.1 * _benchmark.TotalMs));
-                exitCode = runner.Instance.ExitCode;
-            }*/
+            bool exitedInTime;
+            int exitCode;
+            TestDescription testDescription = new TestDescription(Path.Combine(mutation.TestDirectory.FullName, Path.GetFileName(TestAssemblyLocation)), _testsToRun, _benchmark.TotalMs);
+            TestDescriptionExchanger.SendATestDescription(testRunnerStreamOut, testDescription);
+	        try
+	        {
+	            testDescription = TestDescriptionExchanger.ReadATestDescription(testRunnerStreamIn);
+                exitedInTime = testDescription.ExitedInTime;
+	            exitCode = (testDescription.TestsPass ? 0 : 1);
+	        }
+	        catch (IOException)
+	        {
+	            exitedInTime = false;
+	            exitCode = 1;
+                DisposeTestRunner();
+                InitTestRunner();
+	        }
             bool testSuitePassed = exitCode == 0 && exitedInTime;
             string result = string.Format(" Mutant: {0}. {1}",
 			                  mutation.Description,

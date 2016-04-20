@@ -1,15 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.IO;
 
-namespace NinjaTurtles.TestRunnerService.Utilities
+namespace NinjaTurtles.ServiceTestRunnerLib.Utilities
 {
 
     public static class TestDescriptionExchanger
     {
+        private const string TRANSFER_START = "STARTSYNC";
         private const string TRANSFER_STOP = "ENDSYNC";
 
         public static void SendATestDescription(StreamWriter sw, TestDescription testDescription)
@@ -19,6 +15,7 @@ namespace NinjaTurtles.TestRunnerService.Utilities
 
         public static void SendData(StreamWriter sw, string data)
         {
+            sw.WriteLine(TRANSFER_START);
             sw.WriteLine(data);
             sw.WriteLine(TRANSFER_STOP);
             sw.Flush();
@@ -26,8 +23,12 @@ namespace NinjaTurtles.TestRunnerService.Utilities
 
         public static TestDescription ReadATestDescription(StreamReader sr)
         {
-            string lineBuf;
+            string lineBuf = "";
             string data = "";
+            while (lineBuf != null && lineBuf != TRANSFER_START)
+                lineBuf = sr.ReadLine();
+            if (lineBuf == null)
+                throw new IOException();
             while (true)
             {
                 lineBuf = sr.ReadLine();

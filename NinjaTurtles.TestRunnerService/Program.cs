@@ -7,7 +7,8 @@ using System.Text;
 using System.Threading.Tasks;
 using NinjaTurtles.AppDomainIsolation;
 using NinjaTurtles.AppDomainIsolation.Adaptor;
-using NinjaTurtles.TestRunnerService.Utilities;
+using NinjaTurtles.ServiceTestRunnerLib;
+using NinjaTurtles.ServiceTestRunnerLib.Utilities;
 
 namespace NinjaTurtles.TestRunnerService
 {
@@ -56,6 +57,12 @@ namespace NinjaTurtles.TestRunnerService
                 exitedInTime = runner.Instance.WaitForExit((int) (1.1 * testDescription.TotalMsBench));
                 exitCode = runner.Instance.ExitCode;
             }
+
+            /*var mutantPath = testDescription.AssemblyPath;
+            var runner = new NUnitManagedTestRunner();
+            runner.Start(mutantPath, testDescription.TestsToRun);
+            exitedInTime = runner.WaitForExit((int)(1.1 * testDescription.TotalMsBench));
+            exitCode = runner.ExitCode;*/
             testDescription.ExitedInTime = exitedInTime;
             testDescription.TestsPass = (exitCode == 0);
         }
