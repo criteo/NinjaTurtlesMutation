@@ -25,11 +25,9 @@ using System.Diagnostics;
 using System.IO;
 using System.IO.Pipes;
 using System.Linq;
-using System.Management;
 using System.Security;
 using System.Text.RegularExpressions;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Xml.Serialization;
 
 using Microsoft.Win32;
@@ -37,8 +35,6 @@ using Microsoft.Win32;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 using Mono.Collections.Generic;
-using NinjaTurtles.AppDomainIsolation;
-using NinjaTurtles.AppDomainIsolation.Adaptor;
 using NinjaTurtles.Reporting;
 using NinjaTurtles.ServiceTestRunnerLib;
 using NinjaTurtles.ServiceTestRunnerLib.Utilities;
@@ -519,16 +515,6 @@ namespace NinjaTurtles
 			Interlocked.Increment(ref count);
 		}
 
-	    private Process GetTestRunnerProcess(TestDirectory testDirectory)
-	    {
-	        if (_runner == null)
-	        {
-	            _runner = (ITestRunner)Activator.CreateInstance(MutationTestBuilder.TestRunner);
-                _runner.EnsureRunner(testDirectory, TestAssemblyLocation);
-	        }
-	        return _runner.GetRunnerProcess(testDirectory, TestAssemblyLocation, _testsToRun);
-	    }
-
 	    private bool CheckTestProcessFails(MethodTurtleBase turtle, MutantMetaData mutation)
 		{
             bool exitedInTime;
@@ -586,25 +572,6 @@ namespace NinjaTurtles
             return !testSuitePassed;
 		}
 
-        private void KillProcessAndChildren(int pid)
-        {
-            using (var searcher = new ManagementObjectSearcher("Select * From Win32_Process Where ParentProcessID=" + pid))
-            using (ManagementObjectCollection moc = searcher.Get())
-            {
-                foreach (var mo in moc)
-                {
-                    KillProcessAndChildren(Convert.ToInt32(mo["ProcessID"]));
-                }
-                try
-                {
-                    Process proc = Process.GetProcessById(pid);
-					proc.Kill();
-                }
-				catch (ArgumentException) {}
-            }
-        }
-
-				
 		private void PopulateDefaultTurtles()
 		{
             foreach (var type in GetType().Assembly.GetTypes()
