@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace NinjaTurtles.ServiceTestRunnerLib
 {
@@ -7,6 +8,11 @@ namespace NinjaTurtles.ServiceTestRunnerLib
     /// </summary>
     public class TestDescription
     {
+        /// <summary>
+        /// The uid of this test description
+        /// </summary>
+        public string Uid;
+
         /// <summary>
         /// The path to the test assembly
         /// </summary>
@@ -37,6 +43,7 @@ namespace NinjaTurtles.ServiceTestRunnerLib
         /// </summary>
         public TestDescription()
         {
+            Uid = Guid.NewGuid().ToString("N");
             AssemblyPath = null;
             TestsToRun = null;
             TotalMsBench = -1;
