@@ -22,7 +22,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NinjaTurtles.Tests.MSTest",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NinjaTurtles.Console", "NinjaTurtles.Console\NinjaTurtles.Console.csproj", "{AF38D08E-27BD-49A4-9D30-B8E1C8A9D121}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NinjaTurtles.TestRunnerService", "NinjaTurtles.TestRunnerService\NinjaTurtles.TestRunnerService.csproj", "{C849941A-6317-438D-83E4-E99914359D4D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NinjaTurtles.TestRunner", "NinjaTurtles.TestRunnerService\NinjaTurtles.TestRunner.csproj", "{C849941A-6317-438D-83E4-E99914359D4D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NinjaTurtles.TestDispatcher", "..\NinjaTurtles.TestDispatcher\NinjaTurtles.TestDispatcher.csproj", "{7DEBEBDF-BF81-4136-9C6A-A112332642E2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -113,6 +115,16 @@ Global
 		{C849941A-6317-438D-83E4-E99914359D4D}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{C849941A-6317-438D-83E4-E99914359D4D}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{C849941A-6317-438D-83E4-E99914359D4D}.Release|x86.ActiveCfg = Release|Any CPU
+		{7DEBEBDF-BF81-4136-9C6A-A112332642E2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7DEBEBDF-BF81-4136-9C6A-A112332642E2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7DEBEBDF-BF81-4136-9C6A-A112332642E2}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{7DEBEBDF-BF81-4136-9C6A-A112332642E2}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{7DEBEBDF-BF81-4136-9C6A-A112332642E2}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{7DEBEBDF-BF81-4136-9C6A-A112332642E2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7DEBEBDF-BF81-4136-9C6A-A112332642E2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7DEBEBDF-BF81-4136-9C6A-A112332642E2}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{7DEBEBDF-BF81-4136-9C6A-A112332642E2}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{7DEBEBDF-BF81-4136-9C6A-A112332642E2}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
