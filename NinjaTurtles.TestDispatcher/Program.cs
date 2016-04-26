@@ -52,21 +52,26 @@ namespace NinjaTurtles.TestDispatcher
                 TestDescription testToDispatch = null;
                 if (!_unassignedJobs.TryDequeue(out testToDispatch))
                     continue;
-                var assignedRunnerIndex = -1;
-                while ((assignedRunnerIndex = _testRunners.FindIndex(r => !r.isBusy)) == -1)
-                    Thread.Sleep(DISPATCH_RUNNER_ACQUISITION_COOLDOWN_MS);
-                TestRunnerHandler assignedRunner = _testRunners[assignedRunnerIndex];
-                try
+                while (testToDispatch != null)
                 {
-                    assignedRunner.SendJob(testToDispatch);
+                    var assignedRunnerIndex = -1;
+                    while ((assignedRunnerIndex = _testRunners.FindIndex(r => !r.isBusy)) == -1)
+                        Thread.Sleep(DISPATCH_RUNNER_ACQUISITION_COOLDOWN_MS);
+                    TestRunnerHandler assignedRunner = _testRunners[assignedRunnerIndex];
+                    try
+                    {
+                        assignedRunner.SendJob(testToDispatch);
+                    }
+                    catch (IOException)
+                    {
+                        RunnerHealthCheckup(assignedRunner, assignedRunnerIndex);
+                        continue;
+                    }
+                    _dispatchedJobs.TryAdd(assignedRunnerIndex, testToDispatch);
+                    assignedRunner.isBusy = true;
+                    Task.Factory.StartNew(() => BusyRunnerHandler(assignedRunner, assignedRunnerIndex));
+                    testToDispatch = null;
                 }
-                catch (IOException)
-                {
-                    continue;
-                }
-                _dispatchedJobs.TryAdd(assignedRunnerIndex, testToDispatch);
-                assignedRunner.isBusy = true;
-                Task.Factory.StartNew(() => BusyRunnerHandler(assignedRunner, assignedRunnerIndex));
             }
         }
 
@@ -124,7 +129,7 @@ namespace NinjaTurtles.TestDispatcher
             var testResult = RetrieveTestResult(busyRunner, busyRunnerIndex);
             _completedJobs.Enqueue(testResult);
             _dispatchedJobs.TryRemove(busyRunnerIndex, out sink);
-            PostRunHealthCheckup(busyRunner, busyRunnerIndex);
+            RunnerHealthCheckup(busyRunner, busyRunnerIndex);
         }
 
         private static TestDescription RetrieveTestResult(TestRunnerHandler busyRunner, int busyRunnerIndex)
@@ -141,7 +146,7 @@ namespace NinjaTurtles.TestDispatcher
             }
         }
 
-        private static void PostRunHealthCheckup(TestRunnerHandler busyRunner, int busyRunnerIndex)
+        private static void RunnerHealthCheckup(TestRunnerHandler busyRunner, int busyRunnerIndex)
         {
             if (busyRunner.IsAlive())
             {

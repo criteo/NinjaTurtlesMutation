@@ -46,12 +46,12 @@ namespace NinjaTurtles.TestDispatcher
             try
             {
                 _runnerProcess.Kill();
+                runnerStreamIn.Dispose();
+                runnerStreamOut.Dispose();
+                _runnerPipeIn.Dispose();
+                _runnerPipeOut.Dispose();
             }
-            catch {}
-            runnerStreamIn.Dispose();
-            runnerStreamOut.Dispose();
-            _runnerPipeIn.Dispose();
-            _runnerPipeOut.Dispose();
+            catch { }
         }
 
         public void SendJob(TestDescription job)
@@ -64,6 +64,7 @@ namespace NinjaTurtles.TestDispatcher
             try
             {
                 runnerStreamIn.Peek();
+                runnerStreamOut.Flush();
                 return (true);
             }
             catch (IOException)
