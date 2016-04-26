@@ -22,6 +22,7 @@
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.IO.Pipes;
 using System.Linq;
 using System.Reflection;
 using System.Xml;
@@ -40,6 +41,12 @@ namespace NinjaTurtles.Console.Commands
         private string _message;
         private Type _runnerType;
         private MutationTestingReportSummary _report = new MutationTestingReportSummary();
+
+        private Process testDispatcher;
+        private AnonymousPipeServerStream testDispatcherPipeIn;
+        private AnonymousPipeServerStream testDispatcherPipeOut;
+        private StreamReader testDispatcherStreamIn;
+        private StreamWriter testDispatcherStreamOut;
 
         protected override string HelpText
         {
@@ -92,6 +99,35 @@ Example:
    them to perform mutation testing of that method. The resulting output will
    be transformed to HTML and saved to the file ResolveMethod.html.";
             }
+        }
+
+        private void InitTestDispatcher()
+        {
+            testDispatcherPipeIn = new AnonymousPipeServerStream(PipeDirection.In, HandleInheritability.Inheritable);
+            testDispatcherPipeOut = new AnonymousPipeServerStream(PipeDirection.Out, HandleInheritability.Inheritable);
+            testDispatcherStreamIn = new StreamReader(testDispatcherPipeIn);
+            testDispatcherStreamOut = new StreamWriter(testDispatcherPipeOut);
+            testDispatcher = new Process();
+            testDispatcher.StartInfo.FileName = "testdispatcher.exe";
+            testDispatcher.StartInfo.UseShellExecute = false;
+            testDispatcher.StartInfo.Arguments = testDispatcherPipeOut.GetClientHandleAsString() + " " +
+                                             testDispatcherPipeIn.GetClientHandleAsString() + " 8";
+            testDispatcher.Start();
+            testDispatcherPipeOut.DisposeLocalCopyOfClientHandle();
+            testDispatcherPipeIn.DisposeLocalCopyOfClientHandle();
+        }
+
+        private void DisposeTestDispatcher()
+        {
+            try
+            {
+                testDispatcher.Kill();
+            }
+            catch { }
+            testDispatcherStreamIn.Dispose();
+            testDispatcherStreamOut.Dispose();
+            testDispatcherPipeIn.Dispose();
+            testDispatcherPipeOut.Dispose();
         }
 
         public override bool Validate()
@@ -163,6 +199,7 @@ Example:
                                             ? (Func<bool>)RunMutationTestsForClassAndMethod
                                                 : RunMutationTestsForClass)
                                                     : RunAllMutationTestsInAssembly;
+                InitTestDispatcher();
                 result = runnerMethod();
                 if (!Options.Options.Any(o => o is Verbose))
                 {
@@ -175,6 +212,7 @@ Example:
                 }
                 OutputWriter.WriteLine();
                 ReportResult(result, _report);
+                DisposeTestDispatcher();
                 return result;
             }
         }
@@ -273,8 +311,8 @@ Example:
             OutputMethod(targetClass, targetMethod, parameterList);
             MutationTest mutationTest =
                 parameterTypes == null
-                    ? (MutationTest)MutationTestBuilder.For(targetAssemblyLocation, targetClass, returnType, targetMethod, methodGenerics)
-                    : (MutationTest)MutationTestBuilder.For(targetAssemblyLocation, targetClass, returnType, targetMethod, methodGenerics, parameterTypes);
+                    ? (MutationTest)MutationTestBuilder.For(targetAssemblyLocation, targetClass, returnType, targetMethod, methodGenerics, testDispatcherStreamOut, testDispatcherStreamIn)
+                    : (MutationTest)MutationTestBuilder.For(targetAssemblyLocation, targetClass, returnType, targetMethod, methodGenerics, testDispatcherStreamOut, testDispatcherStreamIn, parameterTypes);
             if (_runnerType != null)
                 mutationTest.UsingRunner(_runnerType);
             mutationTest.TestAssemblyLocation = _testAssemblyLocation;
