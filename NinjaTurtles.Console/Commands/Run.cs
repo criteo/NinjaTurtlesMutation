@@ -103,6 +103,8 @@ Example:
 
         private void InitTestDispatcher()
         {
+            var parallelLevel = Options.Options.OfType<ParallelLevel>().SingleOrDefault();
+            var parallelValue = (parallelLevel == null ? 8 : parallelLevel.ParallelValue);
             testDispatcherPipeIn = new AnonymousPipeServerStream(PipeDirection.In, HandleInheritability.Inheritable);
             testDispatcherPipeOut = new AnonymousPipeServerStream(PipeDirection.Out, HandleInheritability.Inheritable);
             testDispatcherStreamIn = new StreamReader(testDispatcherPipeIn);
@@ -111,7 +113,7 @@ Example:
             testDispatcher.StartInfo.FileName = "testdispatcher.exe";
             testDispatcher.StartInfo.UseShellExecute = false;
             testDispatcher.StartInfo.Arguments = testDispatcherPipeOut.GetClientHandleAsString() + " " +
-                                             testDispatcherPipeIn.GetClientHandleAsString() + " 8";
+                                             testDispatcherPipeIn.GetClientHandleAsString() + " " + parallelValue;
             testDispatcher.Start();
             testDispatcherPipeOut.DisposeLocalCopyOfClientHandle();
             testDispatcherPipeIn.DisposeLocalCopyOfClientHandle();
