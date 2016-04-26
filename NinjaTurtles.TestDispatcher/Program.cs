@@ -55,7 +55,14 @@ namespace NinjaTurtles.TestDispatcher
                 while ((assignedRunnerIndex = _testRunners.FindIndex(r => !r.isBusy)) == -1)
                     Thread.Sleep(DISPATCH_RUNNER_ACQUISITION_COOLDOWN_MS);
                 TestRunnerHandler assignedRunner = _testRunners[assignedRunnerIndex];
-                assignedRunner.SendJob(testToDispatch);
+                try
+                {
+                    assignedRunner.SendJob(testToDispatch);
+                }
+                catch (IOException)
+                {
+                    continue;
+                }
                 _dispatchedJobs.TryAdd(assignedRunnerIndex, testToDispatch);
                 assignedRunner.isBusy = true;
             }

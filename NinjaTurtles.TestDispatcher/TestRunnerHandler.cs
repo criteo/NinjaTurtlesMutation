@@ -63,7 +63,9 @@ namespace NinjaTurtles.TestDispatcher
         {
             try
             {
-                if (runnerStreamIn.Peek() > -1)
+                var streamLoad = runnerStreamIn.Peek();
+                Console.WriteLine("streamLoad: " + streamLoad); /////////
+                if (streamLoad > -1)
                     return (true);
                 return (false);
             }

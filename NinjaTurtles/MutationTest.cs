@@ -64,11 +64,13 @@ namespace NinjaTurtles
 	    private MethodReferenceComparer _comparer;
 	    private static readonly Regex _automaticallyGeneratedNestedClassMatcher = new Regex("^\\<([A-Za-z0-9@_]+)\\>");
 
-        private Process testRunner;
-        private AnonymousPipeServerStream testRunnerPipeIn;
-        private AnonymousPipeServerStream testRunnerPipeOut;
-        private StreamReader testRunnerStreamIn;
-        private StreamWriter testRunnerStreamOut;
+        private Process testDispatcher;
+        private AnonymousPipeServerStream testDispatcherPipeIn;
+        private AnonymousPipeServerStream testDispatcherPipeOut;
+        private StreamReader testDispatcherStreamIn;
+        private StreamWriter testDispatcherStreamOut;
+
+        private Dictionary<string, MutantMetaData> _pendingTest;
 
         private TestsBenchmark _benchmark;
 
@@ -126,7 +128,8 @@ namespace NinjaTurtles
 
 	    public void Run()
 		{
-	        var errorReportingValue = TurnOffErrorReporting();
+            InitTestDispatcher();
+            var errorReportingValue = TurnOffErrorReporting();
 
 	        MethodDefinition method = ValidateMethod();
             _module.LoadDebugInformation();
@@ -159,7 +162,6 @@ namespace NinjaTurtles
 			int count = 0;
 			int failures = 0;
             if (_mutationsToApply.Count == 0) PopulateDefaultTurtles();
-            InitTestRunner();
             foreach (var turtleType in _mutationsToApply)
 			{
                 var turtle = (MethodTurtleBase)Activator.CreateInstance(turtleType);
@@ -170,10 +172,13 @@ namespace NinjaTurtles
 // ReSharper disable AccessToModifiedClosure
         		    mutation => RunMutation(turtle, mutation, ref failures, ref count));
 // ReSharper restore AccessToModifiedClosure*/
+                _pendingTest = new Dictionary<string, MutantMetaData>();
                 foreach (var mutation in turtle.Mutate(method, _module, originalOffsets))
                 {
-                    RunMutation(turtle, mutation, ref failures, ref count);
+                    //RunMutation(turtle, mutation, ref failures, ref count);
+                    SendMutationTestToDispatcher(mutation);
                 }
+			    ProceedTestResult(turtle, ref failures , ref count);
 			}
 
             _report.RegisterMethod(method);
@@ -181,7 +186,7 @@ namespace NinjaTurtles
 
             RestoreErrorReporting(errorReportingValue);
 
-	        DisposeTestRunner();
+            DisposeTestDispatcher();
 	        if (count == 0)
 			{
 				Console.WriteLine("No valid mutations found (this is fine).");
@@ -193,33 +198,53 @@ namespace NinjaTurtles
 			}
 		}
 
-        private void InitTestRunner()
+        private void InitTestDispatcher()
         {
-            testRunnerPipeIn = new AnonymousPipeServerStream(PipeDirection.In, HandleInheritability.Inheritable);
-            testRunnerPipeOut = new AnonymousPipeServerStream(PipeDirection.Out, HandleInheritability.Inheritable);
-            testRunnerStreamIn = new StreamReader(testRunnerPipeIn);
-            testRunnerStreamOut = new StreamWriter(testRunnerPipeOut);
-            testRunner = new Process();
-            testRunner.StartInfo.FileName = "testrunner.exe";
-            testRunner.StartInfo.UseShellExecute = false;
-            testRunner.StartInfo.Arguments = testRunnerPipeOut.GetClientHandleAsString() + " " +
-                                             testRunnerPipeIn.GetClientHandleAsString();
-            testRunner.Start();
-            testRunnerPipeOut.DisposeLocalCopyOfClientHandle();
-            testRunnerPipeIn.DisposeLocalCopyOfClientHandle();
+            testDispatcherPipeIn = new AnonymousPipeServerStream(PipeDirection.In, HandleInheritability.Inheritable);
+            testDispatcherPipeOut = new AnonymousPipeServerStream(PipeDirection.Out, HandleInheritability.Inheritable);
+            testDispatcherStreamIn = new StreamReader(testDispatcherPipeIn);
+            testDispatcherStreamOut = new StreamWriter(testDispatcherPipeOut);
+            testDispatcher = new Process();
+            testDispatcher.StartInfo.FileName = "testdispatcher.exe";
+            testDispatcher.StartInfo.UseShellExecute = false;
+            testDispatcher.StartInfo.Arguments = testDispatcherPipeOut.GetClientHandleAsString() + " " +
+                                             testDispatcherPipeIn.GetClientHandleAsString() + " 8";
+            testDispatcher.Start();
+            testDispatcherPipeOut.DisposeLocalCopyOfClientHandle();
+            testDispatcherPipeIn.DisposeLocalCopyOfClientHandle();
         }
 
-        private void DisposeTestRunner()
+        private void DisposeTestDispatcher()
         {
             try
             {
-                testRunner.Kill();
+                testDispatcher.Kill();
             }
             catch {}
-            testRunnerStreamIn.Dispose();
-            testRunnerStreamOut.Dispose();
-            testRunnerPipeIn.Dispose();
-            testRunnerPipeOut.Dispose();
+            testDispatcherStreamIn.Dispose();
+            testDispatcherStreamOut.Dispose();
+            testDispatcherPipeIn.Dispose();
+            testDispatcherPipeOut.Dispose();
+        }
+
+        private void SendMutationTestToDispatcher(MutantMetaData mutation)
+        {
+            TestDescription testDescription = new TestDescription(Path.Combine(mutation.TestDirectory.FullName, Path.GetFileName(TestAssemblyLocation)), _testsToRun, _benchmark.TotalMs);
+            _pendingTest.Add(testDescription.Uid, mutation);
+            TestDescriptionExchanger.SendATestDescription(testDispatcherStreamOut, testDescription);
+        }
+
+        private void ProceedTestResult(MethodTurtleBase turtle, ref int failures, ref int count)
+        {
+            while (_pendingTest.Count != 0)
+            {
+                var testResult = TestDescriptionExchanger.ReadATestDescription(testDispatcherStreamIn);
+                var mutation = _pendingTest[testResult.Uid];
+                if (!CheckTestResult(turtle, mutation, testResult))
+                    Interlocked.Increment(ref failures);
+                Interlocked.Increment(ref count);
+                _pendingTest.Remove(testResult.Uid);
+            }
         }
 
         private static void RestoreErrorReporting(object errorReportingValue)
@@ -505,35 +530,10 @@ namespace NinjaTurtles
             }
         }
 
-        private void RunMutation(MethodTurtleBase turtle, MutantMetaData mutation, ref int failures, ref int count)
+	    private bool CheckTestResult(MethodTurtleBase turtle, MutantMetaData mutation, TestDescription testDescription)
 		{
-			bool testProcessFailed = CheckTestProcessFails(turtle, mutation);
-			if (!testProcessFailed)
-			{
-				Interlocked.Increment(ref failures);
-			}
-			Interlocked.Increment(ref count);
-		}
-
-	    private bool CheckTestProcessFails(MethodTurtleBase turtle, MutantMetaData mutation)
-		{
-            bool exitedInTime;
-            int exitCode;
-            TestDescription testDescription = new TestDescription(Path.Combine(mutation.TestDirectory.FullName, Path.GetFileName(TestAssemblyLocation)), _testsToRun, _benchmark.TotalMs);
-            TestDescriptionExchanger.SendATestDescription(testRunnerStreamOut, testDescription);
-	        try
-	        {
-	            testDescription = TestDescriptionExchanger.ReadATestDescription(testRunnerStreamIn);
-                exitedInTime = testDescription.ExitedInTime;
-	            exitCode = (testDescription.TestsPass ? 0 : 1);
-	        }
-	        catch (IOException)
-	        {
-	            exitedInTime = false;
-	            exitCode = 1;
-                DisposeTestRunner();
-                InitTestRunner();
-	        }
+            var exitedInTime = testDescription.ExitedInTime;
+	        var exitCode = (testDescription.TestsPass ? 0 : 1);
             bool testSuitePassed = exitCode == 0 && exitedInTime;
             string result = string.Format(" Mutant: {0}. {1}",
 			                  mutation.Description,
