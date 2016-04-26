@@ -79,6 +79,16 @@ namespace NinjaTurtles
 		    _parameterTypes = parameterTypes;
 		}
 
+        internal MutationTest(string testAssemblyLocation, Type targetType, string targetMethod, Type[] parameterTypes, StreamWriter dispatcherStreamOut, StreamReader dispatcherStreamIn)
+        {
+            TargetType = targetType;
+            TargetMethod = targetMethod;
+            TestAssemblyLocation = testAssemblyLocation;
+            _parameterTypes = parameterTypes;
+            _testDispatcherStreamIn = dispatcherStreamIn;
+            _testDispatcherStreamOut = dispatcherStreamOut;
+        }
+        
         public MutationTest(string testAssemblyLocation, Type targetType, string returnType, string targetMethod, GenericParameter[] genericsParameters, Type[] parameterTypes)
         {
             _returnType = returnType;
