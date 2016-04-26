@@ -34,12 +34,10 @@ namespace NinjaTurtles.TestRunnerService
             }
             catch (IOException)
             {
-                Console.Error.WriteLine("[TESTRUNNER] Broken pipe");
                 Environment.ExitCode = 1;
             }
             catch
             {
-                Console.Error.WriteLine("[TESTRUNNER] Crash");
                 Environment.ExitCode = 2;
             }
         }
