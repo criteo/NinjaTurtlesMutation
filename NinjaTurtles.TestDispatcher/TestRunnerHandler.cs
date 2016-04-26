@@ -59,22 +59,6 @@ namespace NinjaTurtles.TestDispatcher
             TestDescriptionExchanger.SendATestDescription(runnerStreamOut, job);
         }
 
-        public bool JobDone()
-        {
-            try
-            {
-                var streamLoad = runnerStreamIn.Peek();
-                Console.WriteLine("streamLoad: " + streamLoad); /////////
-                if (streamLoad > -1)
-                    return (true);
-                return (false);
-            }
-            catch (IOException)
-            {
-                return (true);
-            }
-        }
-
         public bool IsAlive()
         {
             try

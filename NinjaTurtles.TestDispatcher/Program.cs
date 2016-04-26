@@ -15,9 +15,9 @@ namespace NinjaTurtles.TestDispatcher
 {
     class Program
     {
-        private const int DISPATCH_JOBCHECK_COOLDOWN_MS = 500;
+        private const int DISPATCH_JOBCHECK_COOLDOWN_MS = 100;
         private const int DISPATCH_RUNNER_ACQUISITION_COOLDOWN_MS = 100;
-        private const int SENDING_COOLDOWN_MS = 100;
+        private const int SENDING_JOBCHECK_COOLDOWN_MS = 100;
 
         private static readonly List<TestRunnerHandler> _testRunners  = new List<TestRunnerHandler>();
         private static Task _senderTask;
@@ -28,6 +28,7 @@ namespace NinjaTurtles.TestDispatcher
 
         private static readonly ConcurrentQueue<TestDescription> _unassignedJobs = new ConcurrentQueue<TestDescription>();
         private static readonly ConcurrentDictionary<int, TestDescription> _dispatchedJobs = new ConcurrentDictionary<int, TestDescription>();
+        private static readonly ConcurrentQueue<TestDescription> _completedJobs = new ConcurrentQueue<TestDescription>();
 
         static void Main(string[] args)
         {
@@ -65,6 +66,7 @@ namespace NinjaTurtles.TestDispatcher
                 }
                 _dispatchedJobs.TryAdd(assignedRunnerIndex, testToDispatch);
                 assignedRunner.isBusy = true;
+                Task.Factory.StartNew(() => BusyRunnerHandler(assignedRunner, assignedRunnerIndex));
             }
         }
 
@@ -106,22 +108,23 @@ namespace NinjaTurtles.TestDispatcher
             {
                 while (true)
                 {
-                    Thread.Sleep(SENDING_COOLDOWN_MS);
-                    var busyRunnersIndex = _dispatchedJobs.Keys;
-                    if (busyRunnersIndex.Count == 0)
+                    while (_completedJobs.IsEmpty)
+                        Thread.Sleep(SENDING_JOBCHECK_COOLDOWN_MS);
+                    TestDescription testDescriptionToSend;
+                    if (!_completedJobs.TryDequeue(out testDescriptionToSend))
                         continue;
-                    foreach (var busyRunnerIndex in busyRunnersIndex)
-                    {
-                        var busyRunner = _testRunners[busyRunnerIndex];
-                        if (!busyRunner.JobDone())
-                            continue;
-                        TestDescription testDescription = RetrieveTestResult(busyRunner, busyRunnerIndex);
-                        TestDescriptionExchanger.SendATestDescription(sendStream, testDescription);
-                        _dispatchedJobs.TryRemove(busyRunnerIndex, out testDescription);
-                        PostRunHealthCheckup(busyRunner, busyRunnerIndex);
-                    }
+                    TestDescriptionExchanger.SendATestDescription(sendStream, testDescriptionToSend);
                 }
             }
+        }
+
+        private static void BusyRunnerHandler(TestRunnerHandler busyRunner, int busyRunnerIndex)
+        {
+            TestDescription sink;
+            var testResult = RetrieveTestResult(busyRunner, busyRunnerIndex);
+            _completedJobs.Enqueue(testResult);
+            _dispatchedJobs.TryRemove(busyRunnerIndex, out sink);
+            PostRunHealthCheckup(busyRunner, busyRunnerIndex);
         }
 
         private static TestDescription RetrieveTestResult(TestRunnerHandler busyRunner, int busyRunnerIndex)
