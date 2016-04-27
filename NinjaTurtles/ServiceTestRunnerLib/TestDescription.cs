@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text;
 
 namespace NinjaTurtles.ServiceTestRunnerLib
 {
@@ -62,6 +63,14 @@ namespace NinjaTurtles.ServiceTestRunnerLib
             AssemblyPath = assemblyPath;
             TestsToRun = new List<string>(testsToRun);
             TotalMsBench = totalMsBench;
+        }
+
+        public override string ToString()
+        {
+            var sb = new StringBuilder();
+
+            sb.AppendFormat("Test {0}, bench {1}ms", Uid, TotalMsBench);
+            return sb.ToString();
         }
     }
 }
