@@ -229,7 +229,7 @@ namespace NinjaTurtles
 
         private void SendMutationTestToDispatcher(MutantMetaData mutation)
         {
-            TestDescription testDescription = new TestDescription(Path.Combine(mutation.TestDirectory.FullName, Path.GetFileName(TestAssemblyLocation)), _testsToRun, (long) (1.1 * _benchmark.TotalMs));
+            TestDescription testDescription = new TestDescription(Path.Combine(mutation.TestDirectory.FullName, Path.GetFileName(TestAssemblyLocation)), _testsToRun, _benchmark.TotalMs);
             _pendingTest.Add(testDescription.Uid, mutation);
             TestDescriptionExchanger.SendATestDescription(_testDispatcherStreamOut, testDescription);
         }
