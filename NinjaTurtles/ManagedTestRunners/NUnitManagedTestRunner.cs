@@ -95,14 +95,14 @@ namespace NinjaTurtles.ManagedTestRunners
 
         private void TimedExitCodePolling(int maxWaitMs, double pollSleepMs)
         {
-            var watch = Stopwatch.StartNew();
             int pollSleepIntMs = (int)Math.Ceiling(pollSleepMs);
+            var watch = Stopwatch.StartNew();
 
             while (watch.ElapsedMilliseconds < maxWaitMs)
             {
                 Thread.Sleep(pollSleepIntMs);
                 if (ExitCode != -1)
-                    return ;
+                    return;
             }
         }
 
