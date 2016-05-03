@@ -60,7 +60,7 @@ namespace NinjaTurtles.TestDispatcher
                     }
                     catch (IOException)
                     {
-                        RunnerHealthCheckup(assignedRunner, assignedRunnerIndex);
+                        RunnerRestart(assignedRunner, assignedRunnerIndex);
                         continue;
                     }
                     _dispatchedJobs.TryAdd(assignedRunnerIndex, testToDispatch);
@@ -125,7 +125,7 @@ namespace NinjaTurtles.TestDispatcher
             var testResult = RetrieveTestResult(busyRunner, busyRunnerIndex);
             _completedJobs.Enqueue(testResult);
             _dispatchedJobs.TryRemove(busyRunnerIndex, out sink);
-            RunnerHealthCheckup(busyRunner, busyRunnerIndex);
+            busyRunner.isBusy = false;
         }
 
         private static TestDescription RetrieveTestResult(TestRunnerHandler busyRunner, int busyRunnerIndex)
@@ -149,6 +149,12 @@ namespace NinjaTurtles.TestDispatcher
                 busyRunner.isBusy = false;
                 return ;
             }
+            busyRunner.KillTestRunner();
+            _testRunners[busyRunnerIndex] = new TestRunnerHandler();
+        }
+
+        private static void RunnerRestart(TestRunnerHandler busyRunner, int busyRunnerIndex)
+        {
             busyRunner.KillTestRunner();
             _testRunners[busyRunnerIndex] = new TestRunnerHandler();
         }
