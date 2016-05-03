@@ -23,7 +23,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NinjaTurtles.Console", "NinjaTurtles.Console\NinjaTurtles.Console.csproj", "{AF38D08E-27BD-49A4-9D30-B8E1C8A9D121}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NinjaTurtles.TestRunnerService", "NinjaTurtles.TestRunnerService\NinjaTurtles.TestRunnerService.csproj", "{C849941A-6317-438D-83E4-E99914359D4D}"
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NinjaTurtles.TestRunner", "NinjaTurtles.TestRunnerService\NinjaTurtles.TestRunner.csproj", "{C849941A-6317-438D-83E4-E99914359D4D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NinjaTurtles.TestDispatcher", "NinjaTurtles.TestDispatcher\NinjaTurtles.TestDispatcher.csproj", "{E4543D7B-7EAF-422D-BECB-370DC12BDCF9}"
 EndProject
