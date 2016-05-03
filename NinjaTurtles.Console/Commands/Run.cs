@@ -42,6 +42,10 @@ namespace NinjaTurtles.Console.Commands
         private Type _runnerType;
         private MutationTestingReportSummary _report = new MutationTestingReportSummary();
 
+        private Output _outputOption;
+        private readonly TextWriter _originalOut = System.Console.Out;
+        private string _outputPath;
+
         private Process _testDispatcher;
         private AnonymousPipeServerStream _testDispatcherPipeIn;
         private AnonymousPipeServerStream _testDispatcherPipeOut;
@@ -165,62 +169,76 @@ Example:
 
         public override bool Execute()
         {
-            bool result;
             using (var stream = new MemoryStream())
             using (var writer = new StreamWriter(stream))
             {
-                string outputPath = "";
-                var outputOption = Options.Options.OfType<Output>().FirstOrDefault();
-                if (outputOption != null)
-                {
-                    outputPath = Path.Combine(Environment.CurrentDirectory, outputOption.FileName);
-                    if (File.Exists(outputPath)) File.Delete(outputPath);
-                }
-                var originalOut = System.Console.Out;
-                if (!Options.Options.Any(o => o is Verbose))
-                {
-                    System.Console.SetOut(writer);
-                }
-                var runnerOption = (Runner)Options.Options.FirstOrDefault(o => o is Runner);
-                if (runnerOption != null)
-                {
-                    var testAssembly = Assembly.LoadFrom(_testAssemblyLocation);
-                    _runnerType = TypeResolver.ResolveTypeFromReferences(testAssembly, runnerOption.RunnerType);
-                    if (_runnerType == null || _runnerType.GetInterface("ITestRunner") == null)
-                    {
-                        _message = string.Format(
-                            "Invalid runner type '{0}' specified.",
-                            runnerOption.RunnerType);
-                        ReportResult(false);
-                        return false;
-                    }
-                }
-                var runnerMethod = Options.Options.Any(o => o is TargetNamespace) ? RunMutationTestsForAllClassAndMethods
-                                    : Options.Options.Any(o => o is TargetClass)
-                                        ? (Options.Options.Any(o => o is TargetMethod)
-                                            ? (Func<bool>)RunMutationTestsForClassAndMethod
-                                                : RunMutationTestsForClass)
-                                                    : RunAllMutationTestsInAssembly;
+                ConfigureOutput(writer);
+                var runnerMethod = ConfigureRun();
                 InitTestDispatcher();
-                result = runnerMethod();
-                if (!Options.Options.Any(o => o is Verbose))
-                {
-                    System.Console.SetOut(originalOut);
-                }
-                var formatOption = Options.Options.OfType<Format>().FirstOrDefault();
-                if (outputOption != null && formatOption != null && formatOption.OutputFormat == "HTML")
-                {
-                    FormatOutput(outputPath);
-                }
-                OutputWriter.WriteLine();
-                ReportResult(result, _report);
+                var result = runnerMethod();
                 DisposeTestDispatcher();
+                RestoreOutput();
+                ReportResult(result, _report);
                 return result;
+            }
+        }
+
+        private Func<Boolean> ConfigureRun()
+        {
+            var runnerOption = (Runner)Options.Options.FirstOrDefault(o => o is Runner);
+            if (runnerOption != null)
+            {
+                var testAssembly = Assembly.LoadFrom(_testAssemblyLocation);
+                _runnerType = TypeResolver.ResolveTypeFromReferences(testAssembly, runnerOption.RunnerType);
+                if (_runnerType == null || _runnerType.GetInterface("ITestRunner") == null)
+                {
+                    _message = string.Format(
+                        "Invalid runner type '{0}' specified.",
+                        runnerOption.RunnerType);
+                    ReportResult(false);
+                    return null;
+                }
+            }
+            var runnerMethod = Options.Options.Any(o => o is TargetNamespace) ? RunMutationTestsForAllClassAndMethods
+                                : Options.Options.Any(o => o is TargetClass)
+                                    ? (Options.Options.Any(o => o is TargetMethod)
+                                        ? (Func<bool>)RunMutationTestsForClassAndMethod
+                                            : RunMutationTestsForClass)
+                                                : RunAllMutationTestsInAssembly;
+            return runnerMethod;
+        }
+
+        private void ConfigureOutput(StreamWriter sinkStream)
+        {
+            _outputPath = "";
+            _outputOption = Options.Options.OfType<Output>().FirstOrDefault();
+            if (_outputOption != null)
+            {
+                _outputPath = Path.Combine(Environment.CurrentDirectory, _outputOption.FileName);
+                if (File.Exists(_outputPath)) File.Delete(_outputPath);
+            }
+            if (!Options.Options.Any(o => o is Verbose))
+            {
+                System.Console.SetOut(sinkStream);
+            }
+        }
+
+        private void RestoreOutput()
+        {
+            if (!Options.Options.Any(o => o is Verbose))
+            {
+                System.Console.SetOut(_originalOut);
             }
         }
 
         private void ReportResult(bool result, MutationTestingReportSummary reportSummary = null)
         {
+            var formatOption = Options.Options.OfType<Format>().FirstOrDefault();
+            if (_outputOption != null && formatOption != null && formatOption.OutputFormat == "HTML")
+            {
+                FormatOutput(_outputPath);
+            }
+            OutputWriter.WriteLine();
             var statusColor = result
                                   ? ConsoleColor.Green
                                   : ConsoleColor.Red;
