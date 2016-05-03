@@ -26,7 +26,7 @@ namespace NinjaTurtles
     /// <summary>
     /// Contains core classes that are used to define and run mutation tests.
     /// The best starting point to see how this is done is the
-    /// <see cref="MutationTestBuilder{T}" /> class.
+    /// <see cref="MutationTestBuilder" /> class.
     /// </summary>
     [CompilerGenerated]
     class NamespaceDoc

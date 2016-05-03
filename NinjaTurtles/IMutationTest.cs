@@ -33,7 +33,7 @@ namespace NinjaTurtles
     /// <remarks>
     /// Client code will not use this interface explicitly, nor attempt to
     /// instantiate an implementing class. Instead, this interface is exposed
-    /// by the <see cref="MutationTestBuilder{T}" /> class's 
+    /// by the <see cref="MutationTestBuilder" /> class's 
     /// <see mref="MutationTestBuilder{T}.For" /> method, which forms the start
     /// of a chain of fluent statements defining a set of mutation tests.
     /// </remarks>

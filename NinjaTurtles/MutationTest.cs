@@ -71,14 +71,6 @@ namespace NinjaTurtles
 
         private TestsBenchmark _benchmark;
 
-	    internal MutationTest(string testAssemblyLocation, Type targetType, string targetMethod, Type[] parameterTypes)
-		{
-			TargetType = targetType;
-			TargetMethod = targetMethod;
-			TestAssemblyLocation = testAssemblyLocation;
-		    _parameterTypes = parameterTypes;
-		}
-
         internal MutationTest(string testAssemblyLocation, Type targetType, string targetMethod, Type[] parameterTypes, StreamWriter dispatcherStreamOut, StreamReader dispatcherStreamIn)
         {
             TargetType = targetType;
@@ -89,16 +81,6 @@ namespace NinjaTurtles
             _testDispatcherStreamOut = dispatcherStreamOut;
         }
         
-        public MutationTest(string testAssemblyLocation, Type targetType, string returnType, string targetMethod, GenericParameter[] genericsParameters, Type[] parameterTypes)
-        {
-            _returnType = returnType;
-            _genericParameters = genericsParameters;
-            TargetType = targetType;
-            TargetMethod = targetMethod;
-            TestAssemblyLocation = testAssemblyLocation;
-            _parameterTypes = parameterTypes;
-        }
-
         public MutationTest(string testAssemblyLocation, Type targetType, string returnType, string targetMethod, GenericParameter[] genericsParameters, Type[] parameterTypes, StreamWriter dispatcherStreamOut, StreamReader dispatcherStreamIn)
         {
             _returnType = returnType;
@@ -109,24 +91,6 @@ namespace NinjaTurtles
             _parameterTypes = parameterTypes;
             _testDispatcherStreamIn = dispatcherStreamIn;
             _testDispatcherStreamOut = dispatcherStreamOut;
-        }
-
-        public MutationTest(string testAssemblyLocation, Type targetType, string targetMethod, TypeReference[] parameterTypes)
-        {
-            TargetType = targetType;
-            TargetMethod = targetMethod;
-            TestAssemblyLocation = testAssemblyLocation;
-            _parameterTypeReferences = parameterTypes;
-        }
-
-        public MutationTest(string testAssemblyLocation, Type targetType, string returnType, string targetMethod, GenericParameter[] genericsParameters, TypeReference[] parameterTypes)
-        {
-            _returnType = returnType;
-            _genericParameters = genericsParameters;
-            TargetType = targetType;
-            TargetMethod = targetMethod;
-            TestAssemblyLocation = testAssemblyLocation;
-            _parameterTypeReferences = parameterTypes;
         }
 
         public MutationTest(string testAssemblyLocation, Type targetType, string returnType, string targetMethod, GenericParameter[] genericsParameters, TypeReference[] parameterTypes, StreamWriter dispatcherStreamOut, StreamReader dispatcherStreamIn)
