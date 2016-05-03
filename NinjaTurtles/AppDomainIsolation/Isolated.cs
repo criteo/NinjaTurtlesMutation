@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace NinjaTurtles.AppDomainIsolation
 {
@@ -9,6 +11,9 @@ namespace NinjaTurtles.AppDomainIsolation
     /// <typeparam name="T"></typeparam>
     public sealed class Isolated<T> : IDisposable where T : Adaptor.Adaptor
     {
+        private const int INSTANCE_WAIT_FOR_EXIT_TIME_MS = 20;
+        private const int APPDOMAIN_UNLOADING_TIMELIMT_MS = 50;
+
         private AppDomain _domain;
         private T _instance;
 
@@ -53,19 +58,26 @@ namespace NinjaTurtles.AppDomainIsolation
             get { return _instance; }
         }
 
+        private void DisposeCore()
+        {
+            if (_domain != null)
+            {
+                if (!_instance.IsCompleted())
+                    _instance.WaitForExit(INSTANCE_WAIT_FOR_EXIT_TIME_MS);
+                try { AppDomain.Unload(_domain); }
+                catch (Exception ex) { Console.Error.WriteLine("A AppDomain unloading goes wrong:\n" + ex); }
+                _domain = null;
+            }
+        }
+
         /// <summary>
         /// Unload the associated AppDomain
         /// </summary>
         public void Dispose()
         {
-            if (_domain != null)
-            {
-                if (!_instance.IsCompleted())
-                    _instance.WaitForExit(50);
-                try { AppDomain.Unload(_domain); }
-                catch (Exception ex) { Console.Error.WriteLine("A AppDomain unloading goes wrong:\n" + ex); }
-                _domain = null;
-            }
+            var unloadTask = new Task(DisposeCore);
+            unloadTask.Start();
+            Thread.Sleep(APPDOMAIN_UNLOADING_TIMELIMT_MS);
         }
     }
 }

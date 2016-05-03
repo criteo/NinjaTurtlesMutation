@@ -89,20 +89,20 @@ namespace NinjaTurtles.ManagedTestRunners
             TimedExitCodePolling(ms, ms * POLL_TIME_FACTOR);
             if (ExitCode != -1)
                 return (true);
-            _remoteTestRunner.CancelRun();
+            Task.Factory.StartNew(() => _remoteTestRunner.CancelRun());
             return (false);
         }
 
         private void TimedExitCodePolling(int maxWaitMs, double pollSleepMs)
         {
-            var watch = Stopwatch.StartNew();
             int pollSleepIntMs = (int)Math.Ceiling(pollSleepMs);
+            var watch = Stopwatch.StartNew();
 
             while (watch.ElapsedMilliseconds < maxWaitMs)
             {
                 Thread.Sleep(pollSleepIntMs);
                 if (ExitCode != -1)
-                    return ;
+                    return;
             }
         }
 

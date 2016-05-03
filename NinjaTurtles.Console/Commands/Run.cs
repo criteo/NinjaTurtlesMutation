@@ -22,6 +22,7 @@
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.IO.Pipes;
 using System.Linq;
 using System.Reflection;
 using System.Xml;
@@ -40,6 +41,12 @@ namespace NinjaTurtles.Console.Commands
         private string _message;
         private Type _runnerType;
         private MutationTestingReportSummary _report = new MutationTestingReportSummary();
+
+        private Process _testDispatcher;
+        private AnonymousPipeServerStream _testDispatcherPipeIn;
+        private AnonymousPipeServerStream _testDispatcherPipeOut;
+        private StreamReader _testDispatcherStreamIn;
+        private StreamWriter _testDispatcherStreamOut;
 
         protected override string HelpText
         {
@@ -92,6 +99,37 @@ Example:
    them to perform mutation testing of that method. The resulting output will
    be transformed to HTML and saved to the file ResolveMethod.html.";
             }
+        }
+
+        private void InitTestDispatcher()
+        {
+            var parallelLevel = Options.Options.OfType<ParallelLevel>().SingleOrDefault();
+            var parallelValue = (parallelLevel == null ? 8 : parallelLevel.ParallelValue);
+            _testDispatcherPipeIn = new AnonymousPipeServerStream(PipeDirection.In, HandleInheritability.Inheritable);
+            _testDispatcherPipeOut = new AnonymousPipeServerStream(PipeDirection.Out, HandleInheritability.Inheritable);
+            _testDispatcherStreamIn = new StreamReader(_testDispatcherPipeIn);
+            _testDispatcherStreamOut = new StreamWriter(_testDispatcherPipeOut);
+            _testDispatcher = new Process();
+            _testDispatcher.StartInfo.FileName = "testdispatcher.exe";
+            _testDispatcher.StartInfo.UseShellExecute = false;
+            _testDispatcher.StartInfo.Arguments = _testDispatcherPipeOut.GetClientHandleAsString() + " " +
+                                             _testDispatcherPipeIn.GetClientHandleAsString() + " " + parallelValue;
+            _testDispatcher.Start();
+            _testDispatcherPipeOut.DisposeLocalCopyOfClientHandle();
+            _testDispatcherPipeIn.DisposeLocalCopyOfClientHandle();
+        }
+
+        private void DisposeTestDispatcher()
+        {
+            try
+            {
+                _testDispatcher.Kill();
+            }
+            catch { }
+            _testDispatcherStreamIn.Dispose();
+            _testDispatcherStreamOut.Dispose();
+            _testDispatcherPipeIn.Dispose();
+            _testDispatcherPipeOut.Dispose();
         }
 
         public override bool Validate()
@@ -163,6 +201,7 @@ Example:
                                             ? (Func<bool>)RunMutationTestsForClassAndMethod
                                                 : RunMutationTestsForClass)
                                                     : RunAllMutationTestsInAssembly;
+                InitTestDispatcher();
                 result = runnerMethod();
                 if (!Options.Options.Any(o => o is Verbose))
                 {
@@ -175,6 +214,7 @@ Example:
                 }
                 OutputWriter.WriteLine();
                 ReportResult(result, _report);
+                DisposeTestDispatcher();
                 return result;
             }
         }
@@ -273,8 +313,8 @@ Example:
             OutputMethod(targetClass, targetMethod, parameterList);
             MutationTest mutationTest =
                 parameterTypes == null
-                    ? (MutationTest)MutationTestBuilder.For(targetAssemblyLocation, targetClass, returnType, targetMethod, methodGenerics)
-                    : (MutationTest)MutationTestBuilder.For(targetAssemblyLocation, targetClass, returnType, targetMethod, methodGenerics, parameterTypes);
+                    ? (MutationTest)MutationTestBuilder.For(targetAssemblyLocation, targetClass, returnType, targetMethod, methodGenerics, _testDispatcherStreamOut, _testDispatcherStreamIn)
+                    : (MutationTest)MutationTestBuilder.For(targetAssemblyLocation, targetClass, returnType, targetMethod, methodGenerics, _testDispatcherStreamOut, _testDispatcherStreamIn, parameterTypes);
             if (_runnerType != null)
                 mutationTest.UsingRunner(_runnerType);
             mutationTest.TestAssemblyLocation = _testAssemblyLocation;
@@ -345,8 +385,8 @@ Exception details:
             OutputMethod(targetClass, targetMethod, parameterList);
             MutationTest mutationTest =
                 parameterTypes == null
-                    ? (MutationTest)MutationTestBuilder.For(targetAssemblyLocation, targetClass, targetMethod)
-                    : (MutationTest)MutationTestBuilder.For(targetAssemblyLocation, targetClass, targetMethod, parameterTypes);
+                    ? (MutationTest)MutationTestBuilder.For(targetAssemblyLocation, targetClass, targetMethod, _testDispatcherStreamOut, _testDispatcherStreamIn)
+                    : (MutationTest)MutationTestBuilder.For(targetAssemblyLocation, targetClass, targetMethod, _testDispatcherStreamOut, _testDispatcherStreamIn, parameterTypes);
             mutationTest.TestAssemblyLocation = _testAssemblyLocation;
             var result = BuildAndRunMutationTest(mutationTest);
             return result;
@@ -414,6 +454,7 @@ Exception details:
             var testAssembly = Assembly.LoadFrom(_testAssemblyLocation);
             var matchedTypes = TypeResolver.ResolveNamespaceTypesFromReferences(testAssembly, nspace);
             System.Console.WriteLine("testassembly : [{0}], matched types : [[{1}]]", testAssembly, string.Join("], [", matchedTypes.Select(t => t.FullName))); ////////////////
+            System.Console.WriteLine("{0} types matched under {1}", matchedTypes.Length, nspace); ////////////////////
             if (matchedTypes.Length == 0)
             {
                 _message = string.Format(@"No types found under {0}", nspace);

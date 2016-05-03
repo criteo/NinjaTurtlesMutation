@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -221,12 +222,28 @@ namespace NinjaTurtles
             return new MutationTest(callingAssemblyLocation, resolvedType, targetMethod, parameterTypes);
         }
 
+        internal static IMutationTest For(string callingAssemblyLocation, string targetClass, string targetMethod, StreamWriter dispatcherStreamOut, StreamReader dispatcherStreamIn, Type[] parameterTypes = null)
+        {
+            var callingAssembly = Assembly.LoadFrom(callingAssemblyLocation);
+            Type resolvedType = TypeResolver.ResolveTypeFromReferences(callingAssembly, targetClass);
+
+            return new MutationTest(callingAssemblyLocation, resolvedType, targetMethod, parameterTypes, dispatcherStreamOut, dispatcherStreamIn);
+        }
+
         internal static IMutationTest For(string callingAssemblyLocation, string targetClass, string returnType, string targetMethod, GenericParameter[] methodGenerics, Type[] parameterTypes = null)
         {
             var callingAssembly = Assembly.LoadFrom(callingAssemblyLocation);
             Type resolvedType = TypeResolver.ResolveTypeFromReferences(callingAssembly, targetClass);
 
             return new MutationTest(callingAssemblyLocation, resolvedType, returnType, targetMethod, methodGenerics, parameterTypes);
+        }
+
+        internal static IMutationTest For(string callingAssemblyLocation, string targetClass, string returnType, string targetMethod, GenericParameter[] methodGenerics, StreamWriter dispatcherStreamOut, StreamReader dispatcherStreamIn, Type[] parameterTypes = null)
+        {
+            var callingAssembly = Assembly.LoadFrom(callingAssemblyLocation);
+            Type resolvedType = TypeResolver.ResolveTypeFromReferences(callingAssembly, targetClass);
+
+            return new MutationTest(callingAssemblyLocation, resolvedType, returnType, targetMethod, methodGenerics, parameterTypes, dispatcherStreamOut, dispatcherStreamIn);
         }
 
         internal static IMutationTest For(string callingAssemblyLocation, string targetClass, string targetMethod, TypeReference[] parameterTypes)
@@ -243,6 +260,14 @@ namespace NinjaTurtles
             Type resolvedType = TypeResolver.ResolveTypeFromReferences(callingAssembly, targetClass);
 
             return new MutationTest(callingAssemblyLocation, resolvedType, returnType, targetMethod, methodGenerics, parameterTypes);
+        }
+
+        internal static IMutationTest For(string callingAssemblyLocation, string targetClass, string returnType, string targetMethod, GenericParameter[] methodGenerics, StreamWriter dispatcherStreamOut, StreamReader dispatcherStreamIn, TypeReference[] parameterTypes)
+        {
+            var callingAssembly = Assembly.LoadFrom(callingAssemblyLocation);
+            Type resolvedType = TypeResolver.ResolveTypeFromReferences(callingAssembly, targetClass);
+
+            return new MutationTest(callingAssemblyLocation, resolvedType, returnType, targetMethod, methodGenerics, parameterTypes, dispatcherStreamOut, dispatcherStreamIn);
         }
 
         internal static IMutationTest For(string callingAssemblyLocation, Type targetType, string targetMethod, Type[] parameterTypes)

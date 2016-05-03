@@ -19,8 +19,9 @@
 
 #endregion
 
+using System;
 using System.Collections.Generic;
-
+using System.Linq;
 using NinjaTurtles.Console.Commands;
 using NinjaTurtles.Console.Options;
 
