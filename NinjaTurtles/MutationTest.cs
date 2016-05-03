@@ -71,38 +71,34 @@ namespace NinjaTurtles
 
         private TestsBenchmark _benchmark;
 
-        internal MutationTest(string testAssemblyLocation, Type targetType, string targetMethod, Type[] parameterTypes, StreamWriter dispatcherStreamOut, StreamReader dispatcherStreamIn)
+        private MutationTest(string testAssemblyLocation, Type targetType, string targetMethod, StreamWriter dispatcherStreamOut, StreamReader dispatcherStreamIn)
         {
+            TestAssemblyLocation = testAssemblyLocation;
             TargetType = targetType;
             TargetMethod = targetMethod;
-            TestAssemblyLocation = testAssemblyLocation;
-            _parameterTypes = parameterTypes;
-            _testDispatcherStreamIn = dispatcherStreamIn;
             _testDispatcherStreamOut = dispatcherStreamOut;
+            _testDispatcherStreamIn = dispatcherStreamIn;
         }
-        
+
+        internal MutationTest(string testAssemblyLocation, Type targetType, string targetMethod, Type[] parameterTypes, StreamWriter dispatcherStreamOut, StreamReader dispatcherStreamIn) : this(testAssemblyLocation, targetType, targetMethod, dispatcherStreamOut, dispatcherStreamIn)
+        {
+            _parameterTypes = parameterTypes;
+        }
+
         public MutationTest(string testAssemblyLocation, Type targetType, string returnType, string targetMethod, GenericParameter[] genericsParameters, Type[] parameterTypes, StreamWriter dispatcherStreamOut, StreamReader dispatcherStreamIn)
+            : this(testAssemblyLocation, targetType, targetMethod, dispatcherStreamOut, dispatcherStreamIn)
         {
             _returnType = returnType;
             _genericParameters = genericsParameters;
-            TargetType = targetType;
-            TargetMethod = targetMethod;
-            TestAssemblyLocation = testAssemblyLocation;
             _parameterTypes = parameterTypes;
-            _testDispatcherStreamIn = dispatcherStreamIn;
-            _testDispatcherStreamOut = dispatcherStreamOut;
         }
 
         public MutationTest(string testAssemblyLocation, Type targetType, string returnType, string targetMethod, GenericParameter[] genericsParameters, TypeReference[] parameterTypes, StreamWriter dispatcherStreamOut, StreamReader dispatcherStreamIn)
+            : this(testAssemblyLocation, targetType, targetMethod, dispatcherStreamOut, dispatcherStreamIn)
         {
             _returnType = returnType;
             _genericParameters = genericsParameters;
-            TargetType = targetType;
-            TargetMethod = targetMethod;
-            TestAssemblyLocation = testAssemblyLocation;
             _parameterTypeReferences = parameterTypes;
-            _testDispatcherStreamIn = dispatcherStreamIn;
-            _testDispatcherStreamOut = dispatcherStreamOut;
         }
 
         public Type TargetType { get; private set; }
