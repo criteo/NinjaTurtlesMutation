@@ -48,6 +48,8 @@ namespace NinjaTurtles
 	    private const string ERROR_REPORTING_KEY = @"SOFTWARE\Microsoft\Windows\Windows Error Reporting";
 	    private const string ERROR_REPORTING_VALUE = "DontShowUI";
 
+        private MethodDefinition _method;
+        private int[] _originalOffsets;
 	    private readonly IList<Type> _mutationsToApply = new List<Type>();
 		private string _testAssemblyLocation;
         private readonly string _returnType;
@@ -61,7 +63,7 @@ namespace NinjaTurtles
 	    private MutationTestingReport _report;
         private ReportingStrategy _reportingStrategy = new NullReportingStrategy();
 	    private string _reportFileName;
-	    private MethodReferenceComparer _comparer;
+	    private readonly MethodReferenceComparer _comparer = new MethodReferenceComparer();
 	    private static readonly Regex _automaticallyGeneratedNestedClassMatcher = new Regex("^\\<([A-Za-z0-9@_]+)\\>");
 
         private readonly StreamReader _testDispatcherStreamIn;
@@ -120,26 +122,22 @@ namespace NinjaTurtles
 	    public void Run()
 		{
             var errorReportingValue = TurnOffErrorReporting();
-
-	        MethodDefinition method = ValidateMethod();
-            _module.LoadDebugInformation();
-
-		    _comparer = new MethodReferenceComparer();
-            var matchingMethods = new List<MethodReference>();
-            AddMethod(method, matchingMethods);
-            int[] originalOffsets = method.Body.Instructions.Select(i => i.Offset).ToArray();
-		    _report = new MutationTestingReport(method);
-	        try
+            /**********************************************************************/
+	        var matchingMethods = MethodDiscovery();
+            /********************************************************************!!!!!!!!!!**/
+            /**********************************************************************/
+            try
 	        {
-	            _testsToRun = GetMatchingTestsFromTree(method, matchingMethods);
+	            _testsToRun = GetMatchingTestsFromTree(_method, matchingMethods);
 	        }
 	        catch (MutationTestFailureException)
 	        {
-	            _report.RegisterMethod(method);
+	            _report.RegisterMethod(_method);
                 _reportingStrategy.WriteReport(_report, _reportFileName);
 	            throw;
 	        }
 	        _report.TestsFounded = true;
+            /********************************************************************!!!!!!!!!!**/
 
             _benchmark = new TestsBenchmark(_testAssemblyLocation, _testsToRun);
 	        _benchmark.LaunchBenchmark();
@@ -149,7 +147,8 @@ namespace NinjaTurtles
                 TargetType.FullName,
                 TargetMethod);
 
-			int count = 0;
+            /**********************************************************************/
+            int count = 0;
 			int failures = 0;
             if (_mutationsToApply.Count == 0) PopulateDefaultTurtles();
             foreach (var turtleType in _mutationsToApply)
@@ -157,24 +156,38 @@ namespace NinjaTurtles
                 var turtle = (MethodTurtleBase)Activator.CreateInstance(turtleType);
                 Console.WriteLine(turtle.Description);
                 _pendingTest = new Dictionary<string, MutantMetaData>();
-                foreach (var mutation in turtle.Mutate(method, _module, originalOffsets))
+                foreach (var mutation in turtle.Mutate(_method, _module, _originalOffsets))
                     SendMutationTestToDispatcher(mutation);
 			    ProceedTestResult(turtle, ref failures , ref count);
 			}
 
-            _report.RegisterMethod(method);
+            _report.RegisterMethod(_method);
             _reportingStrategy.WriteReport(_report, _reportFileName);
+            /********************************************************************!!!!!!!!!!**/
 
             RestoreErrorReporting(errorReportingValue);
 
-	        if (count == 0)
+            /**********************************************************************/
+            if (count == 0)
 			{
 				Console.WriteLine("No valid mutations found (this is fine).");
 				return;
 			}
 			if (failures > 0)
                 throw new MutationTestFailureException();
-		}
+            /********************************************************************!!!!!!!!!!**/
+        }
+
+        private List<MethodReference> MethodDiscovery()
+        {
+            _method = ValidateMethod();
+            _module.LoadDebugInformation();
+            var matchingMethods = new List<MethodReference>();
+            AddMethod(_method, matchingMethods);
+            _originalOffsets = _method.Body.Instructions.Select(i => i.Offset).ToArray();
+            _report = new MutationTestingReport(_method);
+            return matchingMethods;
+        }
 
         private void SendMutationTestToDispatcher(MutantMetaData mutation)
         {
