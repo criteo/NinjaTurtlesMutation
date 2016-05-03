@@ -89,7 +89,7 @@ namespace NinjaTurtles.ManagedTestRunners
             TimedExitCodePolling(ms, ms * POLL_TIME_FACTOR);
             if (ExitCode != -1)
                 return (true);
-            _remoteTestRunner.CancelRun();
+            Task.Factory.StartNew(() => _remoteTestRunner.CancelRun());
             return (false);
         }
 
