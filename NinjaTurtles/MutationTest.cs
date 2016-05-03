@@ -49,7 +49,7 @@ namespace NinjaTurtles
 	    private const string ERROR_REPORTING_VALUE = "DontShowUI";
 
 	    private readonly IList<Type> _mutationsToApply = new List<Type>();
-		private  string _testAssemblyLocation;
+		private string _testAssemblyLocation;
         private readonly string _returnType;
         private readonly GenericParameter[] _genericParameters;
         private readonly Type[] _parameterTypes;

@@ -42,11 +42,11 @@ namespace NinjaTurtles.Console.Commands
         private Type _runnerType;
         private MutationTestingReportSummary _report = new MutationTestingReportSummary();
 
-        private Process testDispatcher;
-        private AnonymousPipeServerStream testDispatcherPipeIn;
-        private AnonymousPipeServerStream testDispatcherPipeOut;
-        private StreamReader testDispatcherStreamIn;
-        private StreamWriter testDispatcherStreamOut;
+        private Process _testDispatcher;
+        private AnonymousPipeServerStream _testDispatcherPipeIn;
+        private AnonymousPipeServerStream _testDispatcherPipeOut;
+        private StreamReader _testDispatcherStreamIn;
+        private StreamWriter _testDispatcherStreamOut;
 
         protected override string HelpText
         {
@@ -105,31 +105,31 @@ Example:
         {
             var parallelLevel = Options.Options.OfType<ParallelLevel>().SingleOrDefault();
             var parallelValue = (parallelLevel == null ? 8 : parallelLevel.ParallelValue);
-            testDispatcherPipeIn = new AnonymousPipeServerStream(PipeDirection.In, HandleInheritability.Inheritable);
-            testDispatcherPipeOut = new AnonymousPipeServerStream(PipeDirection.Out, HandleInheritability.Inheritable);
-            testDispatcherStreamIn = new StreamReader(testDispatcherPipeIn);
-            testDispatcherStreamOut = new StreamWriter(testDispatcherPipeOut);
-            testDispatcher = new Process();
-            testDispatcher.StartInfo.FileName = "testdispatcher.exe";
-            testDispatcher.StartInfo.UseShellExecute = false;
-            testDispatcher.StartInfo.Arguments = testDispatcherPipeOut.GetClientHandleAsString() + " " +
-                                             testDispatcherPipeIn.GetClientHandleAsString() + " " + parallelValue;
-            testDispatcher.Start();
-            testDispatcherPipeOut.DisposeLocalCopyOfClientHandle();
-            testDispatcherPipeIn.DisposeLocalCopyOfClientHandle();
+            _testDispatcherPipeIn = new AnonymousPipeServerStream(PipeDirection.In, HandleInheritability.Inheritable);
+            _testDispatcherPipeOut = new AnonymousPipeServerStream(PipeDirection.Out, HandleInheritability.Inheritable);
+            _testDispatcherStreamIn = new StreamReader(_testDispatcherPipeIn);
+            _testDispatcherStreamOut = new StreamWriter(_testDispatcherPipeOut);
+            _testDispatcher = new Process();
+            _testDispatcher.StartInfo.FileName = "testdispatcher.exe";
+            _testDispatcher.StartInfo.UseShellExecute = false;
+            _testDispatcher.StartInfo.Arguments = _testDispatcherPipeOut.GetClientHandleAsString() + " " +
+                                             _testDispatcherPipeIn.GetClientHandleAsString() + " " + parallelValue;
+            _testDispatcher.Start();
+            _testDispatcherPipeOut.DisposeLocalCopyOfClientHandle();
+            _testDispatcherPipeIn.DisposeLocalCopyOfClientHandle();
         }
 
         private void DisposeTestDispatcher()
         {
             try
             {
-                testDispatcher.Kill();
+                _testDispatcher.Kill();
             }
             catch { }
-            testDispatcherStreamIn.Dispose();
-            testDispatcherStreamOut.Dispose();
-            testDispatcherPipeIn.Dispose();
-            testDispatcherPipeOut.Dispose();
+            _testDispatcherStreamIn.Dispose();
+            _testDispatcherStreamOut.Dispose();
+            _testDispatcherPipeIn.Dispose();
+            _testDispatcherPipeOut.Dispose();
         }
 
         public override bool Validate()
@@ -313,8 +313,8 @@ Example:
             OutputMethod(targetClass, targetMethod, parameterList);
             MutationTest mutationTest =
                 parameterTypes == null
-                    ? (MutationTest)MutationTestBuilder.For(targetAssemblyLocation, targetClass, returnType, targetMethod, methodGenerics, testDispatcherStreamOut, testDispatcherStreamIn)
-                    : (MutationTest)MutationTestBuilder.For(targetAssemblyLocation, targetClass, returnType, targetMethod, methodGenerics, testDispatcherStreamOut, testDispatcherStreamIn, parameterTypes);
+                    ? (MutationTest)MutationTestBuilder.For(targetAssemblyLocation, targetClass, returnType, targetMethod, methodGenerics, _testDispatcherStreamOut, _testDispatcherStreamIn)
+                    : (MutationTest)MutationTestBuilder.For(targetAssemblyLocation, targetClass, returnType, targetMethod, methodGenerics, _testDispatcherStreamOut, _testDispatcherStreamIn, parameterTypes);
             if (_runnerType != null)
                 mutationTest.UsingRunner(_runnerType);
             mutationTest.TestAssemblyLocation = _testAssemblyLocation;
@@ -385,8 +385,8 @@ Exception details:
             OutputMethod(targetClass, targetMethod, parameterList);
             MutationTest mutationTest =
                 parameterTypes == null
-                    ? (MutationTest)MutationTestBuilder.For(targetAssemblyLocation, targetClass, targetMethod, testDispatcherStreamOut, testDispatcherStreamIn)
-                    : (MutationTest)MutationTestBuilder.For(targetAssemblyLocation, targetClass, targetMethod, testDispatcherStreamOut, testDispatcherStreamIn, parameterTypes);
+                    ? (MutationTest)MutationTestBuilder.For(targetAssemblyLocation, targetClass, targetMethod, _testDispatcherStreamOut, _testDispatcherStreamIn)
+                    : (MutationTest)MutationTestBuilder.For(targetAssemblyLocation, targetClass, targetMethod, _testDispatcherStreamOut, _testDispatcherStreamIn, parameterTypes);
             mutationTest.TestAssemblyLocation = _testAssemblyLocation;
             var result = BuildAndRunMutationTest(mutationTest);
             return result;
