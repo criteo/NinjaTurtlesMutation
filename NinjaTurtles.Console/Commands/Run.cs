@@ -454,6 +454,7 @@ Exception details:
             var testAssembly = Assembly.LoadFrom(_testAssemblyLocation);
             var matchedTypes = TypeResolver.ResolveNamespaceTypesFromReferences(testAssembly, nspace);
             System.Console.WriteLine("testassembly : [{0}], matched types : [[{1}]]", testAssembly, string.Join("], [", matchedTypes.Select(t => t.FullName))); ////////////////
+            System.Console.WriteLine("{0} types matched under {1}", matchedTypes.Length, nspace); ////////////////////
             if (matchedTypes.Length == 0)
             {
                 _message = string.Format(@"No types found under {0}", nspace);

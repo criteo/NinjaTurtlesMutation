@@ -55,10 +55,9 @@ namespace NinjaTurtles.TestRunnerService
             {
                 var mutantPath = testDescription.AssemblyPath;
                 runner.Instance.Start(mutantPath, testDescription.TestsToRun);
-                exitedInTime = runner.Instance.WaitForExit((int) (1.1 * testDescription.TotalMsBench));
+                exitedInTime = runner.Instance.WaitForExit((int)(1.1 * testDescription.TotalMsBench));
                 exitCode = runner.Instance.ExitCode;
             }
-
             testDescription.ExitedInTime = exitedInTime;
             testDescription.TestsPass = (exitCode == 0);
         }

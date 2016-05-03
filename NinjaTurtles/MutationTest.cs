@@ -196,18 +196,9 @@ namespace NinjaTurtles
 			{
                 var turtle = (MethodTurtleBase)Activator.CreateInstance(turtleType);
                 Console.WriteLine(turtle.Description);
-
-/*                Parallel.ForEach(turtle.Mutate(method, _module, originalOffsets),
-                    new ParallelOptions { MaxDegreeOfParallelism = 4 },
-// ReSharper disable AccessToModifiedClosure
-        		    mutation => RunMutation(turtle, mutation, ref failures, ref count));
-// ReSharper restore AccessToModifiedClosure*/
                 _pendingTest = new Dictionary<string, MutantMetaData>();
                 foreach (var mutation in turtle.Mutate(method, _module, originalOffsets))
-                {
-                    //RunMutation(turtle, mutation, ref failures, ref count);
                     SendMutationTestToDispatcher(mutation);
-                }
 			    ProceedTestResult(turtle, ref failures , ref count);
 			}
 
@@ -222,9 +213,7 @@ namespace NinjaTurtles
 				return;
 			}
 			if (failures > 0)
-			{
                 throw new MutationTestFailureException();
-			}
 		}
 
         private void SendMutationTestToDispatcher(MutantMetaData mutation)
