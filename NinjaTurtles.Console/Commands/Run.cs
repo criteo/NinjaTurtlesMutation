@@ -39,7 +39,7 @@ namespace NinjaTurtles.Console.Commands
     {
         private string _testAssemblyLocation;
         private string _message;
-        private MutationTestingReportSummary _report = new MutationTestingReportSummary();
+        private readonly MutationTestingReportSummary _report = new MutationTestingReportSummary();
 
         private Output _outputOption;
         private readonly TextWriter _originalOut = System.Console.Out;
@@ -109,11 +109,16 @@ Example:
             _testDispatcherPipeOut = new AnonymousPipeServerStream(PipeDirection.Out, HandleInheritability.Inheritable);
             _testDispatcherStreamIn = new StreamReader(_testDispatcherPipeIn);
             _testDispatcherStreamOut = new StreamWriter(_testDispatcherPipeOut);
-            _testDispatcher = new Process();
-            _testDispatcher.StartInfo.FileName = "testdispatcher.exe";
-            _testDispatcher.StartInfo.UseShellExecute = false;
-            _testDispatcher.StartInfo.Arguments = _testDispatcherPipeOut.GetClientHandleAsString() + " " +
-                                             _testDispatcherPipeIn.GetClientHandleAsString() + " " + parallelValue;
+            _testDispatcher = new Process
+            {
+                StartInfo =
+                {
+                    FileName = "testdispatcher.exe",
+                    UseShellExecute = false,
+                    Arguments = _testDispatcherPipeOut.GetClientHandleAsString() + " " +
+                                _testDispatcherPipeIn.GetClientHandleAsString() + " " + parallelValue
+                }
+            };
             _testDispatcher.Start();
             _testDispatcherPipeOut.DisposeLocalCopyOfClientHandle();
             _testDispatcherPipeIn.DisposeLocalCopyOfClientHandle();
