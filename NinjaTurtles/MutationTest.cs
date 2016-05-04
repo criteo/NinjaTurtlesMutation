@@ -121,61 +121,25 @@ namespace NinjaTurtles
 
 	    public void Run()
 		{
-            var errorReportingValue = TurnOffErrorReporting();
-            /**********************************************************************/
-	        var matchingMethods = MethodDiscovery();
-            /********************************************************************!!!!!!!!!!**/
-            /**********************************************************************/
-            try
-	        {
-	            _testsToRun = GetMatchingTestsFromTree(_method, matchingMethods);
-	        }
-	        catch (MutationTestFailureException)
-	        {
-	            _report.RegisterMethod(_method);
-                _reportingStrategy.WriteReport(_report, _reportFileName);
-	            throw;
-	        }
-	        _report.TestsFounded = true;
-            /********************************************************************!!!!!!!!!!**/
+            int count;
+            int failures;
 
-            _benchmark = new TestsBenchmark(_testAssemblyLocation, _testsToRun);
-	        _benchmark.LaunchBenchmark();
-		    Console.WriteLine(
+            var errorReportingValue = TurnOffErrorReporting();
+	        var matchingMethods = MethodDiscovery();
+            TestsDiscovery(matchingMethods);
+            Console.WriteLine(
                 "Suite of {0} tests identified for {1}.{2}",
                 _testsToRun.Count(),
                 TargetType.FullName,
                 TargetMethod);
-
-            /**********************************************************************/
-            int count = 0;
-			int failures = 0;
-            if (_mutationsToApply.Count == 0) PopulateDefaultTurtles();
-            foreach (var turtleType in _mutationsToApply)
-			{
-                var turtle = (MethodTurtleBase)Activator.CreateInstance(turtleType);
-                Console.WriteLine(turtle.Description);
-                _pendingTest = new Dictionary<string, MutantMetaData>();
-                foreach (var mutation in turtle.Mutate(_method, _module, _originalOffsets))
-                    SendMutationTestToDispatcher(mutation);
-			    ProceedTestResult(turtle, ref failures , ref count);
-			}
-
-            _report.RegisterMethod(_method);
-            _reportingStrategy.WriteReport(_report, _reportFileName);
-            /********************************************************************!!!!!!!!!!**/
-
+            _benchmark = new TestsBenchmark(_testAssemblyLocation, _testsToRun);
+	        _benchmark.LaunchBenchmark();
+            MutateAndTest(out count, out failures);
             RestoreErrorReporting(errorReportingValue);
-
-            /**********************************************************************/
             if (count == 0)
-			{
 				Console.WriteLine("No valid mutations found (this is fine).");
-				return;
-			}
 			if (failures > 0)
                 throw new MutationTestFailureException();
-            /********************************************************************!!!!!!!!!!**/
         }
 
         private List<MethodReference> MethodDiscovery()
@@ -187,6 +151,40 @@ namespace NinjaTurtles
             _originalOffsets = _method.Body.Instructions.Select(i => i.Offset).ToArray();
             _report = new MutationTestingReport(_method);
             return matchingMethods;
+        }
+
+        private void TestsDiscovery(IList<MethodReference> matchingMethods)
+        {
+            try
+            {
+                _testsToRun = GetMatchingTestsFromTree(_method, matchingMethods);
+            }
+            catch (MutationTestFailureException)
+            {
+                _report.RegisterMethod(_method);
+                _reportingStrategy.WriteReport(_report, _reportFileName);
+                throw;
+            }
+            _report.TestsFounded = true;
+        }
+
+        private void MutateAndTest(out int mutationCount, out int mutationFailures)
+        {
+            mutationCount = 0;
+            mutationFailures = 0;
+            if (_mutationsToApply.Count == 0) PopulateDefaultTurtles();
+            foreach (var turtleType in _mutationsToApply)
+            {
+                var turtle = (MethodTurtleBase)Activator.CreateInstance(turtleType);
+                Console.WriteLine(turtle.Description);
+                _pendingTest = new Dictionary<string, MutantMetaData>();
+                foreach (var mutation in turtle.Mutate(_method, _module, _originalOffsets))
+                    SendMutationTestToDispatcher(mutation);
+                ProceedTestResult(turtle, ref mutationFailures, ref mutationCount);
+            }
+
+            _report.RegisterMethod(_method);
+            _reportingStrategy.WriteReport(_report, _reportFileName);
         }
 
         private void SendMutationTestToDispatcher(MutantMetaData mutation)
