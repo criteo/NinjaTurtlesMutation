@@ -25,19 +25,11 @@ using System.Reflection;
 
 using Mono.Cecil;
 using NinjaTurtles.ServiceTestRunnerLib;
-using NinjaTurtles.TestRunners;
 
 namespace NinjaTurtles
 {
     public static class MutationTestBuilder
     {
-        internal static Type TestRunner { get; set; }
-
-        static MutationTestBuilder()
-        {
-            TestRunner = typeof(NUnitTestRunner);
-        }
-
         /// <summary>
         /// Returns an <see cref="IMutationTest" /> instance allowing a fluent
         /// definition of a set of mutation tests for a particular method.
@@ -86,21 +78,6 @@ namespace NinjaTurtles
             Type resolvedType = TypeResolver.ResolveTypeFromReferences(callingAssembly, targetClass);
 
             return new MutationTest(callingAssemblyLocation, resolvedType, returnType, targetMethod, methodGenerics, parameterTypes, dispatcherStreamOut, dispatcherStreamIn);
-        }
-
-        /// <summary>
-        /// Specifies the implementation of <see cref="ITestRunner" /> to be
-        /// used to run the test suite for each mutant. By default, this will
-        /// be the <see cref="NUnitTestRunner" />. This can still be overridden
-        /// on a per-test basis using the
-        /// <see mref="IMutationTest.UsingRunner" /> method.
-        /// </summary>
-        /// <typeparam name="T">
-        /// A type that implements <see cref="ITestRunner" />.
-        /// </typeparam>
-        public static void UseRunner<T>() where T : ITestRunner
-        {
-            TestRunner = typeof(T);
         }
 	}
 }

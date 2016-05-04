@@ -9,7 +9,6 @@ using System.Text;
 using System.Threading.Tasks;
 using NinjaTurtles.AppDomainIsolation;
 using NinjaTurtles.AppDomainIsolation.Adaptor;
-using NinjaTurtles.TestRunners;
 
 namespace NinjaTurtles
 {

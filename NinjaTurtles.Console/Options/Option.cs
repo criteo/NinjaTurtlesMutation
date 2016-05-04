@@ -45,8 +45,6 @@ namespace NinjaTurtles.Console.Options
                     {"f", typeof(Format)},
                     {"-type", typeof(ParameterType)},
                     {"t", typeof(ParameterType)},
-                    {"-runner", typeof(Runner)},
-                    {"r", typeof(Runner)},
                     {"-namespace", typeof(TargetNamespace)},
                     {"N", typeof(TargetNamespace)},
                     {"-parallelization", typeof(ParallelLevel)},

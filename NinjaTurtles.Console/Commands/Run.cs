@@ -39,7 +39,6 @@ namespace NinjaTurtles.Console.Commands
     {
         private string _testAssemblyLocation;
         private string _message;
-        private Type _runnerType;
         private MutationTestingReportSummary _report = new MutationTestingReportSummary();
 
         private Output _outputOption;
@@ -78,9 +77,6 @@ Options:
    --output [-o]      : Specifies the name of a file to receive the mutation
                         testing output. This file will be deleted if it already
                         exists.
-   --runner [-r]      : Specifies the type name of an implementation of
-                        ITestRunner that is used to run the unit tests for each
-                        code mutant.
    --type [-t]        : Specifies the type name of a parameter to the method,
                         used to resolve between overloads of the same method
                         name. Can be specified multiple times, and must be in
@@ -185,20 +181,6 @@ Example:
 
         private Func<Boolean> ConfigureRun()
         {
-            var runnerOption = (Runner)Options.Options.FirstOrDefault(o => o is Runner);
-            if (runnerOption != null)
-            {
-                var testAssembly = Assembly.LoadFrom(_testAssemblyLocation);
-                _runnerType = TypeResolver.ResolveTypeFromReferences(testAssembly, runnerOption.RunnerType);
-                if (_runnerType == null || _runnerType.GetInterface("ITestRunner") == null)
-                {
-                    _message = string.Format(
-                        "Invalid runner type '{0}' specified.",
-                        runnerOption.RunnerType);
-                    ReportResult(false);
-                    return null;
-                }
-            }
             var runnerMethod = Options.Options.Any(o => o is TargetNamespace) ? RunMutationTestsForAllClassAndMethods
                                 : Options.Options.Any(o => o is TargetClass)
                                     ? (Options.Options.Any(o => o is TargetMethod)
@@ -333,8 +315,6 @@ Example:
                 parameterTypes == null
                     ? (MutationTest)MutationTestBuilder.For(targetAssemblyLocation, targetClass, returnType, targetMethod, methodGenerics, _testDispatcherStreamOut, _testDispatcherStreamIn)
                     : (MutationTest)MutationTestBuilder.For(targetAssemblyLocation, targetClass, returnType, targetMethod, methodGenerics, _testDispatcherStreamOut, _testDispatcherStreamIn, parameterTypes);
-            if (_runnerType != null)
-                mutationTest.UsingRunner(_runnerType);
             mutationTest.TestAssemblyLocation = _testAssemblyLocation;
             var result = BuildAndRunMutationTest(mutationTest);
             return result;

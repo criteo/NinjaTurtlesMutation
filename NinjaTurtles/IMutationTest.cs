@@ -21,7 +21,6 @@
 
 using System;
 
-using NinjaTurtles.TestRunners;
 using NinjaTurtles.Turtles;
 
 namespace NinjaTurtles
@@ -68,20 +67,6 @@ namespace NinjaTurtles
         /// method chaining.
         /// </returns>
         IMutationTest With<T>() where T : IMethodTurtle;
-
-        /// <summary>
-        /// Sets the unit test runner to be used, which is an implementation of
-        /// <see cref="ITestRunner" />. If none is specified, then the default
-        /// is to use <see cref="NUnitTestRunner" />.
-        /// </summary>
-        /// <typeparam name="T">
-        /// A type that implements <see cref="ITestRunner" />.
-        /// </typeparam>
-        /// <returns>
-        /// The original <see cref="IMutationTest" /> instance to allow fluent
-        /// method chaining.
-        /// </returns>
-        IMutationTest UsingRunner<T>() where T : ITestRunner, new();
 
         /// <summary>
         /// Specifies a file name to which mutation test results should be

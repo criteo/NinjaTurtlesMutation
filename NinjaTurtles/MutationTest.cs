@@ -38,7 +38,6 @@ using Mono.Collections.Generic;
 using NinjaTurtles.Reporting;
 using NinjaTurtles.ServiceTestRunnerLib;
 using NinjaTurtles.ServiceTestRunnerLib.Utilities;
-using NinjaTurtles.TestRunners;
 using NinjaTurtles.Turtles;
 
 namespace NinjaTurtles
@@ -59,7 +58,6 @@ namespace NinjaTurtles
         private AssemblyDefinition _testAssembly;
 	    private Module _module;
 	    private IEnumerable<string> _testsToRun;
-	    private ITestRunner _runner;
 	    private MutationTestingReport _report;
         private ReportingStrategy _reportingStrategy = new NullReportingStrategy();
 	    private string _reportFileName;
@@ -578,30 +576,6 @@ namespace NinjaTurtles
 			_mutationsToApply.Add(typeof(T));
 			return this;
 		}
-
-	    /// <summary>
-	    /// Sets the unit test runner to be used, which is an implementation of
-	    /// <see cref="ITestRunner" />. If none is specified, then the default
-	    /// is to use <see cref="NUnitTestRunner" />.
-	    /// </summary>
-	    /// <typeparam name="T">
-	    /// A type that implements <see cref="ITestRunner" />.
-	    /// </typeparam>
-	    /// <returns>
-	    /// The original <see cref="IMutationTest" /> instance to allow fluent
-	    /// method chaining.
-	    /// </returns>
-	    public IMutationTest UsingRunner<T>() where T : ITestRunner, new()
-	    {
-	        _runner = new T();
-	        return this;
-	    }
-
-        internal IMutationTest UsingRunner(Type runnerType)
-        {
-            _runner = (ITestRunner)Activator.CreateInstance(runnerType);
-            return this;
-        }
 
 	    public IMutationTest WriteReportTo(string fileName)
 	    {
