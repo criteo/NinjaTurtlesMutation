@@ -88,6 +88,7 @@
     <Compile Include="ServiceTestRunnerLib\Utilities\ErrorModeContext.cs" />
     <Compile Include="ServiceTestRunnerLib\Utilities\TestDescriptionExchanger.cs" />
     <Compile Include="ServiceTestRunnerLib\Utilities\XmlProcessing.cs" />
+    <Compile Include="SimpleInstruction.cs" />
     <Compile Include="TestsBenchmark.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="InstructionExtensions.cs" />
