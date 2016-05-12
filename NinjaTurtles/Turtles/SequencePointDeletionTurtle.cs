@@ -69,24 +69,16 @@ namespace NinjaTurtles.Turtles
             var instructionsMaxIndex = method.Body.Instructions.Count - 1;
             for (int index = 0; index < method.Body.Instructions.Count; index++)
             {
-                /*System.Console.Error.WriteLine("________________________________________________________"); ///////////////
-                System.Console.Error.WriteLine("SPDT current index is " + index); ///////////////*/
                 var instruction = method.Body.Instructions[index];
-                //System.Console.Error.WriteLine("SPDT current instruction is [[{0}] [{1}]]", instruction.OpCode, instruction.Operand); ///////////////
                 if (IsSequenceStartingInstruction(instruction))
                 {
-                    //System.Console.Error.WriteLine("SPDT current instruction is a sequence point"); ///////////////
                     startIndex = index;
                     sequence.Clear();
                 }
                 if (startIndex >= 0)
                     sequence.Add(index, instruction.OpCode);
-                /*System.Console.Error.WriteLine("SPDT current sequence:"); ///////////////
-                foreach (var kvp in sequence) /////////////
-                    System.Console.Error.WriteLine("    [{0}] --> [{1}]", kvp.Key, kvp.Value); ///////////////*/
                 if (!IsLastSequenceInstruction(index, instructionsMaxIndex, instruction) || !ShouldDeleteSequence(method.Body, sequence))
                     continue;
-                //System.Console.Error.WriteLine("SPDT sequence pass deletion check"); ///////////////
                 var originalInstruction = ReplaceOpcodeAndOperand(method, startIndex, OpCodes.Br, instruction.Next);
 
                 var codes = string.Join(", ", sequence.Values.Select(o => o.Code));

@@ -342,7 +342,7 @@ Example:
             catch (MutationTestFailureException)
             {
             }
-            /*catch (Exception ex)
+            catch (Exception ex)
             {
                 //Debugger.Launch();
                 _message =
@@ -356,7 +356,7 @@ http://ninjaturtles.codeplex.com/workitem/list/basic
 Exception details:
 
 " + ex;
-            }*/
+            }
             _report.MergeMutationTestReport(mutationTest.Report);
             return result;
         }
