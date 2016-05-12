@@ -26,6 +26,7 @@ using System.IO;
 using System.Linq;
 
 using Mono.Cecil;
+using Mono.Cecil.Cil;
 using Mono.Cecil.Rocks;
 
 namespace NinjaTurtles.Turtles
@@ -132,6 +133,24 @@ namespace NinjaTurtles.Turtles
                 yield return mutation;
             }
             method.Body.OptimizeMacros();
+        }
+
+        /// <summary>
+        /// Replace the opcode and operand of a method's instruction and return a SimpleInstruction representation
+        /// of the replaced instruction
+        /// </summary>
+        /// <param name="method">The method where an instruction must be replaced</param>
+        /// <param name="index">The index of the replaced instruction</param>
+        /// <param name="newOpCode"></param>
+        /// <param name="newOperand"></param>
+        /// <returns></returns>
+        protected SimpleInstruction ReplaceOpcodeAndOperand(MethodDefinition method, int index, OpCode newOpCode,
+            Object newOperand)
+        {
+            var originalInstruction = new SimpleInstruction(method.Body.Instructions[index]);
+            method.Body.Instructions[index].OpCode = newOpCode;
+            method.Body.Instructions[index].Operand = newOperand;
+            return originalInstruction;
         }
 
         /// <summary>
