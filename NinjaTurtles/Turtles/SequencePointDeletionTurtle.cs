@@ -21,7 +21,6 @@
 
 using System.Collections.Generic;
 using System.Linq;
-
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 
@@ -66,38 +65,39 @@ namespace NinjaTurtles.Turtles
         protected override IEnumerable<MutantMetaData> CreateMutant(MethodDefinition method, Module module, int[] originalOffsets)
         {
             var sequence = new Dictionary<int, OpCode>();
-            int startIndex = -1;
+            var startIndex = -1;
+            var instructionsMaxIndex = method.Body.Instructions.Count - 1;
             for (int index = 0; index < method.Body.Instructions.Count; index++)
             {
                 var instruction = method.Body.Instructions[index];
-                if (instruction.SequencePoint != null
-                    && instruction.SequencePoint.StartLine != 0xfeefee)
+                if (IsSequenceStartingInstruction(instruction))
                 {
                     startIndex = index;
                     sequence.Clear();
                 }
                 if (startIndex >= 0)
-                {
                     sequence.Add(index, instruction.OpCode);
-                }
-                if (index == method.Body.Instructions.Count - 1 || instruction.Next.SequencePoint != null)
-                {
-                    if (!ShouldDeleteSequence(method.Body, sequence)) continue;
+                if (!IsLastSequenceInstruction(index, instructionsMaxIndex, instruction) || !ShouldDeleteSequence(method.Body, sequence))
+                    continue;
+                var originalInstruction = ReplaceOpcodeAndOperand(method, startIndex, OpCodes.Br, instruction.Next);
 
-                    OpCode originalOpCode = method.Body.Instructions[startIndex].OpCode;
-                    object originalOperand = method.Body.Instructions[startIndex].Operand;
-                    method.Body.Instructions[startIndex].OpCode = OpCodes.Br;
-                    method.Body.Instructions[startIndex].Operand = instruction.Next;
+                var codes = string.Join(", ", sequence.Values.Select(o => o.Code));
+                var description = string.Format("{0:x4}: deleting {1}", originalOffsets[startIndex], codes);
+                MutantMetaData mutation = DoYield(method, module, description, Description, startIndex);
+                yield return mutation;
 
-                    var codes = string.Join(", ", sequence.Values.Select(o => o.Code));
-                    var description = string.Format("{0:x4}: deleting {1}", originalOffsets[startIndex], codes);
-                    MutantMetaData mutation = DoYield(method, module, description, Description, startIndex);
-                    yield return mutation;
-
-                    method.Body.Instructions[startIndex].OpCode = originalOpCode;
-                    method.Body.Instructions[startIndex].Operand = originalOperand;
-                }
+                ReplaceOpcodeAndOperand(method, startIndex, originalInstruction.opcode, originalInstruction.operand);
             }
+        }
+
+        private bool IsLastSequenceInstruction(int currentIndex, int maxIndex, Instruction instruction)
+        {
+            return currentIndex == maxIndex || instruction.Next.SequencePoint != null;
+        }
+
+        private bool IsSequenceStartingInstruction(Instruction instruction)
+        {
+            return instruction.SequencePoint != null && instruction.SequencePoint.StartLine != 0xfeefee;
         }
 
         private bool ShouldDeleteSequence(MethodBody method, IDictionary<int, OpCode> opCodes)
