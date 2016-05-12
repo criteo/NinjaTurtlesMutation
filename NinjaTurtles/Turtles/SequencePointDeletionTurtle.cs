@@ -107,42 +107,45 @@ namespace NinjaTurtles.Turtles
             if (opCodes.Values.All(o => o == OpCodes.Leave)) return false;
             if (opCodes.Values.Any(o => o == OpCodes.Ret)) return false;
 
-            // If just setting compiler-generated return variable in Debug mode, don't delete.
-            if (opCodes.Values.Last().Code == Code.Br)
-            {
-                if (((Instruction)method.Instructions[opCodes.Keys.Last()].Operand).Offset
-                    == method.Instructions[opCodes.Keys.Last() + 1].Offset)
-                {
-                    if (method.Instructions[opCodes.Keys.Last() + 2].OpCode == OpCodes.Ret)
-                    {
-                        return false;
-                    }
-                }
-            }
+            if (IsCompilerGeneratedDebugReturn(method, opCodes))
+                return false;
 
-            // If calling base constructor, don't delete.
-            if (opCodes.Any(kv => kv.Value == OpCodes.Call))
-            {
-                if (((MethodReference)method.Instructions[opCodes.First(kv => kv.Value == OpCodes.Call).Key].Operand).Name == Methods.CONSTRUCTOR)
-                {
-                    return false;
-                }
-            }
+            if (IsCallingBaseConstructor(method, opCodes))
+                return false;
 
             // If compiler-generated dispose, don't delete.
             if (method.Instructions[opCodes.Keys.First()].IsPartOfCompilerGeneratedDispose())
-            {
                 return false;
-            }
 
             // If setting default value to a field, don't delete.
-            if (method.Instructions[opCodes.Keys.First()]
-                .FollowsSequence(OpCodes.Ldarg, OpCodes.Ldc_I4, OpCodes.Stfld)
+            if (method.Instructions[opCodes.Keys.First()].FollowsSequence(OpCodes.Ldarg, OpCodes.Ldc_I4, OpCodes.Stfld)
                 && (int)method.Instructions[opCodes.Keys.First() + 1].Operand == 0)
-            {
                 return false;
-            }
 
+            return true;
+        }
+
+        private static bool IsCompilerGeneratedDebugReturn(MethodBody method, IDictionary<int, OpCode> opCodes)
+        {
+            // If just setting compiler-generated return variable in Debug mode, don't delete.
+            if (opCodes.Values.Last().Code != Code.Br)
+                return false;
+            if (((Instruction)method.Instructions[opCodes.Keys.Last()].Operand).Offset !=
+                method.Instructions[opCodes.Keys.Last() + 1].Offset)
+                return false;
+            if (method.Instructions[opCodes.Keys.Last() + 2].OpCode != OpCodes.Ret)
+                return false;
+            return true;
+        }
+
+        private static bool IsCallingBaseConstructor(MethodBody method, IDictionary<int, OpCode> opCodes)
+        {
+            // If calling base constructor, don't delete.
+            if (opCodes.All(kv => kv.Value != OpCodes.Call))
+                return false;
+            if (((MethodReference)method.Instructions[opCodes.First(kv => kv.Value == OpCodes.Call).Key].Operand).Name !=
+                Methods.CONSTRUCTOR)
+                return false;
             return true;
         }
     }
