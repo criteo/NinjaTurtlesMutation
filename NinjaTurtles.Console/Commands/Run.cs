@@ -70,7 +70,7 @@ Options:
    --method [-m]      : Specifies the name of the method for which mutation
                         testing should be applied. Will be ignored if not used
                         in conjunction with the --class option.
-   --namespace [-n]   : Specifies the namespace class for which mutation testing
+   --namespace [-N]   : Specifies the namespace class for which mutation testing
                         should be applied. All classes and method under that
                         namespace are identified, and mutation testing is applied
                         for each of them.
