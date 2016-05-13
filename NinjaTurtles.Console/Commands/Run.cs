@@ -58,30 +58,31 @@ namespace NinjaTurtles.Console.Commands
 Runs all mutation tests found in the specified test assembly.
 
 Options:
-   --class [-c]       : Specifies the full type name of the class for which
-                        mutation testing should be applied. If no accompanying
-                        method name is specified, all methods in the class are
-                        identified, and mutation testing applied for each of
-                        them.
-   --format [f]       : Specifies the format for the output file specified by
-                        the --output option. By default, this will be XML, but
-                        HTML can be specified here to transform the results
-                        into displayable format.
-   --method [-m]      : Specifies the name of the method for which mutation
-                        testing should be applied. Will be ignored if not used
-                        in conjunction with the --class option.
-   --namespace [-N]   : Specifies the namespace class for which mutation testing
-                        should be applied. All classes and method under that
-                        namespace are identified, and mutation testing is applied
-                        for each of them.
-   --output [-o]      : Specifies the name of a file to receive the mutation
-                        testing output. This file will be deleted if it already
-                        exists.
-   --type [-t]        : Specifies the type name of a parameter to the method,
-                        used to resolve between overloads of the same method
-                        name. Can be specified multiple times, and must be in
-                        the same order as the method's parameters. Full type
-                        names enclosed in double quotes are accepted.
+   --class [-c]                 : Specifies the full type name of the class for which
+                                  mutation testing should be applied. If no accompanying
+                                  method name is specified, all methods in the class are
+                                  identified, and mutation testing applied for each of
+                                  them.
+   --format [f]                 : Specifies the format for the output file specified by
+                                  the --output option. By default, this will be XML, but
+                                  HTML can be specified here to transform the results
+                                  into displayable format.
+   --method [-m]                : Specifies the name of the method for which mutation
+                                  testing should be applied. Will be ignored if not used
+                                  in conjunction with the --class option.
+   --namespace [-n]             : Specifies the namespace class for which mutation testing
+                                  should be applied. All classes and method under that
+                                  namespace are identified, and mutation testing is applied
+                                  for each of them.
+   --output [-o]                : Specifies the name of a file to receive the mutation
+                                  testing output. This file will be deleted if it already
+                                  exists.
+   --parallelization [-p]       : Set the number of test runner to use. Default value is 8
+   --type [-t]                  : Specifies the type name of a parameter to the method,
+                                  used to resolve between overloads of the same method
+                                  name. Can be specified multiple times, and must be in
+                                  the same order as the method's parameters. Full type
+                                  names enclosed in double quotes are accepted.
 
 Arguments:
    TEST_ASSEMBLY      : The file name of the test assembly to inspect, which
