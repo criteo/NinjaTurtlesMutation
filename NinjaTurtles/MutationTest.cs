@@ -21,9 +21,7 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
-using System.IO.Pipes;
 using System.Linq;
 using System.Security;
 using System.Text.RegularExpressions;
@@ -205,6 +203,66 @@ namespace NinjaTurtles
             }
         }
 
+        private bool CheckTestResult(MethodTurtleBase turtle, MutantMetaData mutation, TestDescription testDescription)
+        {
+            var exitedInTime = testDescription.ExitedInTime;
+            var exitCode = (testDescription.TestsPass ? 0 : 1);
+            bool testSuitePassed = exitCode == 0 && exitedInTime;
+            string result = string.Format(" Mutant: {0}. {1}",
+                              mutation.Description,
+                              testSuitePassed
+                                ? "Survived."
+                                : "Killed.");
+            _report.AddResult(mutation.MethodDefinition.GetCurrentSequencePoint(mutation.ILIndex), mutation, !testSuitePassed);
+
+            if (testSuitePassed)
+            {
+                mutation.TestDirectory.DoNotDelete = true;
+                var sourceFilename = mutation.MethodDefinition.GetOriginalSourceFileName(mutation.ILIndex);
+                var testDirectoryPath = mutation.TestDirectoryName;
+                if (sourceFilename != null)
+                {
+                    var sourceCode = mutation.GetOriginalSourceCode(mutation.ILIndex);
+                    result =
+                        string.Format(
+                            "{0}\nOriginal source code around surviving mutant (in {1}):\n{2}\nFiles left for inspection in: {3}",
+                            result,
+                            sourceFilename,
+                            sourceCode,
+                            testDirectoryPath);
+                }
+                else
+                    result = string.Format(
+                            "{0}\nOriginal source code couldn't be retrieve\nFiles left for inspection in: {1}",
+                            result,
+                            testDirectoryPath);
+
+            }
+
+            Console.WriteLine(result);
+
+            turtle.MutantComplete(mutation);
+            return !testSuitePassed;
+        }
+
+        private static object TurnOffErrorReporting()
+        {
+            try
+            {
+                var key = Registry.LocalMachine.OpenSubKey(ERROR_REPORTING_KEY,
+                                                           RegistryKeyPermissionCheck.ReadWriteSubTree);
+                if (key == null) return null;
+                var errorReportingValue = key.GetValue(ERROR_REPORTING_VALUE, null);
+                key.SetValue(ERROR_REPORTING_VALUE, 1, RegistryValueKind.DWord);
+                key.Close();
+                return errorReportingValue;
+            }
+            catch (SecurityException)
+            {
+                return null;
+            }
+        }
+
         private static void RestoreErrorReporting(object errorReportingValue)
         {
             try
@@ -225,22 +283,16 @@ namespace NinjaTurtles
             catch (SecurityException) {}
         }
 
-        private static object TurnOffErrorReporting()
+        private MethodDefinition ValidateMethod()
         {
-            try
+            _module = new Module(TargetType.Assembly.Location);
+
+            var type = ResolveFromTypeCollection(_module.Definition.Types);
+            if (_parameterTypes != null)
             {
-                var key = Registry.LocalMachine.OpenSubKey(ERROR_REPORTING_KEY,
-                                                           RegistryKeyPermissionCheck.ReadWriteSubTree);
-                if (key == null) return null;
-                var errorReportingValue = key.GetValue(ERROR_REPORTING_VALUE, null);
-                key.SetValue(ERROR_REPORTING_VALUE, 1, RegistryValueKind.DWord);
-                key.Close();
-                return errorReportingValue;
+                return MethodDefinitionResolver.ResolveMethod(type, _returnType, TargetMethod, _genericParameters, _parameterTypes);
             }
-            catch (SecurityException)
-            {
-                return null;
-            }
+            return MethodDefinitionResolver.ResolveMethod(type, _returnType, TargetMethod, _genericParameters, _parameterTypeReferences);
         }
 
         private void AddMethod(MethodDefinition targetMethod, List<MethodReference> matchingMethods)
@@ -302,14 +354,6 @@ namespace NinjaTurtles
 	        }
 	    }
 
-	    private bool MethodsMatch(MethodDefinition first, MethodDefinition second)
-	    {
-	        return first.Name == second.Name
-	               && first.Parameters.Select(p => p.ParameterType.Name)
-	                      .SequenceEqual(second.Parameters.Select(p => p.ParameterType.Name))
-	               && first.GenericParameters.Count == second.GenericParameters.Count;
-	    }
-
         private ISet<string> GetMatchingTestsFromTree(MethodDefinition targetmethod, IList<MethodReference> matchingMethods, bool force = false)
         {
             ISet<string> result = new HashSet<string>();
@@ -329,9 +373,7 @@ namespace NinjaTurtles
 
 	    private void AddTestsForType(MethodDefinition targetmethod, IList<MethodReference> matchingMethods, bool force, TypeDefinition type, ISet<string> result)
 	    {
-	        String          methodName;
-	        String[]        parts;
-            String          targetType = targetmethod.DeclaringType.FullName;
+	        String          targetType = targetmethod.DeclaringType.FullName;
 
             foreach (MethodDefinition method in type.Methods.Where(m => m.HasBody))
             {
@@ -339,10 +381,10 @@ namespace NinjaTurtles
                     continue;
                 if (!MethodCallTargetDirectOrIndirect(method, matchingMethods))
                     continue;
-                methodName = method.Name;
+                var          methodName = method.Name;
                 if (methodName.StartsWith("<"))
                 {
-                    parts = methodName.Split('<', '>');
+                    var        parts = methodName.Split('<', '>');
                     methodName = parts[1];
                 }
                 result.Add(string.Format("{0}.{1}", type.FullName.Replace("/", "+"), methodName));
@@ -488,48 +530,14 @@ namespace NinjaTurtles
             }
         }
 
-	    private bool CheckTestResult(MethodTurtleBase turtle, MutantMetaData mutation, TestDescription testDescription)
-		{
-            var exitedInTime = testDescription.ExitedInTime;
-	        var exitCode = (testDescription.TestsPass ? 0 : 1);
-            bool testSuitePassed = exitCode == 0 && exitedInTime;
-            string result = string.Format(" Mutant: {0}. {1}",
-			                  mutation.Description,
-			                  testSuitePassed
-			                  	? "Survived."
-			                    : "Killed.");
-            _report.AddResult(mutation.MethodDefinition.GetCurrentSequencePoint(mutation.ILIndex), mutation, !testSuitePassed);
-
-		    if (testSuitePassed)
-            {
-                mutation.TestDirectory.DoNotDelete = true;
-                var sourceFilename = mutation.MethodDefinition.GetOriginalSourceFileName(mutation.ILIndex);
-                var testDirectoryPath = mutation.TestDirectoryName;
-                if (sourceFilename != null)
-                {
-                    var sourceCode = mutation.GetOriginalSourceCode(mutation.ILIndex);
-                    result =
-                        string.Format(
-                            "{0}\nOriginal source code around surviving mutant (in {1}):\n{2}\nFiles left for inspection in: {3}",
-                            result,
-                            sourceFilename,
-                            sourceCode,
-                            testDirectoryPath);
-                }
-                else
-                    result = string.Format(
-                            "{0}\nOriginal source code couldn't be retrieve\nFiles left for inspection in: {1}",
-                            result,
-                            testDirectoryPath);
-
-            }
-
-            Console.WriteLine(result);
-
-            turtle.MutantComplete(mutation);
-            return !testSuitePassed;
-		}
-
+        private bool MethodsMatch(MethodDefinition first, MethodDefinition second)
+        {
+            return first.Name == second.Name
+                   && first.Parameters.Select(p => p.ParameterType.Name)
+                          .SequenceEqual(second.Parameters.Select(p => p.ParameterType.Name))
+                   && first.GenericParameters.Count == second.GenericParameters.Count;
+        }
+        
 		private void PopulateDefaultTurtles()
 		{
             foreach (var type in GetType().Assembly.GetTypes()
@@ -539,18 +547,6 @@ namespace NinjaTurtles
                 _mutationsToApply.Add(type);
             }
 		}
-
-	    private MethodDefinition ValidateMethod()
-	    {
-            _module = new Module(TargetType.Assembly.Location);
-
-            var type = ResolveFromTypeCollection(_module.Definition.Types);
-            if (_parameterTypes != null)
-            {
-                return MethodDefinitionResolver.ResolveMethod(type, _returnType, TargetMethod, _genericParameters, _parameterTypes);
-            }
-            return MethodDefinitionResolver.ResolveMethod(type, _returnType, TargetMethod, _genericParameters, _parameterTypeReferences);
-	    }
 
 	    private TypeDefinition ResolveFromTypeCollection(Collection<TypeDefinition> types)
 	    {
