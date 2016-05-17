@@ -40,31 +40,5 @@ namespace NinjaTurtles.Tests.Turtles.BranchConditionTurtleTestSuite.Tests
             Assert.AreEqual(7, new BranchConditionClassUnderTest().WorkingStupidParse("Seven"));
             Assert.AreEqual(-1, new BranchConditionClassUnderTest().WorkingStupidParse("Not Seven"));
         }
-
-        [Test]
-        public void StupidParse_Mutation_Tests_Fail()
-        {
-            try
-            {
-                MutationTestBuilder<BranchConditionClassUnderTest>
-                    .For("StupidParse")
-                    .With<BranchConditionTurtle>()
-                    .Run();
-            }
-            catch (MutationTestFailureException)
-            {
-                return;
-            }
-            Assert.Fail("MutationTestFailureException was not thrown.");
-        }
-
-        [Test]
-        public void WorkingStupidParse_Mutation_Tests_Pass()
-        {
-            MutationTestBuilder<BranchConditionClassUnderTest>
-                .For("WorkingStupidParse")
-                .With<BranchConditionTurtle>()
-                .Run();
-        }
     }
 }

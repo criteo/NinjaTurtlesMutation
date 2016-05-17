@@ -143,24 +143,5 @@ namespace NinjaTurtles.Tests
                 Assert.IsTrue(process.StartInfo.RedirectStandardOutput);
             }
         }
-
-//        [Test]
-//        public void FindExecutable_
-
-        [Test, Category("Mutation"), MutationTest]
-        public void CreateProcess_Mutation_Tests()
-        {
-            MutationTestBuilder.For("NinjaTurtles.ConsoleProcessFactory", "CreateProcess")
-                .MergeReportTo("SampleReport.xml")
-                .Run();
-        }
-
-        [Test, Category("Mutation"), MutationTest]
-        public void FindExecutable_Mutation_Tests()
-        {
-            MutationTestBuilder.For("NinjaTurtles.ConsoleProcessFactory", "FindExecutable")
-                .MergeReportTo("SampleReport.xml")
-                .Run();
-        }
     }
 }

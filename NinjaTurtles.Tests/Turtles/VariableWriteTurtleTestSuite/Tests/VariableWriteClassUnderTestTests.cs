@@ -55,48 +55,5 @@ namespace NinjaTurtles.Tests.Turtles.VariableWriteTurtleTestSuite.Tests
             Assert.AreEqual(4, new VariableWriteClassUnderTest().AddWithoutPointlessNonsense(1, 3));
             Assert.AreEqual(85, new VariableWriteClassUnderTest().AddWithoutPointlessNonsense(-7, 92));
         }
-
-		[Test]
-        public void AddWithPointlessNonsense_Fails_Mutation_Testing()
-		{
-            try
-            {
-                MutationTestBuilder<VariableWriteClassUnderTest>
-                    .For("AddWithPointlessNonsense")
-                    .With<VariableWriteTurtle>()
-                    .Run();
-            }
-            catch (MutationTestFailureException)
-            {
-                return;
-            }
-            Assert.Fail("MutationTestFailureException was not thrown.");
-        }
-
-        [Test]
-        public void AddWithPointlessNonsenseViaFields_Fails_Mutation_Testing()
-        {
-            try
-            {
-                MutationTestBuilder<VariableWriteClassUnderTest>
-                    .For("AddWithPointlessNonsenseViaFields")
-                    .With<VariableWriteTurtle>()
-                    .Run();
-            }
-            catch (MutationTestFailureException)
-            {
-                return;
-            }
-            Assert.Fail("MutationTestFailureException was not thrown.");
-        }
-        
-        [Test]
-        public void AddWithoutPointlessNonsense_Passes_Mutation_Testing()
-        {
-            MutationTestBuilder<VariableWriteClassUnderTest>
-                .For("AddWithoutPointlessNonsense")
-                .With<VariableWriteTurtle>()
-                .Run();
-        }
     }
 }

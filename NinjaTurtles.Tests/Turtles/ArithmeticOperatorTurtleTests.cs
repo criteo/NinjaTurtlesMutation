@@ -285,14 +285,6 @@ namespace NinjaTurtles.Tests.Turtles
 			Assert.AreEqual(1, mul);
 			Assert.AreEqual(1, div);
 		}
-
-        [Test, Category("Mutation"), MutationTest]
-        public void Constructor_Mutation_Tests()
-        {
-            MutationTestBuilder<ArithmeticOperatorTurtle>.For(".ctor")
-                .MergeReportTo("SampleReport.xml")
-                .Run();
-        }
 	}
 }
 

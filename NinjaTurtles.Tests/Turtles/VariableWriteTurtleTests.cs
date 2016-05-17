@@ -107,27 +107,6 @@ namespace NinjaTurtles.Tests.Turtles
             return Path.Combine(_testFolder, "Test.dll");
         }
 
-
-        [Test]
-        public void DoMutate_Returns_Correct_Sequences()
-        {
-            var module = new Module(Assembly.GetExecutingAssembly().Location);
-            module.LoadDebugInformation();
-            var method = module.Definition
-                .Types.Single(t => t.Name == "VariableWriteClassUnderTest")
-                .Methods.Single(t => t.Name == "AddWithPointlessNonsense");
-
-            var mutator = new VariableWriteTurtle();
-            IList<MutantMetaData> mutations = mutator
-                .Mutate(method, module, method.Body.Instructions.Select(i => i.Offset).ToArray()).ToList();
-
-            Assert.AreEqual(2, mutations.Count);
-            StringAssert.EndsWith("write substitution Int32.pointlessA => Int32.CS$1$0000", mutations[0].Description);
-            Assert.AreEqual(2, mutations[0].ILIndex);
-            StringAssert.EndsWith("write substitution Int32.pointlessB => Int32.CS$1$0000", mutations[1].Description);
-            Assert.AreEqual(4, mutations[1].ILIndex);
-        }
-
         [Test]
         public void DoMutate_Skips_Writes_In_Dispose()
         {
@@ -154,24 +133,6 @@ namespace NinjaTurtles.Tests.Turtles
         }
 
         [Test]
-        public void DoMutate_Returns_Correct_Sequences_With_Fields()
-        {
-            var module = new Module(Assembly.GetExecutingAssembly().Location);
-            module.LoadDebugInformation();
-            var method = module.Definition
-                .Types.Single(t => t.Name == "VariableWriteClassUnderTest")
-                .Methods.Single(t => t.Name == "AddWithPointlessNonsenseViaFields");
-
-            var mutator = new VariableWriteTurtle();
-            IList<MutantMetaData> mutations = mutator
-                .Mutate(method, module, method.Body.Instructions.Select(i => i.Offset).ToArray()).ToList();
-
-            Assert.AreEqual(2, mutations.Count);
-            StringAssert.EndsWith("write substitution Int32._pointlessA => Int32.CS$1$0000", mutations[0].Description);
-            StringAssert.EndsWith("write substitution Int32._pointlessB => Int32.CS$1$0000", mutations[1].Description);
-        }
-
-        [Test]
         public void DoMutate_Returns_No_Results_As_Appropriate()
         {
             var module = new Module(Assembly.GetExecutingAssembly().Location);
@@ -185,14 +146,6 @@ namespace NinjaTurtles.Tests.Turtles
                 .Mutate(method, module, method.Body.Instructions.Select(i => i.Offset).ToArray()).ToList();
 
             Assert.AreEqual(0, mutations.Count);
-        }
-
-        [Test, Category("Mutation"), MutationTest]
-        public void DoMutate_Mutation_Tests()
-        {
-            MutationTestBuilder<VariableWriteTurtle>.For("DoMutate")
-                .MergeReportTo("SampleReport.xml")
-                .Run();
         }
     }
 }

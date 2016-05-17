@@ -47,49 +47,6 @@ namespace NinjaTurtles.Tests.Turtles.ArithmeticOperatorTurtleTestSuite.Tests
 			Assert.AreEqual(3, new AdditionClassUnderTest().WorkingAdd(3, 0));
 			Assert.AreEqual(7, new AdditionClassUnderTest().WorkingAdd(3, 4));
 		}
-		
-		[Test]
-		public void Dummy_Mutation_Tests_Pass()
-		{
-			using (var console = new ConsoleCapturer())
-			{
-				MutationTestBuilder<AdditionClassUnderTest>
-					.For("Dummy")
-					.With<ArithmeticOperatorTurtle>()
-					.Run();
-				StringAssert.Contains("No valid mutations found (this is fine).", console.Output);
-			}
-		}
-		
-		[Test]
-        public void Add_Mutation_Tests_Fail()
-		{
-		    try
-		    {
-		        MutationTestBuilder<AdditionClassUnderTest>
-		            .For("Add")
-		            .With<ArithmeticOperatorTurtle>()
-		            .Run();
-		    }
-		    catch (MutationTestFailureException)
-		    {
-		        return;
-		    }
-		    catch (System.Exception)
-		    {
-		        Assert.Fail("bad.");
-		    }
-			Assert.Fail("MutationTestFailureException was not thrown.");
-		}
-
-		[Test]
-        public void WorkingAdd_Mutation_Tests_Pass()
-		{
-			MutationTestBuilder<AdditionClassUnderTest>
-				.For("WorkingAdd")
-				.With<ArithmeticOperatorTurtle>()
-				.Run();
-		}
 	}
 }
 

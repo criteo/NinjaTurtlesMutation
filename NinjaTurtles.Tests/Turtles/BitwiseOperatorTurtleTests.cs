@@ -191,14 +191,6 @@ namespace NinjaTurtles.Tests.Turtles
             }
             return result;
         }
-
-        [Test, Category("Mutation"), MutationTest]
-        public void Constructor_Mutation_Tests()
-        {
-            MutationTestBuilder<BitwiseOperatorTurtle>.For(".ctor")
-                .MergeReportTo("SampleReport.xml")
-                .Run();
-        }
     }
 }
 

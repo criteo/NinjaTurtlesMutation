@@ -59,57 +59,5 @@ namespace NinjaTurtles.Tests.Turtles.VariableReadTurtleTestSuite.Tests
             Assert.AreEqual(4, new VariableReadClassUnderTest().WorkingAddAndDoubleViaField(1, 1));
             Assert.AreEqual(6, new VariableReadClassUnderTest().WorkingAddAndDoubleViaField(2, 1));
         }
-
-        [Test]
-        public void AddAndDouble_Fails_Mutation_Testing()
-        {
-            try
-            {
-                MutationTestBuilder<VariableReadClassUnderTest>
-                    .For("AddAndDouble")
-                    .With<VariableReadTurtle>()
-                    .Run();
-            }
-            catch (MutationTestFailureException)
-            {
-                return;
-            }
-            Assert.Fail("MutationTestFailureException was not thrown.");
-        }
-
-        [Test]
-        public void AddAndDoubleViaField_Fails_Mutation_Testing()
-        {
-            try
-            {
-                MutationTestBuilder<VariableReadClassUnderTest>
-                    .For("AddAndDoubleViaField")
-                    .With<VariableReadTurtle>()
-                    .Run();
-            }
-            catch (MutationTestFailureException)
-            {
-                return;
-            }
-            Assert.Fail("MutationTestFailureException was not thrown.");
-        }
-
-        [Test]
-        public void WorkingAddAndDouble_Passes_Mutation_Testing()
-        {
-            MutationTestBuilder<VariableReadClassUnderTest>
-                .For("WorkingAddAndDouble")
-                .With<VariableReadTurtle>()
-                .Run();
-        }
-
-        [Test]
-        public void WorkingAddAndDoubleViaField_Passes_Mutation_Testing()
-        {
-            MutationTestBuilder<VariableReadClassUnderTest>
-                .For("WorkingAddAndDoubleViaField")
-                .With<VariableReadTurtle>()
-                .Run();
-        }
     }
 }

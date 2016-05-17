@@ -164,46 +164,6 @@ namespace NinjaTurtles.Tests
 				Assert.IsTrue(File.Exists(Path.Combine(testDirectory.FullName, fileName)));
 			}
 		}
-
-        [Test, Category("Mutation"), MutationTest]
-        public void Default_Constructor_Mutation_Tests()
-        {
-            MutationTestBuilder<TestDirectory>.For(Methods.CONSTRUCTOR, new Type[0])
-                .MergeReportTo("SampleReport.xml")
-                .Run();
-        }
-
-        [Test, Category("Mutation"), MutationTest]
-        public void Overloaded_Constructor_Mutation_Tests()
-        {
-            MutationTestBuilder<TestDirectory>.For(Methods.CONSTRUCTOR, new[] { typeof(string) })
-                .MergeReportTo("SampleReport.xml")
-                .Run();
-        }
-
-        [Test, Category("Mutation"), MutationTest]
-        public void CopyDirectoryContents_Mutation_Tests()
-        {
-            MutationTestBuilder<TestDirectory>.For("CopyDirectoryContents")
-                .MergeReportTo("SampleReport.xml")
-                .Run();
-        }
-
-        [Test, Category("Mutation"), MutationTest]
-        public void Dispose_Mutation_Tests()
-        {
-            MutationTestBuilder<TestDirectory>.For("Dispose")
-                .MergeReportTo("SampleReport.xml")
-                .Run();
-        }
-
-        [Test, Category("Mutation"), MutationTest]
-        public void SaveAssembly_Mutation_Tests()
-        {
-            MutationTestBuilder<TestDirectory>.For("SaveAssembly")
-                .MergeReportTo("SampleReport.xml")
-                .Run();
-        }
     }
 }
 

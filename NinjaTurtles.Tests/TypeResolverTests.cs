@@ -61,23 +61,5 @@ namespace NinjaTurtles.Tests
             var type = TypeResolver.ResolveTypeFromReferences(GetType().Assembly, "System.NonexistentWidget");
             Assert.IsNull(type);
         }
-
-        [Test, Category("Mutation"), MutationTest]
-        public void ResolveTypeFromReferences_Internal_Mutation_Tests()
-        {
-            MutationTestBuilder<TypeResolver>.For("ResolveTypeFromReferences",
-                                                  new[] {typeof(Assembly), typeof(string)})
-                .MergeReportTo("SampleReport.xml")
-                .Run();
-        }
-
-        [Test, Category("Mutation"), MutationTest]
-        public void ResolveTypeFromReferences_Private_Mutation_Tests()
-        {
-            MutationTestBuilder<TypeResolver>.For("ResolveTypeFromReferences",
-                                                  new[] {typeof(Assembly), typeof(string), typeof(IList<string>)})
-                .MergeReportTo("SampleReport.xml")
-                .Run();
-        }
     }
 }

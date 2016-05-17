@@ -91,21 +91,5 @@ Parameter name: methodName")]
             var type = assembly.MainModule.Types.Single(t => t.Name == "TypeResolver");
             MethodDefinitionResolver.ResolveMethod(type, "Leonardo");
         }
-
-        [Test, Category("Mutation"), MutationTest]
-        public void ResolveMethod_2_Parameters_Mutation_Tests()
-        {
-            MutationTestBuilder<MethodDefinitionResolver>.For("ResolveMethod", new[] { typeof(Type), typeof(string) })
-                .MergeReportTo("SampleReport.xml")
-                .Run();
-        }
-
-        [Test, Category("Mutation"), MutationTest]
-        public void ResolveMethod_3_Parameters_Mutation_Tests()
-        {
-            MutationTestBuilder<MethodDefinitionResolver>.For("ResolveMethod", new[] { typeof(Type), typeof(string), typeof(Type[]) })
-                .MergeReportTo("SampleReport.xml")
-                .Run();
-        }
     }
 }

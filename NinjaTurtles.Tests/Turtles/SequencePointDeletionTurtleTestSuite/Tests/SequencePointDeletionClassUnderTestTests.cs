@@ -41,31 +41,5 @@ namespace NinjaTurtles.Tests.Turtles.SequencePointDeletionTurtleTestSuite.Tests
             Assert.AreEqual(11, new SequencePointDeletionClassUnderTest().WorkingSimpleMethod(1, 2, 3, 2));
             Assert.AreEqual(24, new SequencePointDeletionClassUnderTest().WorkingSimpleMethod(2, -1, 3, -3));
         }
-
-        [Test]
-        public void StupidParse_Mutation_Tests_Fail()
-        {
-            try
-            {
-                MutationTestBuilder<SequencePointDeletionClassUnderTest>
-                    .For("SimpleMethod")
-                    .With<SequencePointDeletionTurtle>()
-                    .Run();
-            }
-            catch (MutationTestFailureException)
-            {
-                return;
-            }
-            Assert.Fail("MutationTestFailureException was not thrown.");
-        }
-
-        [Test]
-        public void WorkingStupidParse_Mutation_Tests_Pass()
-        {
-            MutationTestBuilder<SequencePointDeletionClassUnderTest>
-                .For("WorkingSimpleMethod")
-                .With<SequencePointDeletionTurtle>()
-                .Run();
-        }
     }
 }

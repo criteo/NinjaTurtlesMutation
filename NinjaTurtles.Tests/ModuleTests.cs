@@ -48,21 +48,6 @@ namespace NinjaTurtles.Tests
         }
 
         [Test]
-        public void Module_Loads_Debug_Information()
-        {
-            var module = new Module(typeof(MutationTest).Assembly.Location);
-            Assert.IsTrue(module.Definition.Types
-                .Single(t => t.Name == "MutationTest")
-                .Methods.Single(m => m.Name == "Run")
-                .Body.Instructions.All(i => i.SequencePoint == null));
-            module.LoadDebugInformation();
-            Assert.IsTrue(module.Definition.Types
-                .Single(t => t.Name == "MutationTest")
-                .Methods.Single(m => m.Name == "Run")
-                .Body.Instructions.Any(i => i.SequencePoint != null));
-        }
-
-        [Test]
         public void Module_Loads_Debug_Information_For_Mono()
         {
             var module = new Module(typeof(TestClassMono).Assembly.Location);
@@ -90,14 +75,6 @@ namespace NinjaTurtles.Tests
                 .Single(t => t.Name == "TestClassNoPdb")
                 .Methods.Single(m => m.Name == "Run")
                 .Body.Instructions.All(i => i.SequencePoint == null));
-        }
-
-        [Test, Category("Mutation"), MutationTest]
-        public void LoadDebugInformation_Mutation_Tests()
-        {
-            MutationTestBuilder<Module>.For("LoadDebugInformation")
-                .MergeReportTo("SampleReport.xml")
-                .Run();
         }
     }
 }

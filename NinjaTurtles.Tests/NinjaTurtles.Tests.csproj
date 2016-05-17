@@ -57,9 +57,9 @@
       <HintPath>..\packages\NLog.4.2.3\lib\net45\NLog.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="nunit.framework, Version=3.0.5813.39031, Culture=neutral, PublicKeyToken=2638cd05610744eb, processorArchitecture=MSIL">
+    <Reference Include="nunit.framework, Version=2.6.2.12296, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\NUnit.3.0.1\lib\net45\nunit.framework.dll</HintPath>
+      <HintPath>..\packages\NUnit.Runners.2.6.4\tools\nunit.framework.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -81,7 +81,6 @@
     <Compile Include="ModuleTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ConsoleProcessFactoryTests.cs" />
-    <Compile Include="MutationTestBuilderTests.cs" />
     <Compile Include="Turtles\ArithmeticOperatorTurtleTests.cs" />
     <Compile Include="Turtles\ArithmeticOperatorTurtleTestSuite\Tests\AdditionClassUnderTestTests.cs" />
     <Compile Include="Turtles\ArithmeticOperatorTurtleTestSuite\AdditionClassUnderTest.cs" />
@@ -98,13 +97,10 @@
     <Compile Include="Turtles\ConditionalBoundaryTurtleTestSuite\ConditionalBoundaryClassUnderTest.cs" />
     <Compile Include="Turtles\ConditionalBoundaryTurtleTestSuite\Tests\ConditionalBoundaryClassUnderTestTests.cs" />
     <Compile Include="Turtles\Tests\ClosureClassUnderTest.cs" />
-    <Compile Include="Turtles\VariableReadTurtleTests.cs" />
     <Compile Include="Turtles\VariableWriteTurtleTests.cs" />
     <Compile Include="Turtles\VariableReadTurtleTestSuite\Tests\VariableReadClassUnderTestTests.cs" />
     <Compile Include="Turtles\VariableReadTurtleTestSuite\VariableReadClassUnderTest.cs" />
     <Compile Include="Turtles\MethodTurtleBaseTests.cs" />
-    <Compile Include="Turtles\OpCodeRotationTurtleTests.cs" />
-    <Compile Include="Turtles\SequencePointDeletionTurtleTests.cs" />
     <Compile Include="Turtles\SequencePointDeletionTurtleTestSuite\SequencePointDeletionClassUnderTest.cs" />
     <Compile Include="Turtles\SequencePointDeletionTurtleTestSuite\Tests\SequencePointDeletionClassUnderTestTests.cs" />
     <Compile Include="Turtles\VariableWriteTurtleTestSuite\Tests\VariableWriteClassUnderTestTests.cs" />

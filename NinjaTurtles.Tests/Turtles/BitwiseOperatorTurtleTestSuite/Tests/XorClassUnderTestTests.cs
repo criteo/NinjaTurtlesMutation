@@ -47,45 +47,6 @@ namespace NinjaTurtles.Tests.Turtles.BitwiseOperatorTurtleTestSuite.Tests
 			Assert.AreEqual(11, new XorClassUnderTest().WorkingXor(3, 8));
             Assert.AreEqual(4, new XorClassUnderTest().WorkingXor(3, 7));
 		}
-		
-		[Test]
-		public void Dummy_Mutation_Tests_Pass()
-		{
-			using (var console = new ConsoleCapturer())
-			{
-				MutationTestBuilder<XorClassUnderTest>
-					.For("Dummy")
-					.With<BitwiseOperatorTurtle>()
-					.Run();
-				StringAssert.Contains("No valid mutations found (this is fine).", console.Output);
-			}
-		}
-		
-		[Test]
-        public void Xor_Mutation_Tests_Fail()
-		{
-			try
-			{
-				MutationTestBuilder<XorClassUnderTest>
-                    .For("Xor")
-                    .With<BitwiseOperatorTurtle>()
-					.Run();
-			}
-			catch (MutationTestFailureException)
-			{
-				return;
-			}
-			Assert.Fail("MutationTestFailureException was not thrown.");
-		}
-
-		[Test]
-        public void WorkingXor_Mutation_Tests_Pass()
-		{
-			MutationTestBuilder<XorClassUnderTest>
-                .For("WorkingXor")
-                .With<BitwiseOperatorTurtle>()
-				.Run();
-		}
 	}
 }
 

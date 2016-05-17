@@ -126,13 +126,5 @@ namespace NinjaTurtles.Tests.Turtles
             Assert.AreEqual(1, brFalse);
             Assert.AreEqual(3, br);
         }
-
-        [Test, Category("Mutation"), MutationTest]
-        public void Constructor_Mutation_Tests()
-        {
-            MutationTestBuilder<BranchConditionTurtle>.For(".ctor")
-                .MergeReportTo("SampleReport.xml")
-                .Run();
-        }
     }
 }

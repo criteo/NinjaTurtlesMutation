@@ -208,13 +208,5 @@ namespace NinjaTurtles.Tests.Turtles
             Assert.IsTrue(addMethod.Body.Instructions[2]
                 .FollowsSequence(OpCodes.Clt, OpCodes.Ldc_I4_0, OpCodes.Ceq, OpCodes.Stloc_0));
         }
-
-        [Test, Category("Mutation"), MutationTest]
-        public void DoMutate_Mutation_Tests()
-        {
-            MutationTestBuilder<ConditionalBoundaryTurtle>.For("DoMutate")
-                .MergeReportTo("SampleReport.xml")
-                .Run();
-        }
     }
 }
