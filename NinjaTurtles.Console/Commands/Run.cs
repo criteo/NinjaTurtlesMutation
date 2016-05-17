@@ -185,6 +185,172 @@ Example:
             }
         }
 
+        private bool RunMutationTestsForClass()
+        {
+            string targetClass = Options.Options.OfType<TargetClass>().Single().ClassName;
+            var testAssembly = Assembly.LoadFrom(_testAssemblyLocation);
+            var matchedType = TypeResolver.ResolveTypeFromReferences(testAssembly, targetClass);
+            if (matchedType == null)
+            {
+                _message = string.Format(@"Unknown type '{0}'", targetClass);
+                return false;
+            }
+            var assemblyDefinition = AssemblyDefinition.ReadAssembly(matchedType.Assembly.Location);
+            var targetType = assemblyDefinition.MainModule.Types.FirstOrDefault(t => t.FullName == targetClass);
+            bool result = true;
+            foreach (var methodInfo in targetType.Methods
+                .Where(m => m.HasBody && m.Name != Methods.STATIC_CONSTRUCTOR))
+            {
+                string targetMethod = methodInfo.Name;
+                string methodReturnType = methodInfo.ReturnType.FullName;
+                var methodsGenerics = methodInfo.GenericParameters.ToArray();
+                var parameterTypes = methodInfo.Parameters.Select(p => p.ParameterType).ToArray();
+                bool runResultBuf = RunTests(matchedType.Assembly.Location, targetClass, methodReturnType, targetMethod, methodsGenerics, parameterTypes);
+                result &= runResultBuf;
+            }
+            if (string.IsNullOrEmpty(_message))
+            {
+                _message = string.Format(
+                    @"Mutation testing {0}",
+                    result ? "passed" : "failed");
+            }
+            return result;
+        }
+
+        private bool RunMutationTestsForClassAndMethod()
+        {
+            string targetClass = Options.Options.OfType<TargetClass>().Single().ClassName;
+            var testAssembly = Assembly.LoadFrom(_testAssemblyLocation);
+            var matchedType = TypeResolver.ResolveTypeFromReferences(testAssembly, targetClass);
+            if (matchedType == null)
+            {
+                _message = string.Format(@"Unknown type '{0}'", targetClass);
+                return false;
+            }
+            string targetMethod = Options.Options.OfType<TargetMethod>().Single().MethodName;
+            var typeOptions = Options.Options.OfType<ParameterType>().Select(p => p.ResolvedType).ToArray();
+            var result =
+                typeOptions.Any()
+                ? RunTests(matchedType.Assembly.Location, targetClass, targetMethod, typeOptions)
+                : RunTests(matchedType.Assembly.Location, targetClass, targetMethod);
+            if (string.IsNullOrEmpty(_message))
+            {
+                _message = string.Format(
+                    @"Mutation testing {0}",
+                    result ? "passed" : "failed");
+            }
+            return result;
+        }
+
+        private bool RunMutationTestsForAllClassAndMethods()
+        {
+            bool result = true;
+
+            var nspace = Options.Options.OfType<TargetNamespace>().Single().NamespaceName;
+            var testAssembly = Assembly.LoadFrom(_testAssemblyLocation);
+            var matchedTypes = TypeResolver.ResolveNamespaceTypesFromReferences(testAssembly, nspace);
+            System.Console.WriteLine("testassembly : [{0}], matched types : [[{1}]]", testAssembly, string.Join("], [", matchedTypes.Select(t => t.FullName))); ////////////////
+            System.Console.WriteLine("{0} types matched under {1}", matchedTypes.Length, nspace); ////////////////////
+            if (matchedTypes.Length == 0)
+            {
+                _message = string.Format(@"No types found under {0}", nspace);
+                return false;
+            }
+            foreach (var type in matchedTypes)
+            {
+                var resultBuf = RunMutationTestsForType(type, type.FullName);
+                result &= resultBuf;
+            }
+            if (!string.IsNullOrEmpty(_message))
+                return result;
+            _message = string.Format(@"Mutation testing {0}", result ? "passed" : "failed");
+            return result;
+        }
+
+        private bool RunMutationTestsForType(Type type, string targetClass)
+        {
+            bool result = true;
+
+            var assemblyDefinition = AssemblyDefinition.ReadAssembly(type.Assembly.Location);
+            var targetType = assemblyDefinition.MainModule.Types.FirstOrDefault(t => t.FullName == targetClass);
+            foreach (var methodInfo in targetType.Methods.Where(m => m.HasBody && m.Name != Methods.STATIC_CONSTRUCTOR))
+            {
+                string targetMethod = methodInfo.Name;
+                string methodReturnType = methodInfo.ReturnType.FullName;
+                var methodsGenerics = methodInfo.GenericParameters.ToArray();
+                var parameterTypes = methodInfo.Parameters.Select(p => p.ParameterType).ToArray();
+                bool runResultBuf = RunTests(type.Assembly.Location, targetClass, methodReturnType, targetMethod, methodsGenerics, parameterTypes);
+                result &= runResultBuf;
+            }
+            return result;
+        }
+
+        private bool RunTests(string targetAssemblyLocation, string targetClass, string returnType, string targetMethod, GenericParameter[] methodGenerics, TypeReference[] parameterTypes)
+        {
+            var parameterList = parameterTypes == null || parameterTypes.Length == 0
+                                    ? null
+                                    : string.Join(", ", parameterTypes.Select(t => t.Name).ToArray());
+            OutputMethod(targetClass, targetMethod, parameterList);
+            MutationTest mutationTest =
+                parameterTypes == null
+                    ? (MutationTest)MutationTestBuilder.For(targetAssemblyLocation, targetClass, returnType, targetMethod, methodGenerics, _testDispatcherStreamOut, _testDispatcherStreamIn)
+                    : (MutationTest)MutationTestBuilder.For(targetAssemblyLocation, targetClass, returnType, targetMethod, methodGenerics, _testDispatcherStreamOut, _testDispatcherStreamIn, parameterTypes);
+            mutationTest.TestAssemblyLocation = _testAssemblyLocation;
+            var result = BuildAndRunMutationTest(mutationTest);
+            return result;
+        }
+
+        private bool RunTests(string targetAssemblyLocation, string targetClass, string targetMethod, Type[] parameterTypes = null)
+        {
+            var parameterList = parameterTypes == null || parameterTypes.Length == 0
+                                    ? null
+                                    : string.Join(", ", parameterTypes.Select(t => t.Name).ToArray());
+            OutputMethod(targetClass, targetMethod, parameterList);
+            MutationTest mutationTest =
+                parameterTypes == null
+                    ? (MutationTest)MutationTestBuilder.For(targetAssemblyLocation, targetClass, targetMethod, _testDispatcherStreamOut, _testDispatcherStreamIn)
+                    : (MutationTest)MutationTestBuilder.For(targetAssemblyLocation, targetClass, targetMethod, _testDispatcherStreamOut, _testDispatcherStreamIn, parameterTypes);
+            mutationTest.TestAssemblyLocation = _testAssemblyLocation;
+            var result = BuildAndRunMutationTest(mutationTest);
+            return result;
+        }
+
+        private bool BuildAndRunMutationTest(MutationTest mutationTest)
+        {
+            var outputOption = Options.Options.OfType<Output>().FirstOrDefault();
+            if (outputOption != null)
+            {
+                string outputPath = Path.Combine(Environment.CurrentDirectory, outputOption.FileName);
+                mutationTest.MergeReportTo(outputPath);
+            }
+            bool result = false;
+            try
+            {
+                mutationTest.Run();
+                result = true;
+            }
+            catch (MutationTestFailureException)
+            {
+            }
+            catch (Exception ex)
+            {
+                //Debugger.Launch();
+                _message =
+                    @"
+An exception was thrown setting up the mutation tests. The exception details
+are below. If you are unable to resolve the problem from these details, please
+post the details in our issue tracker at:
+
+http://ninjaturtles.codeplex.com/workitem/list/basic
+
+Exception details:
+
+" + ex;
+            }
+            _report.MergeMutationTestReport(mutationTest.Report);
+            return result;
+        }
+
         private Func<Boolean> ConfigureRun()
         {
             var runnerMethod = Options.Options.Any(o => o is TargetNamespace) ? RunMutationTestsForAllClassAndMethods
@@ -254,114 +420,6 @@ Example:
             File.Delete(tempPath);
         }
 
-        private bool RunMutationTestsForClass()
-        {
-            string targetClass = Options.Options.OfType<TargetClass>().Single().ClassName;
-            var testAssembly = Assembly.LoadFrom(_testAssemblyLocation);
-            var matchedType = TypeResolver.ResolveTypeFromReferences(testAssembly, targetClass);
-            if (matchedType == null)
-            {
-                _message = string.Format(@"Unknown type '{0}'", targetClass);
-                return false;
-            }
-            var assemblyDefinition = AssemblyDefinition.ReadAssembly(matchedType.Assembly.Location);
-            var targetType = assemblyDefinition.MainModule.Types.FirstOrDefault(t => t.FullName == targetClass);
-            bool result = true;
-            foreach (var methodInfo in targetType.Methods
-                .Where(m => m.HasBody && m.Name != Methods.STATIC_CONSTRUCTOR))
-            {
-                string targetMethod = methodInfo.Name;
-                string methodReturnType = methodInfo.ReturnType.FullName;
-                var methodsGenerics = methodInfo.GenericParameters.ToArray();
-                var parameterTypes = methodInfo.Parameters.Select(p => p.ParameterType).ToArray();
-                bool runResultBuf = RunTests(matchedType.Assembly.Location, targetClass, methodReturnType, targetMethod, methodsGenerics, parameterTypes);
-                result &= runResultBuf;
-            }
-            if (string.IsNullOrEmpty(_message))
-            {
-                _message = string.Format(
-                    @"Mutation testing {0}",
-                    result ? "passed" : "failed");
-            }
-            return result;
-        }
-
-        private bool RunMutationTestsForClassAndMethod()
-        {
-            string targetClass = Options.Options.OfType<TargetClass>().Single().ClassName;
-            var testAssembly = Assembly.LoadFrom(_testAssemblyLocation);
-            var matchedType = TypeResolver.ResolveTypeFromReferences(testAssembly, targetClass);
-            if (matchedType == null)
-            {
-                _message = string.Format(@"Unknown type '{0}'", targetClass);
-                return false;
-            }
-            string targetMethod = Options.Options.OfType<TargetMethod>().Single().MethodName;
-            var typeOptions = Options.Options.OfType<ParameterType>().Select(p => p.ResolvedType).ToArray();
-            var result = 
-                typeOptions.Any()
-                ? RunTests(matchedType.Assembly.Location, targetClass, targetMethod, typeOptions)
-                : RunTests(matchedType.Assembly.Location, targetClass, targetMethod);
-            if (string.IsNullOrEmpty(_message))
-            {
-                _message = string.Format(
-                    @"Mutation testing {0}",
-                    result ? "passed" : "failed");
-            }
-            return result;
-        }
-
-        private bool RunTests(string targetAssemblyLocation, string targetClass, string returnType, string targetMethod, GenericParameter[] methodGenerics, TypeReference[] parameterTypes)
-        {
-            var parameterList = parameterTypes == null || parameterTypes.Length == 0
-                                    ? null
-                                    : string.Join(", ", parameterTypes.Select(t => t.Name).ToArray());
-            OutputMethod(targetClass, targetMethod, parameterList);
-            MutationTest mutationTest =
-                parameterTypes == null
-                    ? (MutationTest)MutationTestBuilder.For(targetAssemblyLocation, targetClass, returnType, targetMethod, methodGenerics, _testDispatcherStreamOut, _testDispatcherStreamIn)
-                    : (MutationTest)MutationTestBuilder.For(targetAssemblyLocation, targetClass, returnType, targetMethod, methodGenerics, _testDispatcherStreamOut, _testDispatcherStreamIn, parameterTypes);
-            mutationTest.TestAssemblyLocation = _testAssemblyLocation;
-            var result = BuildAndRunMutationTest(mutationTest);
-            return result;
-        }
-
-        private bool BuildAndRunMutationTest(MutationTest mutationTest)
-        {
-            var outputOption = Options.Options.OfType<Output>().FirstOrDefault();
-            if (outputOption != null)
-            {
-                string outputPath = Path.Combine(Environment.CurrentDirectory, outputOption.FileName);
-                mutationTest.MergeReportTo(outputPath);
-            }
-            bool result = false;
-            try
-            {
-                mutationTest.Run();
-                result = true;
-            }
-            catch (MutationTestFailureException)
-            {
-            }
-            catch (Exception ex)
-            {
-                //Debugger.Launch();
-                _message =
-                    @"
-An exception was thrown setting up the mutation tests. The exception details
-are below. If you are unable to resolve the problem from these details, please
-post the details in our issue tracker at:
-
-http://ninjaturtles.codeplex.com/workitem/list/basic
-
-Exception details:
-
-" + ex;
-            }
-            _report.MergeMutationTestReport(mutationTest.Report);
-            return result;
-        }
-
         private static void OutputMethod(string targetClass, string targetMethod, string parameterList)
         {
             if (string.IsNullOrEmpty(parameterList))
@@ -380,22 +438,7 @@ Exception details:
                     parameterList);
             }
         }
-        
-        private bool RunTests(string targetAssemblyLocation, string targetClass, string targetMethod, Type[] parameterTypes = null)
-        {
-            var parameterList = parameterTypes == null || parameterTypes.Length == 0
-                                    ? null
-                                    : string.Join(", ", parameterTypes.Select(t => t.Name).ToArray());
-            OutputMethod(targetClass, targetMethod, parameterList);
-            MutationTest mutationTest =
-                parameterTypes == null
-                    ? (MutationTest)MutationTestBuilder.For(targetAssemblyLocation, targetClass, targetMethod, _testDispatcherStreamOut, _testDispatcherStreamIn)
-                    : (MutationTest)MutationTestBuilder.For(targetAssemblyLocation, targetClass, targetMethod, _testDispatcherStreamOut, _testDispatcherStreamIn, parameterTypes);
-            mutationTest.TestAssemblyLocation = _testAssemblyLocation;
-            var result = BuildAndRunMutationTest(mutationTest);
-            return result;
-        }
-        
+                
         private bool RunAllMutationTestsInAssembly()
         {
             var testAssembly = Assembly.LoadFrom(_testAssemblyLocation);
@@ -430,49 +473,6 @@ Exception details:
                 tests - failures,
                 failures);
             return tests > 0 && failures == 0;
-        }
-
-        private bool RunMutationTestsForType(Type type, string targetClass)
-        {
-            bool result = true;
-
-            var assemblyDefinition = AssemblyDefinition.ReadAssembly(type.Assembly.Location);
-            var targetType = assemblyDefinition.MainModule.Types.FirstOrDefault(t => t.FullName == targetClass);
-            foreach (var methodInfo in targetType.Methods.Where(m => m.HasBody && m.Name != Methods.STATIC_CONSTRUCTOR))
-            {
-                string targetMethod = methodInfo.Name;
-                string methodReturnType = methodInfo.ReturnType.FullName;
-                var methodsGenerics = methodInfo.GenericParameters.ToArray();
-                var parameterTypes = methodInfo.Parameters.Select(p => p.ParameterType).ToArray();
-                bool runResultBuf = RunTests(type.Assembly.Location, targetClass, methodReturnType, targetMethod, methodsGenerics, parameterTypes);
-                result &= runResultBuf;
-            }
-            return result;
-        }
-
-        private bool RunMutationTestsForAllClassAndMethods()
-        {
-            bool result = true;
-
-            var nspace = Options.Options.OfType<TargetNamespace>().Single().NamespaceName;
-            var testAssembly = Assembly.LoadFrom(_testAssemblyLocation);
-            var matchedTypes = TypeResolver.ResolveNamespaceTypesFromReferences(testAssembly, nspace);
-            System.Console.WriteLine("testassembly : [{0}], matched types : [[{1}]]", testAssembly, string.Join("], [", matchedTypes.Select(t => t.FullName))); ////////////////
-            System.Console.WriteLine("{0} types matched under {1}", matchedTypes.Length, nspace); ////////////////////
-            if (matchedTypes.Length == 0)
-            {
-                _message = string.Format(@"No types found under {0}", nspace);
-                return false;
-            }
-            foreach (var type in matchedTypes)
-            {
-                var resultBuf = RunMutationTestsForType(type, type.FullName);
-                result &= resultBuf;
-            }
-            if (!string.IsNullOrEmpty(_message))
-                return result;
-            _message = string.Format(@"Mutation testing {0}", result ? "passed" : "failed");
-            return result;
         }
     }
 }
