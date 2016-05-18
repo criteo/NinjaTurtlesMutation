@@ -1,6 +1,52 @@
-Project readme file for NinjaTurtles.
+#NinjaTurtlesMutation
 
-Prerequisites
-=============
+NinjaTurtlesMutation is a fork of [NinjaTurtles]. It aim to provide a fast mutation testing tool for
+codebase using [NUnit v2.6.4] for their tests.
 
-Visual Studio 2010. It's recommended that you have NuGet and JetBrains ReSharper 6+ installed.
+##Prerequisites
+##-------------
+
+* Visual Studio 2010+. It's recommended that you have NuGet and JetBrains ReSharper 6+ installed.
+* .NET Framework v4.5+
+
+##Installing
+##----------
+
+*For the sake of simplicity, the followings steps assume that you are using a sh-like terminal*
+
+###Clone the repository
+
+`git clone https://github.com/TonyRoussel/NinjaTurtlesMutation.git`
+
+**Download/clone the repository** wherever you want. Just keep in mind that the executable you'll use
+will be located in path/to/your/clone/NinjaTurtles.Console/bin/Debug
+
+###Set the PATH to the executable
+
+`export PATH=$PATH:"path/to/your/clone/NinjaTurtles.Console/bin/Debug"`
+
+###Build NinjaTurtlesMutation
+
+From the repo's root, **open NinjaTurtlesMutation.sln and hit F6** to build NTM with the test
+assembly. *If you doesn't want to build the test, in the Solution Explorer select all the projects
+except NinjaTurtles.Tests and hit Shift + F6*
+
+At this point everything is ready. In NinjaTurtles.Console/bin/Debug, you should have 3 executables:
+- **NinjaTurtles.Console.exe**
+- **testdispatcher.exe**
+- **testrunner.exe**
+
+##Usage
+##-----
+
+##Running the tests
+##-----------------
+
+##Licence
+##-------
+
+##Authors
+##-------
+
+##Acknowledgements
+##---------------
