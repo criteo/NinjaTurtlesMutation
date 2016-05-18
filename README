@@ -36,16 +36,50 @@ assembly.
 If you doesn't want to build the test, in the Solution Explorer select all the projects
 except NinjaTurtles.Tests and hit Shift + F6
 
+OR to build from command-line:
+
+/c/Windows/Microsoft.NET/Framework/v4.0.30319/MSBuild.exe NinjaTurtlesMutation.sln
+
 At this point everything is ready. In NinjaTurtles.Console/bin/Debug, you should have 3 executables:
 - NinjaTurtles.Console.exe
 - testdispatcher.exe
 - testrunner.exe
 
+Running the tests
+=================
+
 Usage
 =====
 
-Running the tests
-=================
+To illustrate basic usages, I'll use a dummy solution with two projects. One for the library,
+one for the tests
+
+    | PrimeFinderMutationPlayground
+        | PrimeFinderMutationPlayground.IDummy
+        | PrimeFinderMutationPlayground.Dummy
+        | PrimeFinderMutationPlayground.PrimeFinder
+    | PrimeFinder.UTest
+        | PrimeFinder.UTest.T_PrimeMutationPlayground
+
+The library have one namespace (PrimeFinderMutationPlayground) with three classes, and the test
+library have one namespace (PrimeFinder.UTest) with one class. When build, the test project produce
+the assembly PrimeFinder.UTest.dll
+
+Test a class
+------------
+
+NinjaTurtlesMutation.Console.exe run -c PrimeFinderMutationPlayground.PrimeFinder path/to/test/assembly/PrimeFinder.UTest.dll
+
+This command will start a mutation tests on all the methods contained in the PrimeFinder class
+During his progress, NTM will display the full name of each method tested.
+At the end it will display a list of methods without tests, and a list of surviving mutant sorted
+by files, line and kind
+
+///OUTPUT
+///OUTPUT
+///OUTPUT
+///OUTPUT
+
 
 Differences with NinjaTurtles
 =============================
