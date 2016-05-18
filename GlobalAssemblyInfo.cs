@@ -26,10 +26,10 @@ using System.Reflection;
 #else
 [assembly: AssemblyConfiguration("Release")]
 #endif
-[assembly: AssemblyCompany("NinjaTurtles")]
-[assembly: AssemblyProduct("NinjaTurtles")]
-[assembly: AssemblyCopyright("Copyright © 2012 David Musgrove")]
+[assembly: AssemblyCompany("NinjaTurtlesMutation")]
+[assembly: AssemblyProduct("NinjaTurtlesMutation")]
+[assembly: AssemblyCopyright("Copyright © 2016 Tony Roussel")]
 
-[assembly: AssemblyVersion("0.9.0.0")]
-[assembly: AssemblyInformationalVersion("BETA 0.9.0.0")]
-[assembly: AssemblyFileVersion("0.9.0.0")]
+[assembly: AssemblyVersion("1.0")]
+[assembly: AssemblyInformationalVersion("BETA 1.0")]
+[assembly: AssemblyFileVersion("1.0")]

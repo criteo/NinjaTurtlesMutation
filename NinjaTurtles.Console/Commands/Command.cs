@@ -110,8 +110,7 @@ namespace NinjaTurtles.Console.Commands
                     @"NinjaTurtles - mutation testing for .NET (version {0})",
                     typeof(Command).Assembly.GetName().Version);
                 OutputWriter.WriteLine(
-                    @"Copyright (C) 2012-14 David Musgrove.
-For the latest version, visit http://www.mutation-testing.net.");
+                    @"Copyright (C) 2016 Tony Roussel.");
             }
             OutputWriter.WriteLine();
         }
