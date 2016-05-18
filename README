@@ -1,52 +1,88 @@
-#NinjaTurtlesMutation
+NinjaTurtlesMutation
+====================
 
-NinjaTurtlesMutation is a fork of [NinjaTurtles]. It aim to provide a fast mutation testing tool for
-codebase using [NUnit v2.6.4] for their tests.
+NinjaTurtlesMutation is a fork of NinjaTurtles. It aim to provide a fast mutation testing tool for
+codebases using NUnit v2.6.4 as their unit test framework.
 
-##Prerequisites
-##-------------
+Prerequisites
+=============
 
-* Visual Studio 2010+. It's recommended that you have NuGet and JetBrains ReSharper 6+ installed.
-* .NET Framework v4.5+
+- Visual Studio 2010+. It's recommended that you have NuGet and JetBrains ReSharper 6+ installed.
+- .NET Framework v4.5+
 
-##Installing
-##----------
+Installing
+==========
 
-*For the sake of simplicity, the followings steps assume that you are using a sh-like terminal*
+For the sake of simplicity, the followings steps assume that you are using a sh-like terminal
 
-###Clone the repository
+Clone the repository
+--------------------
 
-`git clone https://github.com/TonyRoussel/NinjaTurtlesMutation.git`
+git clone https://github.com/TonyRoussel/NinjaTurtlesMutation.git
 
-**Download/clone the repository** wherever you want. Just keep in mind that the executable you'll use
+Download/clone the repository wherever you want. Just keep in mind that the executable you'll use
 will be located in path/to/your/clone/NinjaTurtles.Console/bin/Debug
 
-###Set the PATH to the executable
+Set the PATH to the executable
+------------------------------
 
-`export PATH=$PATH:"path/to/your/clone/NinjaTurtles.Console/bin/Debug"`
+export PATH=$PATH:"path/to/your/clone/NinjaTurtles.Console/bin/Debug"
 
-###Build NinjaTurtlesMutation
+Build NinjaTurtlesMutation
+--------------------------
 
-From the repo's root, **open NinjaTurtlesMutation.sln and hit F6** to build NTM with the test
-assembly. *If you doesn't want to build the test, in the Solution Explorer select all the projects
-except NinjaTurtles.Tests and hit Shift + F6*
+From the repo's root, open NinjaTurtlesMutation.sln and hit F6 to build NTM with the test
+assembly.
+If you doesn't want to build the test, in the Solution Explorer select all the projects
+except NinjaTurtles.Tests and hit Shift + F6
 
 At this point everything is ready. In NinjaTurtles.Console/bin/Debug, you should have 3 executables:
-- **NinjaTurtles.Console.exe**
-- **testdispatcher.exe**
-- **testrunner.exe**
+- NinjaTurtles.Console.exe
+- testdispatcher.exe
+- testrunner.exe
 
-##Usage
-##-----
+Usage
+=====
 
-##Running the tests
-##-----------------
+Running the tests
+=================
 
-##Licence
-##-------
+Differences with NinjaTurtles
+=============================
 
-##Authors
-##-------
+- Only compatible with tests made with NUnit (v2.6.4)
+- Have a namespace mode to tests several classes at once
+- Display a report of surviving mutants at the end of the console output
+- Tests run are completely separated from the NTM application. A dispatching process exchange tests
+  queries/results with NTM. The dispatcher also handle the workload between several test runner
+  processes
+- A NUnit.Core.RemoteTestRunner instance run the tests (no longer a nunit-console process)
+- Benchmark mutant's tests set to detect infinite loop quicker
+- Better handling of methods with generic parameters
+- The HTML report now include details about mutated line that survive
+- Use symlink instead of file copy for non-mutated assembly
+- Stability improvement
 
-##Acknowledgements
-##---------------
+Licence
+=======
+
+GPL Version 3, 29 June 2007
+More details in the LICENSE file
+
+Authors
+=======
+
+Tony Roussel
+
+David Musgrove - NinjaTurtles owner
+Gordon Burgett - NinjaTurtles owner
+Paul Saunders  - NinjaTurtles owner
+
+A complete list of the original NinjaTurtles contributors can be found at
+http://ninjaturtles.codeplex.com/team/view
+
+Copyrights
+==========
+
+Copyright (C) 2016 Tony Roussel
+Copyright (C) 2012 David Musgrove
