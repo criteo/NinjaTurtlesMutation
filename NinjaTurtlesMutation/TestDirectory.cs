@@ -60,7 +60,7 @@ namespace NinjaTurtlesMutation
         public TestDirectory()
 		{
             _folder = Path.Combine(Path.GetTempPath(),
-                                   "NinjaTurtles",
+                                   "NinjaTurtlesMutation",
                                    Guid.NewGuid().ToString("N"));
             _log.Debug("Creating folder \"{0}\".", _folder);
             Directory.CreateDirectory(_folder);

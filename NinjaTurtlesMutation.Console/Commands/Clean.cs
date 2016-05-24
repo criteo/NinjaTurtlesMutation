@@ -61,7 +61,7 @@ Example:
         {
             bool result = true;
 
-            string testFolderLocation = Path.Combine(Path.GetTempPath(), "NinjaTurtles");
+            string testFolderLocation = Path.Combine(Path.GetTempPath(), "NinjaTurtlesMutation");
             var testFolder = new DirectoryInfo(testFolderLocation);
             int count = 0;
             int failures = 0;
