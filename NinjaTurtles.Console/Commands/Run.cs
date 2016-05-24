@@ -63,7 +63,7 @@ Options:
                                   method name is specified, all methods in the class are
                                   identified, and mutation testing applied for each of
                                   them.
-   --format [f]                 : Specifies the format for the output file specified by
+   --format [-f]                 : Specifies the format for the output file specified by
                                   the --output option. By default, this will be XML, but
                                   HTML can be specified here to transform the results
                                   into displayable format.
