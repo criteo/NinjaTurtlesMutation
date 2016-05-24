@@ -118,7 +118,7 @@
     <Compile Include="Reporting\SourceFileReportSummary.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\NinjaTurtles\NinjaTurtlesMutation.csproj">
+    <ProjectReference Include="..\NinjaTurtlesMutation\NinjaTurtlesMutation.csproj">
       <Project>{56AFCF77-0818-4B5C-8099-1CCC5D611282}</Project>
       <Name>NinjaTurtlesMutation</Name>
     </ProjectReference>

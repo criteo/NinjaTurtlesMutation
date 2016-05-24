@@ -119,7 +119,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\NinjaTurtles\NinjaTurtlesMutation.csproj">
+    <ProjectReference Include="..\NinjaTurtlesMutation\NinjaTurtlesMutation.csproj">
       <Project>{56afcf77-0818-4b5c-8099-1ccc5d611282}</Project>
       <Name>NinjaTurtlesMutation</Name>
     </ProjectReference>
