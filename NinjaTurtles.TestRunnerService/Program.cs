@@ -6,7 +6,7 @@ using NinjaTurtlesMutation.AppDomainIsolation.Adaptor;
 using NinjaTurtlesMutation.ServiceTestRunnerLib;
 using NinjaTurtlesMutation.ServiceTestRunnerLib.Utilities;
 
-namespace NinjaTurtles.TestRunnerService
+namespace NinjaTurtlesMutation.Runner
 {
     class Program
     {
