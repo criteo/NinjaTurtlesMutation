@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using NinjaTurtlesMutation.ServiceTestRunnerLib;
 using NinjaTurtlesMutation.ServiceTestRunnerLib.Utilities;
 
-namespace NinjaTurtles.TestDispatcher
+namespace NinjaTurtlesMutation.TestDispatcher
 {
     class Program
     {
