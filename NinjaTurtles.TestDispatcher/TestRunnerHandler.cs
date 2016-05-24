@@ -26,7 +26,7 @@ namespace NinjaTurtlesMutation.TestDispatcher
             runnerStreamIn = new StreamReader(_runnerPipeIn);
             runnerStreamOut = new StreamWriter(_runnerPipeOut);
             _runnerProcess = new Process();
-            _runnerProcess.StartInfo.FileName = "testrunner.exe";
+            _runnerProcess.StartInfo.FileName = "NTMRunner.exe";
             _runnerProcess.StartInfo.UseShellExecute = false;
             _runnerProcess.StartInfo.Arguments = _runnerPipeOut.GetClientHandleAsString() + " " +
                                                 _runnerPipeIn.GetClientHandleAsString();
