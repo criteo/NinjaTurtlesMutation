@@ -49,9 +49,9 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\NinjaTurtles\NinjaTurtles.csproj">
+    <ProjectReference Include="..\NinjaTurtles\NinjaTurtlesMutation.csproj">
       <Project>{56AFCF77-0818-4B5C-8099-1CCC5D611282}</Project>
-      <Name>NinjaTurtles</Name>
+      <Name>NinjaTurtlesMutation</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
