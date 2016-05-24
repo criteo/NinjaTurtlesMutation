@@ -1,55 +1,48 @@
-NinjaTurtlesMutation
-====================
+# NinjaTurtlesMutation
 
-NinjaTurtlesMutation is a fork of NinjaTurtles. It aim to provide a fast mutation testing tool for
+If you're not familiar with what is mutation testing, [this article](http://www.codeaffine.com/2015/10/05/what-the-heck-is-mutation-testing/) give a good explanation on the
+java case.
+
+NinjaTurtlesMutation is a fork of [NinjaTurtles](http://ninjaturtles.codeplex.com/). It aim to provide a fast mutation testing tool for
 codebases using NUnit v2.6.4 as their unit test framework.
 
-Prerequisites
-=============
+## Prerequisites
 
 - Visual Studio 2010+. It's recommended that you have NuGet and JetBrains ReSharper 6+ installed.
 - .NET Framework v4.5+
 
-Installing
-==========
+## Installing
 
-For the sake of simplicity, the followings steps assume that you are using a sh-like terminal
+**The followings steps assume that you are using a sh-like terminal**
 
-Clone the repository
---------------------
+#### Clone the repository
 
-git clone https://github.com/TonyRoussel/NinjaTurtlesMutation.git
+`git clone git@github.com:criteo/NinjaTurtlesMutation.git`
 
-Download/clone the repository wherever you want. Just keep in mind that the executable you'll use
-will be located in path/to/your/clone/NinjaTurtles.Console/bin/Debug
+**Download/clone the repository wherever you want.** Just keep in mind that the executable you'll use
+will be located in path/to/your/clone/NinjaTurtlesMutation.Console/bin/Debug
 
-Set the PATH to the executable
-------------------------------
+#### Set the PATH to the executable
 
-export PATH=$PATH:"path/to/your/clone/NinjaTurtles.Console/bin/Debug"
+`export PATH=$PATH:"path/to/your/clone/NinjaTurtlesMutation.Console/bin/Debug"`
 
-Build NinjaTurtlesMutation
---------------------------
+#### Build NinjaTurtlesMutation
 
-From the repo's root, open NinjaTurtlesMutation.sln and hit F6 to build NTM with the test
+**From the repo's root, open NinjaTurtlesMutation.sln and hit F6** to build NTM with the test
 assembly.
-If you doesn't want to build the test, in the Solution Explorer select all the projects
-except NinjaTurtles.Tests and hit Shift + F6
+*If you doesn't want to build the test, in the Solution Explorer select all the projects
+except NinjaTurtles.Tests and hit Shift + F6*
 
-OR to build from command-line:
+*OR to build from command-line:*
 
-/c/Windows/Microsoft.NET/Framework/v4.0.30319/MSBuild.exe NinjaTurtlesMutation.sln
+`/c/Windows/Microsoft.NET/Framework/v4.0.30319/MSBuild.exe NinjaTurtlesMutation.sln`
 
-At this point everything is ready. In NinjaTurtles.Console/bin/Debug, you should have 3 executables:
-- NinjaTurtles.Console.exe
+At this point everything is ready. In NinjaTurtlesMutation.Console/bin/Debug, you should have 3 executables:
+- NinjaTurtlesMutation.Console.exe
 - testdispatcher.exe
 - testrunner.exe
 
-Running the tests
-=================
-
-Usage
-=====
+## Usage
 
 To illustrate basic usages, I'll use a dummy solution with two projects. One for the library,
 one for the tests
@@ -61,62 +54,146 @@ one for the tests
     | PrimeFinder.UTest
         | PrimeFinder.UTest.T_PrimeMutationPlayground
 
-The library have one namespace (PrimeFinderMutationPlayground) with three classes, and the test
-library have one namespace (PrimeFinder.UTest) with one class. When build, the test project produce
-the assembly PrimeFinder.UTest.dll
+The library have one namespace (PrimeFinderMutationPlayground) with three classes. The test
+library have one namespace (PrimeFinder.UTest) with one class.
 
-Test a class
-------------
+#### Test a class
 
-NinjaTurtlesMutation.Console.exe run -c PrimeFinderMutationPlayground.PrimeFinder path/to/test/assembly/PrimeFinder.UTest.dll
+`NinjaTurtlesMutation.Console.exe run -c PrimeFinderMutationPlayground.PrimeFinder path/to/test/assembly/PrimeFinder.UTest.dll`
 
-This command will start a mutation tests on all the methods contained in the PrimeFinder class
+This command will start a mutation test on all the methods contained in the PrimeFinder class.
 During his progress, NTM will display the full name of each method tested.
-At the end it will display a list of methods without tests, and a list of surviving mutant sorted
-by files, line and kind
+This output the following:
 
-///OUTPUT
-///OUTPUT
-///OUTPUT
-///OUTPUT
+```
+NinjaTurtles - mutation testing for .NET (version 1.0.0.0)
+Copyright (C) 2016 Tony Roussel.
+
+Running mutation tests for PrimeFinderMutationPlayground.PrimeFinder.IsPrime(Int32)
+Running mutation tests for PrimeFinderMutationPlayground.PrimeFinder.IsPrimed(Int32, IDummy)
+Running mutation tests for PrimeFinderMutationPlayground.PrimeFinder..ctor
+
+Surviving mutants:
+  c:\Users\t.roussel\PrimeFinder\PrimeFinderMutationPlayground\PrimeFinderMutationPlayground\PrimeFinder.cs
+      Line 20
+          Deleting sequence points from IL.                                 (1)
+              000c: deleting Ldstr, Newobj, Throw
+
+[...]
+
+      Line 26
+          Deleting sequence points from IL.                                 (1)
+              0035: deleting Ldc_I4, Stloc, Br
+
+          Replacing writes to local variables and fields.                   (1)
+              0036: write substitution Boolean.CS$1$0000 => Boolean.CS$4$0001
 
 
-Differences with NinjaTurtles
-=============================
+
+
+Mutation score: 0,88 (77 / 88)
+Mutation testing failed
+```
+
+At the bottom, NTM display the mutation score (0.88): which is the ratio between mutants killed over
+mutants generated *(77 / 88)*. The higher the better, capping at 1.
+
+Above the mutation score, the surviving mutants are described. The listing is sorted by files, lines
+and then mutation type. The number in parenthesis is the number of mutant generated by this kind of
+mutation operator, at this line. For each of this mutant, the details of the IL modifications is
+printed.
+
+And then on top of the surviving mutants list, NTM displayed the methods tested. Here we can see
+that 3 methods were found inside the PrimeFinder class.
+
+**TL;DR:** From bottom to top, you can find the result of the mutation test (fail/success),
+the mutation score, details about the surviving mutants, and the methods that NTM has tested.
+
+#### Test all classes in a namespace
+
+`NinjaTurtlesMutation.Console.exe run -N PrimeFinderMutationPlayground path/to/test/assembly/PrimeFinder.UTest.dll`
+
+This command will start a mutation test on all the methods, of every classes contained in the 
+PrimeFinderMutationPlayground namespace.
+The output structure is like the "class mode" described in the previous section, except it will
+cover more methods:
+
+```
+NinjaTurtles - mutation testing for .NET (version 1.0.0.0)
+Copyright (C) 2016 Tony Roussel.
+
+Running mutation tests for PrimeFinderMutationPlayground.Dummy..ctor
+Running mutation tests for PrimeFinderMutationPlayground.PrimeFinder.IsPrime(Int32)
+Running mutation tests for PrimeFinderMutationPlayground.PrimeFinder.IsPrimed(Int32, IDummy)
+Running mutation tests for PrimeFinderMutationPlayground.PrimeFinder..ctor
+
+Surviving mutants:
+  c:\Users\t.roussel\PrimeFinder\PrimeFinderMutationPlayground\PrimeFinderMutationPlayground\PrimeFinder.cs
+      Line 20
+          Deleting sequence points from IL.                                 (1)
+              000c: deleting Ldstr, Newobj, Throw
+
+[...]
+
+Mutation score: 0,88 (77 / 88)
+Mutation testing failed
+```
+
+#### Generate a file report
+
+You can generate two kind of reports: XML and HTML.
+
+They **both contain** the path and code of the original source files, the mutated lines listing, and
+which one survive.
+
+The html file is built from the xml. So **some of the informations can only be found in the xml report.**
+These informations include the start/end lines/columns of the mutations (a mutation can span on
+several line), and details of IL changes made for each mutants, even the one that has been killed.
+
+##### I want the html report !
+
+Like the xml report use `--output [-o]` to specify a filename and set the format with the `--format [-f]`
+option as follow:
+
+`NinjaTurtlesMutation.Console.exe run -o mutation_report.html -f HTML -N PrimeFinderMutationPlayground PrimeFinder.UTest.dll`
+
+//////////OUTPUT
+
+##### I want the xml report !
+
+Use the `--output [-o]` option, and give a filename with it. It should look like this:
+
+`NinjaTurtlesMutation.Console.exe run -o mutation_report.xml -N PrimeFinderMutationPlayground PrimeFinder.UTest.dll`
+
+//////////OUTPUT
+
+## Differences with NinjaTurtles
 
 - Only compatible with tests made with NUnit (v2.6.4)
 - Have a namespace mode to tests several classes at once
-- Display a report of surviving mutants at the end of the console output
+- Display a report of surviving mutants in the console output
 - Tests run are completely separated from the NTM application. A dispatching process exchange tests
   queries/results with NTM. The dispatcher also handle the workload between several test runner
   processes
 - A NUnit.Core.RemoteTestRunner instance run the tests (no longer a nunit-console process)
 - Benchmark mutant's tests set to detect infinite loop quicker
 - Better handling of methods with generic parameters
-- The HTML report now include details about mutated line that survive
+- The HTML report include details about mutated line that survive
 - Use symlink instead of file copy for non-mutated assembly
 - Stability improvement
 
-Licence
-=======
+## Licence
 
 GPL Version 3, 29 June 2007
 More details in the LICENSE file
 
-Authors
-=======
+## Authors
 
 Tony Roussel
 
-David Musgrove - NinjaTurtles owner
-Gordon Burgett - NinjaTurtles owner
-Paul Saunders  - NinjaTurtles owner
+A list of the original NinjaTurtles project's owners and contributors can be found at http://ninjaturtles.codeplex.com/team/view
 
-A complete list of the original NinjaTurtles contributors can be found at
-http://ninjaturtles.codeplex.com/team/view
-
-Copyrights
-==========
+## Copyrights
 
 Copyright (C) 2016 Tony Roussel
 Copyright (C) 2012 David Musgrove
