@@ -4,7 +4,7 @@ using System.IO.Pipes;
 using NinjaTurtlesMutation.ServiceTestRunnerLib;
 using NinjaTurtlesMutation.ServiceTestRunnerLib.Utilities;
 
-namespace NinjaTurtlesMutation.TestDispatcher
+namespace NinjaTurtlesMutation.Dispatcher
 {
     internal class TestRunnerHandler
     {
