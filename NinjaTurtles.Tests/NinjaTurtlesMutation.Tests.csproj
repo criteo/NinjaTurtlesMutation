@@ -7,8 +7,8 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{688A032D-2BE0-4BE0-85A4-57AA9379F314}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>NinjaTurtles.Tests</RootNamespace>
-    <AssemblyName>NinjaTurtles.Tests</AssemblyName>
+    <RootNamespace>NinjaTurtlesMutation.Tests</RootNamespace>
+    <AssemblyName>NinjaTurtlesMutation.Tests</AssemblyName>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
     <RestorePackages>true</RestorePackages>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>

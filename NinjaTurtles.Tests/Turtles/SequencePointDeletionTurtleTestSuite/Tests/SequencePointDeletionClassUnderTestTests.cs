@@ -21,7 +21,7 @@
 
 using NUnit.Framework;
 
-namespace NinjaTurtles.Tests.Turtles.SequencePointDeletionTurtleTestSuite.Tests
+namespace NinjaTurtlesMutation.Tests.Turtles.SequencePointDeletionTurtleTestSuite.Tests
 {
     [TestFixture]
     public class SequencePointDeletionClassUnderTestTests

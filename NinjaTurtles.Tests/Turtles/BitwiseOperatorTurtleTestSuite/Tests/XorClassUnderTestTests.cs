@@ -21,9 +21,7 @@
 
 using NUnit.Framework;
 
-using NinjaTurtles.Tests.TestUtilities;
-
-namespace NinjaTurtles.Tests.Turtles.BitwiseOperatorTurtleTestSuite.Tests
+namespace NinjaTurtlesMutation.Tests.Turtles.BitwiseOperatorTurtleTestSuite.Tests
 {
 	[TestFixture]
 	public class XorClassUnderTestTests

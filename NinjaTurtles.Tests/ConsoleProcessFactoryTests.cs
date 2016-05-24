@@ -20,10 +20,9 @@
 #endregion
 
 using System.IO;
-using NinjaTurtlesMutation;
 using NUnit.Framework;
 
-namespace NinjaTurtles.Tests
+namespace NinjaTurtlesMutation.Tests
 {
     [TestFixture]
     public class ConsoleProcessFactoryTests

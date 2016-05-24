@@ -21,9 +21,7 @@
 
 using NUnit.Framework;
 
-using NinjaTurtles.Tests.TestUtilities;
-
-namespace NinjaTurtles.Tests.Turtles.ArithmeticOperatorTurtleTestSuite.Tests
+namespace NinjaTurtlesMutation.Tests.Turtles.ArithmeticOperatorTurtleTestSuite.Tests
 {
 	[TestFixture]
 	public class AdditionClassUnderTestTests

@@ -19,16 +19,12 @@
 
 #endregion
 
-using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
-
+using NinjaTurtlesMutation;
+using NinjaTurtlesMutation.Tests.TestUtilities;
 using NUnit.Framework;
 
-using NinjaTurtles.Tests.TestUtilities;
-using NinjaTurtlesMutation;
-
-namespace NinjaTurtles.Tests
+namespace NinjaTurtlesMutation.Tests
 {
     [TestFixture]
     public class TypeResolverTests
@@ -36,7 +32,7 @@ namespace NinjaTurtles.Tests
         [Test]
         public void ResolveTypeFromReferences_Resolves_Within_Same_Assembly()
         {
-            var type = TypeResolver.ResolveTypeFromReferences(GetType().Assembly, "NinjaTurtles.Tests.TestUtilities.ConsoleCapturer");
+            var type = TypeResolver.ResolveTypeFromReferences(GetType().Assembly, "NinjaTurtlesMutation.Tests.TestUtilities.ConsoleCapturer");
             Assert.IsNotNull(type);
             Assert.AreSame(typeof(ConsoleCapturer), type);
         }

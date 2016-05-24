@@ -20,11 +20,9 @@
 #endregion
 
 using System.Threading;
-using NinjaTurtlesMutation;
 using NUnit.Framework;
 
-
-namespace NinjaTurtles.Tests
+namespace NinjaTurtlesMutation.Tests
 {
 	[TestFixture]
 	public class MutationTestTests

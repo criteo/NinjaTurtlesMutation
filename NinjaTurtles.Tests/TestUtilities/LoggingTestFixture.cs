@@ -21,14 +21,12 @@
 
 using System.Collections.Generic;
 using System.Linq;
-
 using NLog;
 using NLog.Config;
 using NLog.Targets;
-
 using NUnit.Framework;
 
-namespace NinjaTurtles.Tests.TestUtilities
+namespace NinjaTurtlesMutation.Tests.TestUtilities
 {
     [TestFixture]
     public abstract class LoggingTestFixture

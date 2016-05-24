@@ -23,12 +23,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-
 using Mono.Cecil;
 using NinjaTurtlesMutation;
 using NUnit.Framework;
 
-namespace NinjaTurtles.Tests
+namespace NinjaTurtlesMutation.Tests
 {
     [TestFixture]
     public class MethodDefinitionResolverTests
@@ -40,7 +39,7 @@ Parameter name: methodName")]
         {
             var assembly = AssemblyDefinition.ReadAssembly(typeof(TypeResolver).Assembly.Location);
             var type = assembly.MainModule.Types.Single(t => t.Name == "TypeResolver");
-            MethodDefinitionResolver.ResolveMethod(type, "ResolveTypeFromReferences");
+            NinjaTurtlesMutation.MethodDefinitionResolver.ResolveMethod(type, "ResolveTypeFromReferences");
         }
 
         [Test]
@@ -48,7 +47,7 @@ Parameter name: methodName")]
         {
             var assembly = AssemblyDefinition.ReadAssembly(typeof(MutationTest).Assembly.Location);
             var type = assembly.MainModule.Types.Single(t => t.Name == "MutationTest");
-            var method = MethodDefinitionResolver.ResolveMethod(type, "Run");
+            var method = NinjaTurtlesMutation.MethodDefinitionResolver.ResolveMethod(type, "Run");
             Assert.IsNotNull(method);
         }
 
@@ -57,7 +56,7 @@ Parameter name: methodName")]
         {
             var assembly = AssemblyDefinition.ReadAssembly(typeof(MutationTest).Assembly.Location);
             var type = assembly.MainModule.Types.Single(t => t.Name == "MutationTest");
-            var method = MethodDefinitionResolver.ResolveMethod(type, "Run", (Type[])null);
+            var method = NinjaTurtlesMutation.MethodDefinitionResolver.ResolveMethod(type, "Run", (Type[])null);
             Assert.IsNotNull(method);
         }
 
@@ -67,7 +66,7 @@ Parameter name: methodName")]
             var assembly = AssemblyDefinition.ReadAssembly(typeof(TypeResolver).Assembly.Location);
             var type = assembly.MainModule.Types.Single(t => t.Name == "TypeResolver");
             var parameterTypes = new[] { typeof(Assembly), typeof(string), typeof(IList<string>) };
-            var method = MethodDefinitionResolver.ResolveMethod(type, "ResolveTypeFromReferences", parameterTypes);
+            var method = NinjaTurtlesMutation.MethodDefinitionResolver.ResolveMethod(type, "ResolveTypeFromReferences", parameterTypes);
             Assert.IsNotNull(method);
         }
 
@@ -79,7 +78,7 @@ Parameter name: methodName")]
             var assembly = AssemblyDefinition.ReadAssembly(typeof(TypeResolver).Assembly.Location);
             var type = assembly.MainModule.Types.Single(t => t.Name == "TypeResolver");
             var parameterTypes = new[] { typeof(Assembly), typeof(string), typeof(ICollection<int>) };
-            MethodDefinitionResolver.ResolveMethod(type, "ResolveTypeFromReferences", parameterTypes);
+            NinjaTurtlesMutation.MethodDefinitionResolver.ResolveMethod(type, "ResolveTypeFromReferences", parameterTypes);
         }
 
         [Test]
@@ -89,7 +88,7 @@ Parameter name: methodName")]
         {
             var assembly = AssemblyDefinition.ReadAssembly(typeof(TypeResolver).Assembly.Location);
             var type = assembly.MainModule.Types.Single(t => t.Name == "TypeResolver");
-            MethodDefinitionResolver.ResolveMethod(type, "Leonardo");
+            NinjaTurtlesMutation.MethodDefinitionResolver.ResolveMethod(type, "Leonardo");
         }
     }
 }

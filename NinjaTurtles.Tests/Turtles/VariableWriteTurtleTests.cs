@@ -24,18 +24,12 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-
 using Mono.Cecil;
 using Mono.Cecil.Cil;
-using NinjaTurtlesMutation;
 using NinjaTurtlesMutation.Turtles;
 using NUnit.Framework;
-using MethodAttributes = System.Reflection.MethodAttributes;
-using Module = NinjaTurtlesMutation.Module;
-using ParameterAttributes = System.Reflection.ParameterAttributes;
-using TypeAttributes = System.Reflection.TypeAttributes;
 
-namespace NinjaTurtles.Tests.Turtles
+namespace NinjaTurtlesMutation.Tests.Turtles
 {
     [TestFixture]
     public class VariableWriteTurtleTests

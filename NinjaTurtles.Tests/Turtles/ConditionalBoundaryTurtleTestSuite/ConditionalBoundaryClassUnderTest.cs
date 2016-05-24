@@ -19,7 +19,7 @@
 
 #endregion
 
-namespace NinjaTurtles.Tests.Turtles.ConditionalBoundaryTurtleTestSuite
+namespace NinjaTurtlesMutation.Tests.Turtles.ConditionalBoundaryTurtleTestSuite
 {
     public class ConditionalBoundaryClassUnderTest
     {

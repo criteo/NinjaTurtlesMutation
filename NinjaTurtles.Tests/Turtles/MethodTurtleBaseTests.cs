@@ -24,17 +24,12 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
-
 using Mono.Cecil;
 using Mono.Cecil.Cil;
-using NinjaTurtles.Tests.Turtles.Tests;
+using NinjaTurtlesMutation.Turtles;
 using NUnit.Framework;
 
-using NinjaTurtles.Tests.Turtles.ArithmeticOperatorTurtleTestSuite;
-using NinjaTurtlesMutation;
-using NinjaTurtlesMutation.Turtles;
-
-namespace NinjaTurtles.Tests.Turtles
+namespace NinjaTurtlesMutation.Tests.Turtles
 {
     [TestFixture]
     public class MethodTurtleBaseTests

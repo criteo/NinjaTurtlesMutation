@@ -21,13 +21,10 @@
 
 using System;
 using System.IO;
-
+using NinjaTurtlesMutation.Tests.TestUtilities;
 using NUnit.Framework;
 
-using NinjaTurtles.Tests.TestUtilities;
-using NinjaTurtlesMutation;
-
-namespace NinjaTurtles.Tests
+namespace NinjaTurtlesMutation.Tests
 {
 	[TestFixture]
 	public class TestDirectoryLoggingTests : LoggingTestFixture

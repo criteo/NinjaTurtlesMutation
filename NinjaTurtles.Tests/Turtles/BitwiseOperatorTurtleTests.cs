@@ -23,14 +23,12 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-
 using Mono.Cecil;
 using Mono.Cecil.Cil;
-using NinjaTurtlesMutation;
 using NinjaTurtlesMutation.Turtles;
 using NUnit.Framework;
 
-namespace NinjaTurtles.Tests.Turtles
+namespace NinjaTurtlesMutation.Tests.Turtles
 {
     [TestFixture]
     public class BitwiseOperatorTurtleTests

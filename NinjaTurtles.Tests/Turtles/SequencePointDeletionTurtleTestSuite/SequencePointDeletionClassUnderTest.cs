@@ -19,7 +19,7 @@
 
 #endregion
 
-namespace NinjaTurtles.Tests.Turtles.SequencePointDeletionTurtleTestSuite
+namespace NinjaTurtlesMutation.Tests.Turtles.SequencePointDeletionTurtleTestSuite
 {
     public class SequencePointDeletionClassUnderTest
     {

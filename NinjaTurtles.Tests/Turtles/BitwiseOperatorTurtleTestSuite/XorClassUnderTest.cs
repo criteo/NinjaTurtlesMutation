@@ -19,7 +19,7 @@
 
 #endregion
 
-namespace NinjaTurtles.Tests.Turtles.BitwiseOperatorTurtleTestSuite
+namespace NinjaTurtlesMutation.Tests.Turtles.BitwiseOperatorTurtleTestSuite
 {
     public class XorClassUnderTest
     {

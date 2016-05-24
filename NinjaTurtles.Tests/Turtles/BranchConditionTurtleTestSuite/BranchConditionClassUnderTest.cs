@@ -19,7 +19,7 @@
 
 #endregion
 
-namespace NinjaTurtles.Tests.Turtles.BranchConditionTurtleTestSuite
+namespace NinjaTurtlesMutation.Tests.Turtles.BranchConditionTurtleTestSuite
 {
     public class BranchConditionClassUnderTest
     {

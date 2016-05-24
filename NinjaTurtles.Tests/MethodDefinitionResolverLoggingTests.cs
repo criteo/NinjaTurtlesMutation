@@ -23,15 +23,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-
 using Mono.Cecil;
-
+using NinjaTurtlesMutation;
+using NinjaTurtlesMutation.Tests.TestUtilities;
 using NUnit.Framework;
 
-using NinjaTurtles.Tests.TestUtilities;
-using NinjaTurtlesMutation;
-
-namespace NinjaTurtles.Tests
+namespace NinjaTurtlesMutation.Tests
 {
     [TestFixture]
     public class MethodDefinitionResolverLoggingTests : LoggingTestFixture
@@ -43,7 +40,7 @@ namespace NinjaTurtles.Tests
             var type = assembly.MainModule.Types.Single(t => t.Name == "TypeResolver");
             try
             {
-                MethodDefinitionResolver.ResolveMethod(type, "ResolveTypeFromReferences");
+                NinjaTurtlesMutation.MethodDefinitionResolver.ResolveMethod(type, "ResolveTypeFromReferences");
             }
             catch (ArgumentException) { }
             AssertLogContains("ERROR|Method \"ResolveTypeFromReferences\" is overloaded.|");
@@ -56,7 +53,7 @@ namespace NinjaTurtles.Tests
         {
             var assembly = AssemblyDefinition.ReadAssembly(typeof(MutationTest).Assembly.Location);
             var type = assembly.MainModule.Types.Single(t => t.Name == "MutationTest");
-            MethodDefinitionResolver.ResolveMethod(type, "Run");
+            NinjaTurtlesMutation.MethodDefinitionResolver.ResolveMethod(type, "Run");
             AssertLogContains("DEBUG|Resolving method \"Run\" in \"NinjaTurtlesMutation.MutationTest\".|");
             AssertLogContains("DEBUG|Method \"Run\" successfully resolved in \"NinjaTurtlesMutation.MutationTest\".|");
             AssertLogDoesNotContain("ERROR|Method \"ResolveTypeFromReferences\" with specified parameter types is unrecognised.|");
@@ -69,7 +66,7 @@ namespace NinjaTurtles.Tests
         {
             var assembly = AssemblyDefinition.ReadAssembly(typeof(MutationTest).Assembly.Location);
             var type = assembly.MainModule.Types.Single(t => t.Name == "MutationTest");
-            MethodDefinitionResolver.ResolveMethod(type, "Run", (Type[])null);
+            NinjaTurtlesMutation.MethodDefinitionResolver.ResolveMethod(type, "Run", (Type[])null);
             AssertLogContains("WARN|\"ResolveMethod\" overload with parameter types called unnecessarily.|");
         }
 
@@ -79,7 +76,7 @@ namespace NinjaTurtles.Tests
             var assembly = AssemblyDefinition.ReadAssembly(typeof(TypeResolver).Assembly.Location);
             var type = assembly.MainModule.Types.Single(t => t.Name == "TypeResolver");
             var parameterTypes = new[] { typeof(Assembly), typeof(string), typeof(IList<string>) };
-            MethodDefinitionResolver.ResolveMethod(type, "ResolveTypeFromReferences", parameterTypes);
+            NinjaTurtlesMutation.MethodDefinitionResolver.ResolveMethod(type, "ResolveTypeFromReferences", parameterTypes);
             AssertLogContains("DEBUG|Method \"ResolveTypeFromReferences\" successfully resolved in \"NinjaTurtlesMutation.TypeResolver\".|");
             AssertLogDoesNotContain("ERROR|Method \"ResolveTypeFromReferences\" with specified parameter types is unrecognised.|");
             AssertLogDoesNotContain("ERROR|Method \"Leonardo\" is overloaded.|");
@@ -94,7 +91,7 @@ namespace NinjaTurtles.Tests
             var parameterTypes = new[] { typeof(Assembly), typeof(string), typeof(ICollection<int>) };
             try
             {
-                MethodDefinitionResolver.ResolveMethod(type, "ResolveTypeFromReferences", parameterTypes);
+                NinjaTurtlesMutation.MethodDefinitionResolver.ResolveMethod(type, "ResolveTypeFromReferences", parameterTypes);
             }
             catch (ArgumentException) {}
             AssertLogContains("ERROR|Method \"ResolveTypeFromReferences\" with specified parameter types is unrecognised.|");
@@ -109,7 +106,7 @@ namespace NinjaTurtles.Tests
             var type = assembly.MainModule.Types.Single(t => t.Name == "TypeResolver");
             try
             {
-                MethodDefinitionResolver.ResolveMethod(type, "Leonardo");
+                NinjaTurtlesMutation.MethodDefinitionResolver.ResolveMethod(type, "Leonardo");
             }
             catch (ArgumentException) {}
             AssertLogContains("ERROR|Method \"Leonardo\" is unrecognised.|");

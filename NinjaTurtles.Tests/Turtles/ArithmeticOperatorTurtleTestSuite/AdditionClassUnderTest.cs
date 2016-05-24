@@ -19,7 +19,7 @@
 
 #endregion
 
-namespace NinjaTurtles.Tests.Turtles.ArithmeticOperatorTurtleTestSuite
+namespace NinjaTurtlesMutation.Tests.Turtles.ArithmeticOperatorTurtleTestSuite
 {
     public class AdditionClassUnderTest
     {

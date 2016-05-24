@@ -21,7 +21,7 @@
 
 using NUnit.Framework;
 
-namespace NinjaTurtles.Tests.Turtles.BranchConditionTurtleTestSuite.Tests
+namespace NinjaTurtlesMutation.Tests.Turtles.BranchConditionTurtleTestSuite.Tests
 {
     [TestFixture]
     public class BranchConditionClassUnderTestTests

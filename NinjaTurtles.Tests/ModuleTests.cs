@@ -22,12 +22,10 @@
 using System.Linq;
 using NinjaTurtlesMutation;
 using NUnit.Framework;
-
 using TestLibraryMono;
-
 using TestLibraryNoPdb;
 
-namespace NinjaTurtles.Tests
+namespace NinjaTurtlesMutation.Tests
 {
     [TestFixture]
     public class ModuleTests

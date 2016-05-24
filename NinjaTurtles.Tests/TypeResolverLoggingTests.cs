@@ -19,12 +19,11 @@
 
 #endregion
 
+using NinjaTurtlesMutation;
+using NinjaTurtlesMutation.Tests.TestUtilities;
 using NUnit.Framework;
 
-using NinjaTurtles.Tests.TestUtilities;
-using NinjaTurtlesMutation;
-
-namespace NinjaTurtles.Tests
+namespace NinjaTurtlesMutation.Tests
 {
     [TestFixture]
     public class TypeResolverLoggingTests : LoggingTestFixture
@@ -32,10 +31,10 @@ namespace NinjaTurtles.Tests
         [Test]
         public void ResolveTypeFromReferences_Resolve_Within_Same_Assembly_Logs_Entry_And_One_Trace()
         {
-            TypeResolver.ResolveTypeFromReferences(GetType().Assembly, "NinjaTurtles.Tests.TestUtilities.ConsoleCapturer");
-            string debugMessage = "DEBUG|Resolving type \"NinjaTurtles.Tests.TestUtilities.ConsoleCapturer\" in \"NinjaTurtles.Tests\".|";
-            string traceMessage = "TRACE|Searching for type \"NinjaTurtles.Tests.TestUtilities.ConsoleCapturer\" in \"NinjaTurtles.Tests\".|";
-            string foundMessage = "TRACE|Found type \"NinjaTurtles.Tests.TestUtilities.ConsoleCapturer\" in \"NinjaTurtles.Tests\".|";
+            TypeResolver.ResolveTypeFromReferences(GetType().Assembly, "NinjaTurtlesMutation.Tests.TestUtilities.ConsoleCapturer");
+            string debugMessage = "DEBUG|Resolving type \"NinjaTurtlesMutation.Tests.TestUtilities.ConsoleCapturer\" in \"NinjaTurtlesMutation.Tests\".|";
+            string traceMessage = "TRACE|Searching for type \"NinjaTurtlesMutation.Tests.TestUtilities.ConsoleCapturer\" in \"NinjaTurtlesMutation.Tests\".|";
+            string foundMessage = "TRACE|Found type \"NinjaTurtlesMutation.Tests.TestUtilities.ConsoleCapturer\" in \"NinjaTurtlesMutation.Tests\".|";
             AssertLogContains(debugMessage);
             AssertLogContains(traceMessage);
             AssertLogContains(foundMessage);
@@ -53,7 +52,7 @@ namespace NinjaTurtles.Tests
         public void ResolveTypeFromReferences_Resolves_Within_Referenced_Assembly_Logs_Entry_And_Traces()
         {
             TypeResolver.ResolveTypeFromReferences(GetType().Assembly, "System.Linq.ParallelEnumerable");
-            string firstSearchMessage = "TRACE|Searching for type \"System.Linq.ParallelEnumerable\" in \"NinjaTurtles.Tests\".|";
+            string firstSearchMessage = "TRACE|Searching for type \"System.Linq.ParallelEnumerable\" in \"NinjaTurtlesMutation.Tests\".|";
             string secondSearchMessage = "TRACE|Searching for type \"System.Linq.ParallelEnumerable\" in \"System.Core\".|";
             string foundMessage = "TRACE|Found type \"System.Linq.ParallelEnumerable\" in \"System.Core\".|";
             AssertLogContains(firstSearchMessage);

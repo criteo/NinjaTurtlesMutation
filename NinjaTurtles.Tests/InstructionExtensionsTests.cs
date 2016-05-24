@@ -19,15 +19,10 @@
 
 #endregion
 
-using System.Linq;
-
-using Mono.Cecil;
 using Mono.Cecil.Cil;
-using Mono.Cecil.Rocks;
-using NinjaTurtlesMutation;
 using NUnit.Framework;
 
-namespace NinjaTurtles.Tests
+namespace NinjaTurtlesMutation.Tests
 {
     [TestFixture]
     public class InstructionExtensionsTests

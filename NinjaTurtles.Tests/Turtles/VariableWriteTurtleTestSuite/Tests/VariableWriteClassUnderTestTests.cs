@@ -21,7 +21,7 @@
 
 using NUnit.Framework;
 
-namespace NinjaTurtles.Tests.Turtles.VariableWriteTurtleTestSuite.Tests
+namespace NinjaTurtlesMutation.Tests.Turtles.VariableWriteTurtleTestSuite.Tests
 {
     [TestFixture]
     public class VariableWriteClassUnderTestTests
