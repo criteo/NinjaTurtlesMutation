@@ -12,24 +12,41 @@ namespace NinjaTurtlesMutation.Dispatcher
 {
     class Program
     {
+        #region CooldownTimes
+
         private const int DISPATCH_JOBCHECK_COOLDOWN_MS = 100;
         private const int DISPATCH_RUNNER_ACQUISITION_COOLDOWN_MS = 100;
         private const int SENDING_JOBCHECK_COOLDOWN_MS = 100;
 
+        #endregion
+
         private static readonly List<TestRunnerHandler> _testRunners  = new List<TestRunnerHandler>();
+
+        #region BackboneTasksProperties
+
         private static Task _senderTask;
         private static Task _receiverTask;
         private static Task _cmdTask;
+
+        #endregion
+
+        #region PipeStringHandlers
 
         private static string _pipeInStringHandler;
         private static string _pipeOutStringHandler;
         private static string _pipeCmdStringHandler;
 
+        #endregion
+
+        #region TasksCommunicationProperties
+
         private static readonly ConcurrentQueue<TestDescription> _unassignedJobs = new ConcurrentQueue<TestDescription>();
         private static readonly ConcurrentDictionary<int, TestDescription> _dispatchedJobs = new ConcurrentDictionary<int, TestDescription>();
         private static readonly ConcurrentQueue<TestDescription> _completedJobs = new ConcurrentQueue<TestDescription>();
 
-        private static bool _shouldStop = false;
+        private static bool _shouldStop;
+
+        #endregion
 
         static void Main(string[] args)
         {
@@ -46,6 +63,8 @@ namespace NinjaTurtlesMutation.Dispatcher
             Dispatch();
         }
 
+        #region BackboneTasksMethods
+
         private static void Dispatch()
         {
             while (true)
@@ -59,7 +78,7 @@ namespace NinjaTurtlesMutation.Dispatcher
                     continue;
                 while (testToDispatch != null)
                 {
-                    var assignedRunnerIndex = -1;
+                    int assignedRunnerIndex;
                     while ((assignedRunnerIndex = _testRunners.FindIndex(r => !r.isBusy)) == -1)
                         Thread.Sleep(DISPATCH_RUNNER_ACQUISITION_COOLDOWN_MS);
                     TestRunnerHandler assignedRunner = _testRunners[assignedRunnerIndex];
@@ -80,12 +99,6 @@ namespace NinjaTurtlesMutation.Dispatcher
             }
         }
 
-        private static void InitReceiver()
-        {
-            _receiverTask = new Task(ReceivingLoop);
-            _receiverTask.Start();
-        }
-
         private static void ReceivingLoop()
         {
             using (PipeStream receivePipe = new AnonymousPipeClientStream(PipeDirection.In, _pipeInStringHandler))
@@ -97,46 +110,6 @@ namespace NinjaTurtlesMutation.Dispatcher
                     _unassignedJobs.Enqueue(testDescription);
                 }
             }
-        }
-
-        private static void InitSender()
-        {
-            _senderTask = new Task(SendingLoop);
-            _senderTask.Start();
-        }
-
-        private static void InitCmdReceiver()
-        {
-            _cmdTask = new Task(CmdLoop);
-            _cmdTask.Start();
-        }
-
-        private static void CmdLoop()
-        {
-            Dictionary<string, Func<bool>> cmdActions = new Dictionary<string, Func<bool>>();
-
-            cmdActions[CommandExchanger.Commands.STOP] = Stop;
-            using (PipeStream receivePipe = new AnonymousPipeClientStream(PipeDirection.In, _pipeCmdStringHandler))
-            using (StreamReader receiveStream = new StreamReader(receivePipe))
-            {
-                while (!_shouldStop)
-                {
-                    var cmd = CommandExchanger.ReadACommand(receiveStream);
-                    cmdActions[cmd]();
-                }
-            }
-        }
-
-        private static bool Stop()
-        {
-            _shouldStop = true;
-            return true;
-        }
-
-        private static void InstantiateTestRunners(int numRunners)
-        {
-            for (int i = 0; i < numRunners; i++)
-                _testRunners.Add(new TestRunnerHandler());
         }
 
         private static void SendingLoop()
@@ -157,6 +130,26 @@ namespace NinjaTurtlesMutation.Dispatcher
                 }
             }
         }
+
+        private static void CmdLoop()
+        {
+            Dictionary<string, Func<bool>> cmdActions = new Dictionary<string, Func<bool>>();
+
+            cmdActions[CommandExchanger.Commands.STOP] = Stop;
+            using (PipeStream receivePipe = new AnonymousPipeClientStream(PipeDirection.In, _pipeCmdStringHandler))
+            using (StreamReader receiveStream = new StreamReader(receivePipe))
+            {
+                while (!_shouldStop)
+                {
+                    var cmd = CommandExchanger.ReadACommand(receiveStream);
+                    cmdActions[cmd]();
+                }
+            }
+        }
+
+        #endregion
+
+        #region RunnersHandlingMethods
 
         private static void BusyRunnerHandler(TestRunnerHandler busyRunner, int busyRunnerIndex)
         {
@@ -181,21 +174,50 @@ namespace NinjaTurtlesMutation.Dispatcher
             }
         }
 
-        private static void RunnerHealthCheckup(TestRunnerHandler busyRunner, int busyRunnerIndex)
-        {
-            if (busyRunner.IsAlive())
-            {
-                busyRunner.isBusy = false;
-                return ;
-            }
-            busyRunner.KillTestRunner();
-            _testRunners[busyRunnerIndex] = new TestRunnerHandler();
-        }
-
         private static void RunnerRestart(TestRunnerHandler busyRunner, int busyRunnerIndex)
         {
             busyRunner.KillTestRunner();
             _testRunners[busyRunnerIndex] = new TestRunnerHandler();
         }
+
+        #endregion
+
+        #region CommandsMethods
+
+        private static bool Stop()
+        {
+            _shouldStop = true;
+            return true;
+        }
+
+        #endregion
+
+        #region BackboneTasksInit
+
+        private static void InitReceiver()
+        {
+            _receiverTask = new Task(ReceivingLoop);
+            _receiverTask.Start();
+        }
+
+        private static void InitSender()
+        {
+            _senderTask = new Task(SendingLoop);
+            _senderTask.Start();
+        }
+
+        private static void InitCmdReceiver()
+        {
+            _cmdTask = new Task(CmdLoop);
+            _cmdTask.Start();
+        }
+
+        private static void InstantiateTestRunners(int numRunners)
+        {
+            for (int i = 0; i < numRunners; i++)
+                _testRunners.Add(new TestRunnerHandler());
+        }
+
+        #endregion
     }
 }
