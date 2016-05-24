@@ -37,14 +37,14 @@ namespace NinjaTurtlesMutation.Console.Options
                     {"n", typeof(NoSplash)},
                     {"-class", typeof(TargetClass)},
                     {"c", typeof(TargetClass)},
-                    {"-method", typeof(TargetMethod)},
-                    {"m", typeof(TargetMethod)},
+                    /*{"-method", typeof(TargetMethod)},
+                    {"m", typeof(TargetMethod)},*/
                     {"-output", typeof(Output)},
                     {"o", typeof(Output)},
                     {"-format", typeof(Format)},
                     {"f", typeof(Format)},
-                    {"-type", typeof(ParameterType)},
-                    {"t", typeof(ParameterType)},
+                    /*{"-type", typeof(ParameterType)},
+                    {"t", typeof(ParameterType)},*/
                     {"-namespace", typeof(TargetNamespace)},
                     {"N", typeof(TargetNamespace)},
                     {"-parallelization", typeof(ParallelLevel)},

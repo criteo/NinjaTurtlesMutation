@@ -69,10 +69,7 @@ Options:
                                   the --output option. By default, this will be XML, but
                                   HTML can be specified here to transform the results
                                   into displayable format.
-   --method [-m]                : Specifies the name of the method for which mutation
-                                  testing should be applied. Will be ignored if not used
-                                  in conjunction with the --class option.
-   --namespace [-n]             : Specifies the namespace class for which mutation testing
+   --namespace [-N]             : Specifies the namespace class for which mutation testing
                                   should be applied. All classes and method under that
                                   namespace are identified, and mutation testing is applied
                                   for each of them.
@@ -80,27 +77,20 @@ Options:
                                   testing output. This file will be deleted if it already
                                   exists.
    --parallelization [-p]       : Set the number of test runner to use. Default value is 8
-   --type [-t]                  : Specifies the type name of a parameter to the method,
-                                  used to resolve between overloads of the same method
-                                  name. Can be specified multiple times, and must be in
-                                  the same order as the method's parameters. Full type
-                                  names enclosed in double quotes are accepted.
 
 Arguments:
    TEST_ASSEMBLY      : The file name of the test assembly to inspect, which
                         should be in the current working directory.
 
 Example:
-   NinjaTurtles.Console run -c NinjaTurtles.MethodDefinitionResolver
-       -m ResolveMethod
-       -tt ""Mono.Cecil.TypeDefinition, Mono.Cecil"" System.String
-       -o ResolveMethod.html -f HTML
-       NinjaTurtles.Tests.dll
+   NinjaTurtlesMutation.Console run -N NinjaTurtlesMutation
+       -o NinjaTurtlesMutation.html -f HTML
+       NinjaTurtlesMutation.Tests.dll
 
-   This command will identify all unit tests in NinjaTurtles.Tests.dll that
-   exercise the two-parameter override of the ResolveMethod method, and use
-   them to perform mutation testing of that method. The resulting output will
-   be transformed to HTML and saved to the file ResolveMethod.html.";
+   This command will identify all classes and methods under NinjaTurtlesMutation
+   namespace, and use unit tests from NinjaTurtlesMutation.Tests.dll to perform
+   mutation testing of these methods. The resulting output will be transformed
+   to HTML and saved to the file NinjaTurtlesMutation.html.";
             }
         }
 
