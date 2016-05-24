@@ -22,10 +22,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using NinjaTurtlesMutation.Console.Options;
 
-using NinjaTurtles.Console.Options;
-
-namespace NinjaTurtles.Console.Commands
+namespace NinjaTurtlesMutation.Console.Commands
 {
     internal abstract class Command
     {

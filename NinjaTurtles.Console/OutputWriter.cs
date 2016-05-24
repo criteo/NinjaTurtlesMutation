@@ -24,7 +24,7 @@ using System.Globalization;
 using System.IO;
 using System.Text;
 
-namespace NinjaTurtles.Console
+namespace NinjaTurtlesMutation.Console
 {
     static internal class OutputWriter
     {

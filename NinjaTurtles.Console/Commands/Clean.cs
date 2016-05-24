@@ -19,10 +19,9 @@
 
 #endregion
 
-using System;
 using System.IO;
 
-namespace NinjaTurtles.Console.Commands
+namespace NinjaTurtlesMutation.Console.Commands
 {
     internal class Clean : Command
     {

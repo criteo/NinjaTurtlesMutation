@@ -19,13 +19,11 @@
 
 #endregion
 
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using NinjaTurtles.Console.Commands;
-using NinjaTurtles.Console.Options;
+using NinjaTurtlesMutation.Console.Commands;
+using NinjaTurtlesMutation.Console.Options;
 
-namespace NinjaTurtles.Console
+namespace NinjaTurtlesMutation.Console
 {
     internal class CommandWithOptions
     {

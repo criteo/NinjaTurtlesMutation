@@ -21,7 +21,7 @@
 
 using System;
 
-namespace NinjaTurtles.Console
+namespace NinjaTurtlesMutation.Console
 {
     internal class OutputWriterHighlight : IDisposable
     {

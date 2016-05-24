@@ -19,7 +19,7 @@
 
 #endregion
 
-namespace NinjaTurtles.Console.Commands
+namespace NinjaTurtlesMutation.Console.Commands
 {
     internal class Help : Command
     {

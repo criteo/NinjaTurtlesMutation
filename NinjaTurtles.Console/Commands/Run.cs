@@ -27,14 +27,11 @@ using System.Linq;
 using System.Reflection;
 using System.Xml;
 using System.Xml.Xsl;
-
 using Mono.Cecil;
+using NinjaTurtlesMutation.Console.Options;
+using NinjaTurtlesMutation.Console.Reporting;
 
-using NinjaTurtles.Console.Options;
-using NinjaTurtles.Console.Reporting;
-using NinjaTurtlesMutation;
-
-namespace NinjaTurtles.Console.Commands
+namespace NinjaTurtlesMutation.Console.Commands
 {
     internal class Run : Command
     {

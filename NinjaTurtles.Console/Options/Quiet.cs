@@ -19,7 +19,7 @@
 
 #endregion
 
-namespace NinjaTurtles.Console.Options
+namespace NinjaTurtlesMutation.Console.Options
 {
     internal class Quiet : Option
     {

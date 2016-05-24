@@ -21,7 +21,7 @@
 
 using System;
 
-namespace NinjaTurtles.Console.Options
+namespace NinjaTurtlesMutation.Console.Options
 {
     internal class ParameterType : Option
     {

@@ -24,7 +24,7 @@ using System.IO;
 using System.Reflection;
 using System.Xml;
 
-namespace NinjaTurtles.Console
+namespace NinjaTurtlesMutation.Console
 {
     public class EmbeddedResourceResolver : XmlUrlResolver
     {

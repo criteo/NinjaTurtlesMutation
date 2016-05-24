@@ -19,7 +19,7 @@
 
 #endregion
 
-namespace NinjaTurtles.Console
+namespace NinjaTurtlesMutation.Console
 {
     internal enum OutputVerbosity
     {

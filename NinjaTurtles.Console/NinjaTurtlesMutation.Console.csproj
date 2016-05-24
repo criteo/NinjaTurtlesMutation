@@ -8,7 +8,7 @@
     <ProjectGuid>{AF38D08E-27BD-49A4-9D30-B8E1C8A9D121}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>NinjaTurtles.Console</RootNamespace>
+    <RootNamespace>NinjaTurtlesMutation.Console</RootNamespace>
     <AssemblyName>NinjaTurtles.Console</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <TargetFrameworkProfile>

@@ -22,7 +22,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace NinjaTurtles.Console.Options
+namespace NinjaTurtlesMutation.Console.Options
 {
     internal abstract class Option
     {
