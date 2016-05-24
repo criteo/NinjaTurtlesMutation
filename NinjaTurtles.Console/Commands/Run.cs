@@ -112,7 +112,7 @@ Example:
             {
                 StartInfo =
                 {
-                    FileName = "testdispatcher.exe",
+                    FileName = "NTMDispatcher.exe",
                     UseShellExecute = false,
                     Arguments = _testDispatcherPipeOut.GetClientHandleAsString() + " " +
                                 _testDispatcherPipeIn.GetClientHandleAsString() + " " + parallelValue
