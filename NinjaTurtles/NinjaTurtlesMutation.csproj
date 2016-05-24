@@ -8,7 +8,7 @@
     <ProjectGuid>{56AFCF77-0818-4B5C-8099-1CCC5D611282}</ProjectGuid>
     <OutputType>Library</OutputType>
     <RootNamespace>NinjaTurtles</RootNamespace>
-    <AssemblyName>NinjaTurtles</AssemblyName>
+    <AssemblyName>NinjaTurtlesMutation</AssemblyName>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
     <RestorePackages>true</RestorePackages>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
@@ -23,7 +23,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
-    <DocumentationFile>bin\Debug\NinjaTurtles.XML</DocumentationFile>
+    <DocumentationFile>bin\Debug\NinjaTurtlesMutation.xml</DocumentationFile>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <Prefer32Bit>false</Prefer32Bit>
     <NoWarn>1591</NoWarn>
@@ -35,7 +35,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
-    <DocumentationFile>bin\Release\NinjaTurtles.XML</DocumentationFile>
+    <DocumentationFile>bin\Release\NinjaTurtlesMutation.xml</DocumentationFile>
     <Prefer32Bit>false</Prefer32Bit>
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
