@@ -36,7 +36,7 @@ namespace NinjaTurtles.Tests
         public void Module_Loads_Definition()
         {
             var module = new Module(typeof(MutationTest).Assembly.Location);
-            Assert.AreEqual("NinjaTurtles.dll", module.Definition.Name);
+            Assert.AreEqual("NinjaTurtlesMutation.dll", module.Definition.Name);
         }
 
         [Test]

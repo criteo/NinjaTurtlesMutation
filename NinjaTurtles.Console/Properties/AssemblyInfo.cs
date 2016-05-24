@@ -21,5 +21,5 @@
 
 using System.Reflection;
 
-[assembly: AssemblyTitle("NinjaTurtles.Console")]
-[assembly: AssemblyDescription("Console runner for the NinjaTurtles mutation testing library")]
+[assembly: AssemblyTitle("NinjaTurtlesMutation.Console")]
+[assembly: AssemblyDescription("Console runner for the NinjaTurtlesMutation mutation testing library")]

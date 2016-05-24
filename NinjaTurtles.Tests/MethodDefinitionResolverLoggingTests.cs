@@ -57,8 +57,8 @@ namespace NinjaTurtles.Tests
             var assembly = AssemblyDefinition.ReadAssembly(typeof(MutationTest).Assembly.Location);
             var type = assembly.MainModule.Types.Single(t => t.Name == "MutationTest");
             MethodDefinitionResolver.ResolveMethod(type, "Run");
-            AssertLogContains("DEBUG|Resolving method \"Run\" in \"NinjaTurtles.MutationTest\".|");
-            AssertLogContains("DEBUG|Method \"Run\" successfully resolved in \"NinjaTurtles.MutationTest\".|");
+            AssertLogContains("DEBUG|Resolving method \"Run\" in \"NinjaTurtlesMutation.MutationTest\".|");
+            AssertLogContains("DEBUG|Method \"Run\" successfully resolved in \"NinjaTurtlesMutation.MutationTest\".|");
             AssertLogDoesNotContain("ERROR|Method \"ResolveTypeFromReferences\" with specified parameter types is unrecognised.|");
             AssertLogDoesNotContain("ERROR|Method \"Leonardo\" is overloaded.|");
             AssertLogDoesNotContain("ERROR|Method \"ResolveTypeFromReferences\" is unrecognised.|");
@@ -80,7 +80,7 @@ namespace NinjaTurtles.Tests
             var type = assembly.MainModule.Types.Single(t => t.Name == "TypeResolver");
             var parameterTypes = new[] { typeof(Assembly), typeof(string), typeof(IList<string>) };
             MethodDefinitionResolver.ResolveMethod(type, "ResolveTypeFromReferences", parameterTypes);
-            AssertLogContains("DEBUG|Method \"ResolveTypeFromReferences\" successfully resolved in \"NinjaTurtles.TypeResolver\".|");
+            AssertLogContains("DEBUG|Method \"ResolveTypeFromReferences\" successfully resolved in \"NinjaTurtlesMutation.TypeResolver\".|");
             AssertLogDoesNotContain("ERROR|Method \"ResolveTypeFromReferences\" with specified parameter types is unrecognised.|");
             AssertLogDoesNotContain("ERROR|Method \"Leonardo\" is overloaded.|");
             AssertLogDoesNotContain("ERROR|Method \"ResolveTypeFromReferences\" is unrecognised.|");

@@ -52,7 +52,7 @@ namespace NinjaTurtles.Tests
         [Test]
         public void ResolveTypeFromReferences_Resolves_Non_Public_Type()
         {
-            var type = TypeResolver.ResolveTypeFromReferences(GetType().Assembly, "NinjaTurtles.TypeResolver");
+            var type = TypeResolver.ResolveTypeFromReferences(GetType().Assembly, "NinjaTurtlesMutation.TypeResolver");
             Assert.IsNotNull(type);
         }
 

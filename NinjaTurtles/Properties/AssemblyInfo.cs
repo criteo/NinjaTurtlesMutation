@@ -22,8 +22,8 @@
 using System.Reflection;
 using System.Runtime.CompilerServices;
 
-[assembly: AssemblyTitle("NinjaTurtles")]
+[assembly: AssemblyTitle("NinjaTurtlesMutation")]
 [assembly: AssemblyDescription("Mutation testing library for .NET")]
 
 [assembly: InternalsVisibleTo("NinjaTurtles.Tests")]
-[assembly: InternalsVisibleTo("NinjaTurtles.Console")]
+[assembly: InternalsVisibleTo("NinjaTurtlesMutation.Console")]
