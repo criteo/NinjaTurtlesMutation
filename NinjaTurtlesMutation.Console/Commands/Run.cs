@@ -30,6 +30,7 @@ using System.Xml.Xsl;
 using Mono.Cecil;
 using NinjaTurtlesMutation.Console.Options;
 using NinjaTurtlesMutation.Console.Reporting;
+using NinjaTurtlesMutation.ServiceTestRunnerLib.Utilities;
 
 namespace NinjaTurtlesMutation.Console.Commands
 {
@@ -46,8 +47,10 @@ namespace NinjaTurtlesMutation.Console.Commands
         private Process _testDispatcher;
         private AnonymousPipeServerStream _testDispatcherPipeIn;
         private AnonymousPipeServerStream _testDispatcherPipeOut;
+        private AnonymousPipeServerStream _testDispatcherPipeCmd;
         private StreamReader _testDispatcherStreamIn;
         private StreamWriter _testDispatcherStreamOut;
+        private StreamWriter _testDispatcherStreamCmd;
 
         protected override string HelpText
         {
@@ -106,8 +109,10 @@ Example:
             var parallelValue = (parallelLevel == null ? 8 : parallelLevel.ParallelValue);
             _testDispatcherPipeIn = new AnonymousPipeServerStream(PipeDirection.In, HandleInheritability.Inheritable);
             _testDispatcherPipeOut = new AnonymousPipeServerStream(PipeDirection.Out, HandleInheritability.Inheritable);
+            _testDispatcherPipeCmd = new AnonymousPipeServerStream(PipeDirection.Out, HandleInheritability.Inheritable);
             _testDispatcherStreamIn = new StreamReader(_testDispatcherPipeIn);
             _testDispatcherStreamOut = new StreamWriter(_testDispatcherPipeOut);
+            _testDispatcherStreamCmd = new StreamWriter(_testDispatcherPipeCmd);
             _testDispatcher = new Process
             {
                 StartInfo =
@@ -115,25 +120,26 @@ Example:
                     FileName = "NTMDispatcher.exe",
                     UseShellExecute = false,
                     Arguments = _testDispatcherPipeOut.GetClientHandleAsString() + " " +
-                                _testDispatcherPipeIn.GetClientHandleAsString() + " " + parallelValue
+                                _testDispatcherPipeIn.GetClientHandleAsString() + " " +
+                                _testDispatcherPipeCmd.GetClientHandleAsString() + " " + parallelValue
                 }
             };
             _testDispatcher.Start();
+            _testDispatcherPipeCmd.DisposeLocalCopyOfClientHandle();
             _testDispatcherPipeOut.DisposeLocalCopyOfClientHandle();
             _testDispatcherPipeIn.DisposeLocalCopyOfClientHandle();
         }
 
         private void DisposeTestDispatcher()
         {
-            try
-            {
-                _testDispatcher.Kill();
-            }
-            catch { }
+            CommandExchanger.SendData(_testDispatcherStreamCmd, CommandExchanger.Commands.STOP);
+
             _testDispatcherStreamIn.Dispose();
             _testDispatcherStreamOut.Dispose();
+            _testDispatcherStreamCmd.Dispose();
             _testDispatcherPipeIn.Dispose();
             _testDispatcherPipeOut.Dispose();
+            _testDispatcherPipeCmd.Dispose();
         }
 
         public override bool Validate()

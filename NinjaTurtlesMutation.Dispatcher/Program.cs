@@ -1,4 +1,5 @@
-﻿using System.Collections.Concurrent;
+﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Pipes;
@@ -18,24 +19,30 @@ namespace NinjaTurtlesMutation.Dispatcher
         private static readonly List<TestRunnerHandler> _testRunners  = new List<TestRunnerHandler>();
         private static Task _senderTask;
         private static Task _receiverTask;
+        private static Task _cmdTask;
 
         private static string _pipeInStringHandler;
         private static string _pipeOutStringHandler;
+        private static string _pipeCmdStringHandler;
 
         private static readonly ConcurrentQueue<TestDescription> _unassignedJobs = new ConcurrentQueue<TestDescription>();
         private static readonly ConcurrentDictionary<int, TestDescription> _dispatchedJobs = new ConcurrentDictionary<int, TestDescription>();
         private static readonly ConcurrentQueue<TestDescription> _completedJobs = new ConcurrentQueue<TestDescription>();
 
+        private static bool _shouldStop = false;
+
         static void Main(string[] args)
         {
-            if (args.Length != 3)
+            if (args.Length != 4)
                 return;
             _pipeInStringHandler = args[0];
             _pipeOutStringHandler = args[1];
-            var numRunners = int.Parse(args[2]);
+            _pipeCmdStringHandler = args[2];
+            var numRunners = int.Parse(args[3]);
             InstantiateTestRunners(numRunners);
             InitSender();
             InitReceiver();
+            InitCmdReceiver();
             Dispatch();
         }
 
@@ -43,8 +50,10 @@ namespace NinjaTurtlesMutation.Dispatcher
         {
             while (true)
             {
-                while (_unassignedJobs.IsEmpty)
+                while (_unassignedJobs.IsEmpty && !_shouldStop)
                     Thread.Sleep(DISPATCH_JOBCHECK_COOLDOWN_MS);
+                if (_shouldStop && _unassignedJobs.IsEmpty)
+                    break;
                 TestDescription testToDispatch = null;
                 if (!_unassignedJobs.TryDequeue(out testToDispatch))
                     continue;
@@ -82,7 +91,7 @@ namespace NinjaTurtlesMutation.Dispatcher
             using (PipeStream receivePipe = new AnonymousPipeClientStream(PipeDirection.In, _pipeInStringHandler))
             using (StreamReader receiveStream = new StreamReader(receivePipe))
             {
-                while (true)
+                while (!_shouldStop)
                 {
                     var testDescription = TestDescriptionExchanger.ReadATestDescription(receiveStream);
                     _unassignedJobs.Enqueue(testDescription);
@@ -94,6 +103,34 @@ namespace NinjaTurtlesMutation.Dispatcher
         {
             _senderTask = new Task(SendingLoop);
             _senderTask.Start();
+        }
+
+        private static void InitCmdReceiver()
+        {
+            _cmdTask = new Task(CmdLoop);
+            _cmdTask.Start();
+        }
+
+        private static void CmdLoop()
+        {
+            Dictionary<string, Func<bool>> cmdActions = new Dictionary<string, Func<bool>>();
+
+            cmdActions[CommandExchanger.Commands.STOP] = Stop;
+            using (PipeStream receivePipe = new AnonymousPipeClientStream(PipeDirection.In, _pipeCmdStringHandler))
+            using (StreamReader receiveStream = new StreamReader(receivePipe))
+            {
+                while (!_shouldStop)
+                {
+                    var cmd = CommandExchanger.ReadACommand(receiveStream);
+                    cmdActions[cmd]();
+                }
+            }
+        }
+
+        private static bool Stop()
+        {
+            _shouldStop = true;
+            return true;
         }
 
         private static void InstantiateTestRunners(int numRunners)
@@ -109,8 +146,10 @@ namespace NinjaTurtlesMutation.Dispatcher
             {
                 while (true)
                 {
-                    while (_completedJobs.IsEmpty)
+                    while (_completedJobs.IsEmpty && !_shouldStop)
                         Thread.Sleep(SENDING_JOBCHECK_COOLDOWN_MS);
+                    if (_shouldStop && _completedJobs.IsEmpty)
+                        break;
                     TestDescription testDescriptionToSend;
                     if (!_completedJobs.TryDequeue(out testDescriptionToSend))
                         continue;
