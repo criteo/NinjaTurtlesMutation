@@ -21,7 +21,7 @@
 
 using System.Runtime.CompilerServices;
 
-namespace NinjaTurtles
+namespace NinjaTurtlesMutation
 {
     /// <summary>
     /// Contains core classes that are used to define and run mutation tests.

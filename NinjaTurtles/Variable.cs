@@ -21,7 +21,7 @@
 
 using Mono.Cecil.Cil;
 
-namespace NinjaTurtles
+namespace NinjaTurtlesMutation
 {
     internal class Variable
     {

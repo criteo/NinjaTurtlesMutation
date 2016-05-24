@@ -20,10 +20,9 @@
 #endregion
 
 using System.Collections.Generic;
-
 using Mono.Cecil.Cil;
 
-namespace NinjaTurtles.Turtles
+namespace NinjaTurtlesMutation.Turtles
 {
     /// <summary>
     /// An implementation of <see cref="IMethodTurtle"/> that replaces the

@@ -1,6 +1,6 @@
 ﻿using System.IO;
 
-namespace NinjaTurtles.ServiceTestRunnerLib.Utilities
+namespace NinjaTurtlesMutation.ServiceTestRunnerLib.Utilities
 {
 
     public static class TestDescriptionExchanger

@@ -25,7 +25,7 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 
-namespace NinjaTurtles.Reporting
+namespace NinjaTurtlesMutation.Reporting
 {
     /// <summary>
     /// Represents a source code file that is part of a mutation testing

@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
-using NinjaTurtles.ManagedTestRunners;
+using NinjaTurtlesMutation.ManagedTestRunners;
 using NUnit.Core;
 
-namespace NinjaTurtles.AppDomainIsolation.Adaptor
+namespace NinjaTurtlesMutation.AppDomainIsolation.Adaptor
 {
     public class NunitManagedTestRunnerAdaptor : Adaptor
     {

@@ -21,15 +21,13 @@
 
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
 using System.Linq;
-
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 using Mono.Cecil.Rocks;
 
-namespace NinjaTurtles.Turtles
+namespace NinjaTurtlesMutation.Turtles
 {
     /// <summary>
     /// An abstract base class for implementations of

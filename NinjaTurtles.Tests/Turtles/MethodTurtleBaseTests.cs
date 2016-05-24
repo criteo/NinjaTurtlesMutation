@@ -31,7 +31,8 @@ using NinjaTurtles.Tests.Turtles.Tests;
 using NUnit.Framework;
 
 using NinjaTurtles.Tests.Turtles.ArithmeticOperatorTurtleTestSuite;
-using NinjaTurtles.Turtles;
+using NinjaTurtlesMutation;
+using NinjaTurtlesMutation.Turtles;
 
 namespace NinjaTurtles.Tests.Turtles
 {

@@ -2,7 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace NinjaTurtles.AppDomainIsolation
+namespace NinjaTurtlesMutation.AppDomainIsolation
 {
     /// <summary>
     /// Isolated class provide a way to easily instantiate object

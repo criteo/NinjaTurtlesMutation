@@ -25,7 +25,7 @@ using System.IO;
 using System.Runtime.InteropServices;
 using NLog;
 
-namespace NinjaTurtles
+namespace NinjaTurtlesMutation
 {
     /// <summary>
     /// Represents a temporary directory used to contain a mutated assembly

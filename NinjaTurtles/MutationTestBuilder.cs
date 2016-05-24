@@ -22,11 +22,10 @@
 using System;
 using System.IO;
 using System.Reflection;
-
 using Mono.Cecil;
-using NinjaTurtles.ServiceTestRunnerLib;
+using NinjaTurtlesMutation.ServiceTestRunnerLib;
 
-namespace NinjaTurtles
+namespace NinjaTurtlesMutation
 {
     public static class MutationTestBuilder
     {

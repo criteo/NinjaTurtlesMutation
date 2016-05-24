@@ -21,10 +21,9 @@
 
 using System;
 using System.Reflection;
-
 using Mono.Cecil;
 
-namespace NinjaTurtles
+namespace NinjaTurtlesMutation
 {
     static internal class TypeReferenceExtensions
     {

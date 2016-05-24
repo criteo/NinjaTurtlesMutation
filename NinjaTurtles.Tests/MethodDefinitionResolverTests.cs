@@ -25,7 +25,7 @@ using System.Linq;
 using System.Reflection;
 
 using Mono.Cecil;
-
+using NinjaTurtlesMutation;
 using NUnit.Framework;
 
 namespace NinjaTurtles.Tests

@@ -24,10 +24,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Xml.Serialization;
-
 using Cil = Mono.Cecil.Cil;
 
-namespace NinjaTurtles.Reporting
+namespace NinjaTurtlesMutation.Reporting
 {
     /// <summary>
     /// Represents an IL sequence point.

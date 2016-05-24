@@ -20,11 +20,10 @@
 #endregion
 
 using System.Collections.Generic;
-
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 
-namespace NinjaTurtles.Turtles
+namespace NinjaTurtlesMutation.Turtles
 {
     /// <summary>
     /// An abstract base class for implementations of

@@ -7,7 +7,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{56AFCF77-0818-4B5C-8099-1CCC5D611282}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>NinjaTurtles</RootNamespace>
+    <RootNamespace>NinjaTurtlesMutation</RootNamespace>
     <AssemblyName>NinjaTurtlesMutation</AssemblyName>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
     <RestorePackages>true</RestorePackages>

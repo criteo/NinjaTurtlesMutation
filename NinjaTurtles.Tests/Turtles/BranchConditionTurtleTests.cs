@@ -26,10 +26,9 @@ using System.Linq;
 
 using Mono.Cecil;
 using Mono.Cecil.Cil;
-
+using NinjaTurtlesMutation;
+using NinjaTurtlesMutation.Turtles;
 using NUnit.Framework;
-
-using NinjaTurtles.Turtles;
 
 namespace NinjaTurtles.Tests.Turtles
 {

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace NinjaTurtles.ServiceTestRunnerLib
+namespace NinjaTurtlesMutation.ServiceTestRunnerLib
 {
     /// <summary>
     /// This class describe a test run

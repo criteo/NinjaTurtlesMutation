@@ -25,10 +25,9 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Xml.Serialization;
-
 using Mono.Cecil;
 
-namespace NinjaTurtles.Reporting
+namespace NinjaTurtlesMutation.Reporting
 {
     /// <summary>
     /// Represents the top level of a mutation testing report for a project.

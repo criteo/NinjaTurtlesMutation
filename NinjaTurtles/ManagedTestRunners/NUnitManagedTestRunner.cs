@@ -9,7 +9,7 @@ using NUnit.Core;
 using NUnit.Core.Filters;
 using NUnit.Util;
 
-namespace NinjaTurtles.ManagedTestRunners
+namespace NinjaTurtlesMutation.ManagedTestRunners
 {
     public class NUnitManagedTestRunner : IManagedTestRunner
     {

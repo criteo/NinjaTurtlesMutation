@@ -29,6 +29,7 @@ using Mono.Cecil;
 using NUnit.Framework;
 
 using NinjaTurtles.Tests.TestUtilities;
+using NinjaTurtlesMutation;
 
 namespace NinjaTurtles.Tests
 {

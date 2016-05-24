@@ -21,7 +21,7 @@
 
 using System.Runtime.CompilerServices;
 
-namespace NinjaTurtles.Turtles
+namespace NinjaTurtlesMutation.Turtles
 {
     /// <summary>
     /// Contains interfaces defining core turtle functionality for

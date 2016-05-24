@@ -20,10 +20,9 @@
 #endregion
 
 using System;
+using NinjaTurtlesMutation.Turtles;
 
-using NinjaTurtles.Turtles;
-
-namespace NinjaTurtles
+namespace NinjaTurtlesMutation
 {
     /// <summary>
     /// An interface forming the core of a fluent interface for defining

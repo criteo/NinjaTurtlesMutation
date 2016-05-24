@@ -27,12 +27,11 @@ using System.Reflection;
 
 using Mono.Cecil;
 using Mono.Cecil.Cil;
-
+using NinjaTurtlesMutation;
+using NinjaTurtlesMutation.Turtles;
 using NUnit.Framework;
-
-using NinjaTurtles.Turtles;
-
 using MethodAttributes = System.Reflection.MethodAttributes;
+using Module = NinjaTurtlesMutation.Module;
 using ParameterAttributes = System.Reflection.ParameterAttributes;
 using TypeAttributes = System.Reflection.TypeAttributes;
 

@@ -22,10 +22,9 @@
 using System;
 using System.Globalization;
 using Mono.Cecil;
-using Mono.Cecil.Rocks;
-using NinjaTurtles.Turtles;
+using NinjaTurtlesMutation.Turtles;
 
-namespace NinjaTurtles
+namespace NinjaTurtlesMutation
 {
     /// <summary>
     /// A class containing metadata for a mutation test.

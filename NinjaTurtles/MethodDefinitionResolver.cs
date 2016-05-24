@@ -21,12 +21,10 @@
 
 using System;
 using System.Linq;
-
 using Mono.Cecil;
-
 using NLog;
 
-namespace NinjaTurtles
+namespace NinjaTurtlesMutation
 {
     internal class MethodDefinitionResolver
     {

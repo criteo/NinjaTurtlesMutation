@@ -27,18 +27,16 @@ using System.Security;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Xml.Serialization;
-
 using Microsoft.Win32;
-
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 using Mono.Collections.Generic;
-using NinjaTurtles.Reporting;
-using NinjaTurtles.ServiceTestRunnerLib;
-using NinjaTurtles.ServiceTestRunnerLib.Utilities;
-using NinjaTurtles.Turtles;
+using NinjaTurtlesMutation.Reporting;
+using NinjaTurtlesMutation.ServiceTestRunnerLib;
+using NinjaTurtlesMutation.ServiceTestRunnerLib.Utilities;
+using NinjaTurtlesMutation.Turtles;
 
-namespace NinjaTurtles
+namespace NinjaTurtlesMutation
 {
     internal class MutationTest : IMutationTest
 	{

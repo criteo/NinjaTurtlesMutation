@@ -21,7 +21,7 @@
 
 using System.Runtime.CompilerServices;
 
-namespace NinjaTurtles.Reporting
+namespace NinjaTurtlesMutation.Reporting
 {
     /// <summary>
     /// Contains classes used in generating XML mutation test reports.

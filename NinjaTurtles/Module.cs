@@ -22,13 +22,12 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 using Mono.Cecil.Mdb;
 using Mono.Cecil.Pdb;
 
-namespace NinjaTurtles
+namespace NinjaTurtlesMutation
 {
     /// <summary>
     /// Class representing the main module of a .NET assembly.

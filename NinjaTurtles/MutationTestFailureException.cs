@@ -21,7 +21,7 @@
 
 using System;
 
-namespace NinjaTurtles
+namespace NinjaTurtlesMutation
 {
     /// <summary>
     /// A custom exception type that is thrown to indicate a mutation test

@@ -24,10 +24,8 @@ using System.Linq;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 using Mono.Cecil.Rocks;
-
+using NinjaTurtlesMutation;
 using NUnit.Framework;
-
-using NinjaTurtles.Turtles;
 
 namespace NinjaTurtles.Tests
 {

@@ -24,10 +24,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-
 using NLog;
 
-namespace NinjaTurtles
+namespace NinjaTurtlesMutation
 {
 	internal class TypeResolver
 	{

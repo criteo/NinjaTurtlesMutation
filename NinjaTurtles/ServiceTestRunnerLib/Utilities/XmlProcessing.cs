@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using System.Xml.Serialization;
 
-namespace NinjaTurtles.ServiceTestRunnerLib.Utilities
+namespace NinjaTurtlesMutation.ServiceTestRunnerLib.Utilities
 {
     internal static class XmlProcessing
     {

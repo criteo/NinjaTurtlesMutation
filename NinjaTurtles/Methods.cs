@@ -19,7 +19,7 @@
 
 #endregion
 
-namespace NinjaTurtles
+namespace NinjaTurtlesMutation
 {
     static internal class Methods
     {

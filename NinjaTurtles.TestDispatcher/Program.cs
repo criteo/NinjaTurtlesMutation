@@ -4,8 +4,8 @@ using System.IO;
 using System.IO.Pipes;
 using System.Threading;
 using System.Threading.Tasks;
-using NinjaTurtles.ServiceTestRunnerLib;
-using NinjaTurtles.ServiceTestRunnerLib.Utilities;
+using NinjaTurtlesMutation.ServiceTestRunnerLib;
+using NinjaTurtlesMutation.ServiceTestRunnerLib.Utilities;
 
 namespace NinjaTurtles.TestDispatcher
 {

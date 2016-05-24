@@ -1,16 +1,9 @@
-﻿using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
-using NinjaTurtles.AppDomainIsolation;
-using NinjaTurtles.AppDomainIsolation.Adaptor;
+using NinjaTurtlesMutation.AppDomainIsolation;
+using NinjaTurtlesMutation.AppDomainIsolation.Adaptor;
 
-namespace NinjaTurtles
+namespace NinjaTurtlesMutation
 {
     class TestsBenchmark
     {

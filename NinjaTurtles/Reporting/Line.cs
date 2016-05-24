@@ -22,7 +22,7 @@
 using System;
 using System.Xml.Serialization;
 
-namespace NinjaTurtles.Reporting
+namespace NinjaTurtlesMutation.Reporting
 {
     /// <summary>
     /// Represents a line of source code.

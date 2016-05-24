@@ -21,7 +21,7 @@
 
 using System;
 
-namespace NinjaTurtles
+namespace NinjaTurtlesMutation
 {
     /// <summary>
     /// A marker attribute used to tell NinjaTurtles that the unit test to

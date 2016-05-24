@@ -1,10 +1,10 @@
 ﻿using System;
 using System.IO;
 using System.IO.Pipes;
-using NinjaTurtles.AppDomainIsolation;
-using NinjaTurtles.AppDomainIsolation.Adaptor;
-using NinjaTurtles.ServiceTestRunnerLib;
-using NinjaTurtles.ServiceTestRunnerLib.Utilities;
+using NinjaTurtlesMutation.AppDomainIsolation;
+using NinjaTurtlesMutation.AppDomainIsolation.Adaptor;
+using NinjaTurtlesMutation.ServiceTestRunnerLib;
+using NinjaTurtlesMutation.ServiceTestRunnerLib.Utilities;
 
 namespace NinjaTurtles.TestRunnerService
 {

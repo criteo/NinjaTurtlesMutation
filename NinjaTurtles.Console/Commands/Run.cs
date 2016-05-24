@@ -32,6 +32,7 @@ using Mono.Cecil;
 
 using NinjaTurtles.Console.Options;
 using NinjaTurtles.Console.Reporting;
+using NinjaTurtlesMutation;
 
 namespace NinjaTurtles.Console.Commands
 {

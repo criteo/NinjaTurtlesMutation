@@ -21,8 +21,6 @@
 
 using NUnit.Framework;
 
-using NinjaTurtles.Turtles;
-
 namespace NinjaTurtles.Tests.Turtles.ConditionalBoundaryTurtleTestSuite.Tests
 {
     [TestFixture]

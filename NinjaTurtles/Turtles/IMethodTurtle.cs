@@ -20,10 +20,9 @@
 #endregion
 
 using System.Collections.Generic;
-
 using Mono.Cecil;
 
-namespace NinjaTurtles.Turtles
+namespace NinjaTurtlesMutation.Turtles
 {
     /// <summary>
     /// An <b>interface</b> defining basic functionality for a turtle that

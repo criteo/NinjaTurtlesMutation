@@ -1,11 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Security.Permissions;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace NinjaTurtles.AppDomainIsolation.Adaptor
+namespace NinjaTurtlesMutation.AppDomainIsolation.Adaptor
 {
     /// <summary>
     /// Abstract class used by Isolated to interact with a runner
