@@ -25,6 +25,7 @@ using System.IO;
 using System.IO.Pipes;
 using System.Linq;
 using System.Reflection;
+using System.Security.Principal;
 using System.Xml;
 using System.Xml.Xsl;
 using Mono.Cecil;
@@ -169,6 +170,17 @@ Example:
                         Options.Arguments[0]);
                     return false;
                 }
+            }
+            var IsAdmin = new WindowsPrincipal(WindowsIdentity.GetCurrent()).IsInRole(WindowsBuiltInRole.Administrator);
+            if (!IsAdmin)
+            {
+                using (new OutputWriterErrorHighlight())
+                {
+                    OutputWriter.WriteLine(
+                        OutputVerbosity.Quiet,
+                        @"The 'run' command need admin privilege to create symlink");
+                }
+                return false;
             }
             return true;
         }
