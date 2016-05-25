@@ -51,7 +51,7 @@ assembly.
 *If you doesn't want to build the test, in the Solution Explorer select all the projects
 except NinjaTurtlesMutation.Tests and hit Shift + F6*
 
-*OR to build from command-line:*
+*OR to build from command-line (tested with MSBuild 4.6.1 / .NET 4.0.3):*
 
 `/c/Windows/Microsoft.NET/Framework/v4.0.30319/MSBuild.exe NinjaTurtlesMutation.sln`
 
