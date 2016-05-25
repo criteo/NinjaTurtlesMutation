@@ -161,14 +161,27 @@ Example:
                     return false;
                 }
             }
-            var IsAdmin = new WindowsPrincipal(WindowsIdentity.GetCurrent()).IsInRole(WindowsBuiltInRole.Administrator);
-            if (!IsAdmin)
+            var isAdmin = new WindowsPrincipal(WindowsIdentity.GetCurrent()).IsInRole(WindowsBuiltInRole.Administrator);
+            if (!isAdmin)
             {
                 using (new OutputWriterErrorHighlight())
                 {
                     OutputWriter.WriteLine(
                         OutputVerbosity.Quiet,
-                        @"The 'run' command need admin privilege to create symlink");
+                        @"The 'run' command need admin privilege to create symlink.");
+                }
+                return false;
+            }
+            var benchmark = new TestsBenchmark(_testAssemblyLocation);
+            benchmark.LaunchBenchmark();
+            var originalSourcesPassTests = benchmark.TestsPass;
+            if (!originalSourcesPassTests)
+            {
+                using (new OutputWriterErrorHighlight())
+                {
+                    OutputWriter.WriteLine(
+                        OutputVerbosity.Quiet,
+                        @"The original source code tests fail. All your tests must pass in order to start mutation testing.");
                 }
                 return false;
             }

@@ -10,12 +10,15 @@ namespace NinjaTurtlesMutation
         private readonly string _testAssemblyLocation;
 
         public long TotalMs { get; private set; }
+        public bool TestsPass { get; private set; }
         public IEnumerable<string> testsName;
 
         public TestsBenchmark(string testAssemblyLocation)
         {
             TotalMs = -1;
+            TestsPass = false;
             _testAssemblyLocation = testAssemblyLocation;
+            testsName = null;
         }
 
         public TestsBenchmark(string testAssemblyLocation, IEnumerable<string> testsName) : this(testAssemblyLocation)
@@ -25,7 +28,10 @@ namespace NinjaTurtlesMutation
 
         public long LaunchBenchmark()
         {
-            TotalMs = FullSetBench();
+            if (testsName != null)
+                TotalMs = FullSetBench();
+            else
+                TotalMs = NoSetBench();
             return TotalMs;
         }
 
@@ -39,6 +45,22 @@ namespace NinjaTurtlesMutation
                 runner.Instance.WaitForExit();
                 watch.Stop();
                 elapsedMs = watch.ElapsedMilliseconds;
+                TestsPass = (runner.Instance.ExitCode == 0);
+            }
+            return elapsedMs;
+        }
+
+        private long NoSetBench()
+        {
+            long elapsedMs = 0;
+            using (Isolated<NunitManagedTestRunnerAdaptor> runner = new Isolated<NunitManagedTestRunnerAdaptor>())
+            {
+                var watch = Stopwatch.StartNew();
+                runner.Instance.Start(_testAssemblyLocation);
+                runner.Instance.WaitForExit();
+                watch.Stop();
+                elapsedMs = watch.ElapsedMilliseconds;
+                TestsPass = (runner.Instance.ExitCode == 0);
             }
             return elapsedMs;
         }
