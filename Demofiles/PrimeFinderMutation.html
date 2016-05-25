@@ -1,0 +1,120 @@
+﻿<?xml version="1.0" encoding="utf-8"?><html xmlns="http://www.w3.org/1999/xhtml" xmlns:xs="http://www.w3.org/2001/XMLSchema"><head><style type="text/css">
+                    body {
+                        font-family: Trebuchet MS,Verdana,Arial;
+                        font-size: 0.8em;
+                    }
+                    table {
+                    	font-size: 1em;
+                    	border-spacing: 0;
+                    }
+                    table td {
+                    	padding: 0;
+                    	border-left: solid 1px #888;
+                    	border-right: solid 1px #888;
+                    	border-bottom: solid 1px #888;
+                    }
+                    table th {
+                    	padding: 2px;
+                    }
+                    table tr {
+                    	 height: 20px;
+                    }
+                    th.file {
+                    	width: 400px;
+                    }
+                    th.mutants, th.sequence_points {
+                    	width: 118px;
+                    }
+                    h1 {
+                        font-size: 1.5em;
+                    }
+                    pre {
+                        font-family: Consolas, Lucida Console, Courier New, Courier;
+                    }
+                    .red {
+                        background-color: #fcc;
+                    }
+                    .amber {
+                        background-color: #fff8e8;
+                    }
+                    .green {
+                        background-color: #cfc;
+                    }
+                    .title, th {
+                        background-color: #000;
+                        color: #fff;
+                        font-weight: bold;
+                        text-align: left;
+                    }
+                    .bar-wrap {
+                    	position: relative;
+                    }
+                    .bar-wrap, .bar-value, .bar-text {
+                    	width: 120px;
+                    	height: 20px;
+                    }
+                    .bar-wrap, .bar-value {
+                    	background-color: #fdd;
+                    }
+                    .bar-text {
+                    	position: absolute;
+                    	top: 0; left: 0;
+                    	padding-top: 2px;
+                    	color: #000;
+                    	text-align: center;
+                    	width: 100%;
+                    }
+                </style></head><body><table><thead><tr><th class="file">File</th><th class="mutants">Mutants</th><th class="sequence_points">Sequence points</th></tr></thead><tbody><tr><td>PrimeFinder.cs</td><td><div class="bar-wrap"><div class="bar-value" style="background: #dfd; width: 87.5%"><div class="bar-text">77 /
+                  88</div></div></div></td><td><div class="bar-wrap"><div class="bar-value" style="background: #dfd; width: 93.75%"><div class="bar-text">15 /
+    			16</div></div></div></td></tr></tbody></table><h1>PrimeFinder.cs</h1><pre class="brush:csharp"><span class="title">Line: Mutants: Source code                                                                       </span>
+   1:        : <span class="white">using System;&#x200b;</span>
+   2:        : <span class="white">using System.Net.Mime;&#x200b;</span>
+   3:        : <span class="white">&#x200b;</span>
+   4:        : <span class="white">namespace PrimeFinderMutationPlayground&#x200b;</span>
+   5:        : <span class="white">{&#x200b;</span>
+   6:        : <span class="white">    public interface IDummy { }&#x200b;</span>
+   7:        : <span class="white">&#x200b;</span>
+   8:        : <span class="white">    public class Dummy : IDummy { }&#x200b;</span>
+   9:        : <span class="white">&#x200b;</span>
+  10:        : <span class="white">    public class PrimeFinder&#x200b;</span>
+  11:        : <span class="white">    {&#x200b;</span>
+  12:        : <span class="white">        public static bool IsPrime(int n)&#x200b;</span>
+  13:        : <span class="white">        {&#x200b;</span>
+  14:        : <span class="amber">            return IsPrimed(n, new Dummy());&#x200b;</span>
+  15:        : <span class="white">        }&#x200b;</span>
+  16:        : <span class="white">&#x200b;</span>
+  17:        : <span class="white">        public static bool IsPrimed(int n, IDummy dummy)&#x200b;</span>
+  18:        : <span class="white">        {&#x200b;</span>
+  19:     7/7: <span class="green">            if (dummy == null)&#x200b;</span>
+  20:     0/1: <span class="red">                throw new Exception("null dummy");&#x200b;</span>
+  21:        : <span class="white">&#x200b;</span>
+  22:    7/10: <span class="red">            if (n &lt;= 1)&#x200b;</span>
+  23:     0/1: <span class="red">                throw new Exception("n should be greater than 1");&#x200b;</span>
+  24:        : <span class="white">&#x200b;</span>
+  25:     5/9: <span class="red">            if (n == 2)&#x200b;</span>
+  26:     0/2: <span class="red">                return true;&#x200b;</span>
+  27:   13/13: <span class="green">            if (n % 2 == 0)&#x200b;</span>
+  28:     1/1: <span class="green">                return false;&#x200b;</span>
+  29:        : <span class="white">&#x200b;</span>
+  30:     4/4: <span class="green">            int upperBound = (int)Math.Sqrt(n);&#x200b;</span>
+  31:   23/23: <span class="green">            for (int i = 3; i &lt;= upperBound; i += 2)&#x200b;</span>
+  32:        : <span class="white">            {&#x200b;</span>
+  33:   15/15: <span class="green">                if (n % i == 0)&#x200b;</span>
+  34:     1/1: <span class="green">                    return false;&#x200b;</span>
+  35:        : <span class="white">            }&#x200b;</span>
+  36:     1/1: <span class="green">            return true;&#x200b;</span>
+  37:        : <span class="white">        }&#x200b;</span>
+  38:        : <span class="white">    }&#x200b;</span>
+  39:        : <span class="white">}&#x200b;</span>
+</pre><span class="red">
+      Line 20: Deleting sequence points from IL.</span><br /><span class="red">
+      Line 22: Toggling inclusivity of comparison operators &lt;, &lt;=, &gt; and &gt;=.</span><br /><span class="red">
+      Line 22: Deleting sequence points from IL.</span><br /><span class="red">
+      Line 22: Replacing writes to local variables and fields.</span><br /><span class="red">
+      Line 23: Deleting sequence points from IL.</span><br /><span class="red">
+      Line 25: Deleting sequence points from IL.</span><br /><span class="red">
+      Line 25: Replacing reads from local variables, fields and parameters.</span><br /><span class="red">
+      Line 25: Replacing reads from local variables, fields and parameters.</span><br /><span class="red">
+      Line 25: Replacing writes to local variables and fields.</span><br /><span class="red">
+      Line 26: Deleting sequence points from IL.</span><br /><span class="red">
+      Line 26: Replacing writes to local variables and fields.</span><br /></body></html>
