@@ -19,7 +19,7 @@ codebases using NUnit v2.6.4 as their unit test framework.
 
 `git clone git@github.com:criteo/NinjaTurtlesMutation.git`
 
-**Download/clone the repository wherever you want.** Just keep in mind that the executable you'll use
+Download/clone the repository wherever you want. Just keep in mind that the executable you'll use
 will be located in path/to/your/clone/NinjaTurtlesMutation.Console/bin/Debug
 
 #### Set the PATH to the executable
@@ -28,7 +28,7 @@ will be located in path/to/your/clone/NinjaTurtlesMutation.Console/bin/Debug
 
 #### Build NinjaTurtlesMutation
 
-**From the repo's root, open NinjaTurtlesMutation.sln and hit F6** to build NTM with the test
+From the repo's root, open NinjaTurtlesMutation.sln and hit F6 to build NTM with the test
 assembly.
 *If you doesn't want to build the test, in the Solution Explorer select all the projects
 except NinjaTurtlesMutation.Tests and hit Shift + F6*
