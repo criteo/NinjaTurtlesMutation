@@ -38,9 +38,9 @@ except NinjaTurtles.Tests and hit Shift + F6*
 `/c/Windows/Microsoft.NET/Framework/v4.0.30319/MSBuild.exe NinjaTurtlesMutation.sln`
 
 At this point everything is ready. In NinjaTurtlesMutation.Console/bin/Debug, you should have 3 executables:
-- NinjaTurtlesMutation.Console.exe
-- testdispatcher.exe
-- testrunner.exe
+- ntm.exe
+- NTMDispatcher.exe
+- NTMRunner.exe
 
 ## Usage
 
@@ -59,7 +59,7 @@ library have one namespace (PrimeFinder.UTest) with one class.
 
 #### Test a class
 
-`NinjaTurtlesMutation.Console.exe run -c PrimeFinderMutationPlayground.PrimeFinder path/to/test/assembly/PrimeFinder.UTest.dll`
+`ntm.exe run -c PrimeFinderMutationPlayground.PrimeFinder path/to/test/assembly/PrimeFinder.UTest.dll`
 
 This command will start a mutation test on all the methods contained in the PrimeFinder class.
 During his progress, NTM will display the full name of each method tested.
@@ -111,7 +111,7 @@ the mutation score, details about the surviving mutants, and the methods that NT
 
 #### Test all classes in a namespace
 
-`NinjaTurtlesMutation.Console.exe run -N PrimeFinderMutationPlayground path/to/test/assembly/PrimeFinder.UTest.dll`
+`ntm.exe run -N PrimeFinderMutationPlayground path/to/test/assembly/PrimeFinder.UTest.dll`
 
 This command will start a mutation test on all the methods, of every classes contained in the 
 PrimeFinderMutationPlayground namespace.
@@ -155,7 +155,7 @@ several line), and details of IL changes made for each mutants, even the one tha
 Like the xml report use `--output [-o]` to specify a filename and set the format with the `--format [-f]`
 option as follow:
 
-`NinjaTurtlesMutation.Console.exe run -o mutation_report.html -f HTML -N PrimeFinderMutationPlayground PrimeFinder.UTest.dll`
+`ntm.exe run -o mutation_report.html -f HTML -N PrimeFinderMutationPlayground PrimeFinder.UTest.dll`
 
 //////////OUTPUT
 
@@ -163,7 +163,7 @@ option as follow:
 
 Use the `--output [-o]` option, and give a filename with it. It should look like this:
 
-`NinjaTurtlesMutation.Console.exe run -o mutation_report.xml -N PrimeFinderMutationPlayground PrimeFinder.UTest.dll`
+`ntm.exe run -o mutation_report.xml -N PrimeFinderMutationPlayground PrimeFinder.UTest.dll`
 
 //////////OUTPUT
 
