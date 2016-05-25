@@ -353,14 +353,13 @@ Example:
             }
             catch (Exception ex)
             {
-                //Debugger.Launch();
                 _message =
                     @"
 An exception was thrown setting up the mutation tests. The exception details
 are below. If you are unable to resolve the problem from these details, please
 post the details in our issue tracker at:
 
-http://ninjaturtles.codeplex.com/workitem/list/basic
+https://github.com/criteo/NinjaTurtlesMutation/issues
 
 Exception details:
 
