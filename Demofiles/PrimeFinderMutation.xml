@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="utf-8"?>
+<MutationTestingReport xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <SourceFiles>
+    <SourceFile>
+      <Url>c:\Users\t.roussel\PrimeFinder\PrimeFinderMutationPlayground\PrimeFinderMutationPlayground\PrimeFinder.cs</Url>
+      <FileName>PrimeFinder.cs</FileName>
+      <SequencePoints>
+        <SequencePoint StartLine="27" StartColumn="13" EndLine="27" EndColumn="28">
+          <AppliedMutants>
+            <AppliedMutant GenericDescription="Rotating arithmetic operators +, -, *, / and %." Description="003b: Rem =&gt; Add" Killed="true" />
+            <AppliedMutant GenericDescription="Rotating arithmetic operators +, -, *, / and %." Description="003b: Rem =&gt; Mul" Killed="true" />
+            <AppliedMutant GenericDescription="Rotating arithmetic operators +, -, *, / and %." Description="003b: Rem =&gt; Div" Killed="true" />
+            <AppliedMutant GenericDescription="Rotating arithmetic operators +, -, *, / and %." Description="003b: Rem =&gt; Sub" Killed="true" />
+            <AppliedMutant GenericDescription="Replacing branch op codes Brtrue and Brfalse." Description="0044: Brtrue =&gt; Nop" Killed="true" />
+            <AppliedMutant GenericDescription="Replacing branch op codes Brtrue and Brfalse." Description="0044: Brtrue =&gt; Brfalse" Killed="true" />
+            <AppliedMutant GenericDescription="Replacing branch op codes Brtrue and Brfalse." Description="0044: Brtrue =&gt; Br" Killed="true" />
+            <AppliedMutant GenericDescription="Deleting sequence points from IL." Description="0039: deleting Ldarg, Ldc_I4, Rem, Ldc_I4, Ceq, Ldc_I4, Ceq, Stloc, Ldloc, Brtrue" Killed="true" />
+            <AppliedMutant GenericDescription="Deleting sequence points from IL." Description="0039: deleting Ldarg, Ldc_I4, Rem, Ldc_I4, Ceq, Ldc_I4, Ceq, Stloc" Killed="true" />
+            <AppliedMutant GenericDescription="Replacing reads from local variables, fields and parameters." Description="0039: read substitution Int32.n =&gt; Int32.i" Killed="true" />
+            <AppliedMutant GenericDescription="Replacing reads from local variables, fields and parameters." Description="0039: read substitution Int32.n =&gt; Int32.upperBound" Killed="true" />
+            <AppliedMutant GenericDescription="Replacing reads from local variables, fields and parameters." Description="0043: read substitution Boolean.CS$4$0001 =&gt; Boolean.CS$1$0000" Killed="true" />
+            <AppliedMutant GenericDescription="Replacing writes to local variables and fields." Description="0042: write substitution Boolean.CS$4$0001 =&gt; Boolean.CS$1$0000" Killed="true" />
+          </AppliedMutants>
+        </SequencePoint>
+        <SequencePoint StartLine="33" StartColumn="17" EndLine="33" EndColumn="32">
+          <AppliedMutants>
+            <AppliedMutant GenericDescription="Rotating arithmetic operators +, -, *, / and %." Description="005a: Rem =&gt; Add" Killed="true" />
+            <AppliedMutant GenericDescription="Rotating arithmetic operators +, -, *, / and %." Description="005a: Rem =&gt; Mul" Killed="true" />
+            <AppliedMutant GenericDescription="Rotating arithmetic operators +, -, *, / and %." Description="005a: Rem =&gt; Sub" Killed="true" />
+            <AppliedMutant GenericDescription="Rotating arithmetic operators +, -, *, / and %." Description="005a: Rem =&gt; Div" Killed="true" />
+            <AppliedMutant GenericDescription="Replacing branch op codes Brtrue and Brfalse." Description="0063: Brtrue =&gt; Brfalse" Killed="true" />
+            <AppliedMutant GenericDescription="Replacing branch op codes Brtrue and Brfalse." Description="0063: Brtrue =&gt; Br" Killed="true" />
+            <AppliedMutant GenericDescription="Replacing branch op codes Brtrue and Brfalse." Description="0063: Brtrue =&gt; Nop" Killed="true" />
+            <AppliedMutant GenericDescription="Deleting sequence points from IL." Description="0058: deleting Ldarg, Ldloc, Rem, Ldc_I4, Ceq, Ldc_I4, Ceq, Stloc" Killed="true" />
+            <AppliedMutant GenericDescription="Deleting sequence points from IL." Description="0058: deleting Ldarg, Ldloc, Rem, Ldc_I4, Ceq, Ldc_I4, Ceq, Stloc, Ldloc, Brtrue" Killed="true" />
+            <AppliedMutant GenericDescription="Replacing reads from local variables, fields and parameters." Description="0058: read substitution Int32.n =&gt; Int32.upperBound" Killed="true" />
+            <AppliedMutant GenericDescription="Replacing reads from local variables, fields and parameters." Description="0059: read substitution Int32.i =&gt; Int32.n" Killed="true" />
+            <AppliedMutant GenericDescription="Replacing reads from local variables, fields and parameters." Description="0059: read substitution Int32.i =&gt; Int32.upperBound" Killed="true" />
+            <AppliedMutant GenericDescription="Replacing reads from local variables, fields and parameters." Description="0058: read substitution Int32.n =&gt; Int32.i" Killed="true" />
+            <AppliedMutant GenericDescription="Replacing reads from local variables, fields and parameters." Description="0062: read substitution Boolean.CS$4$0001 =&gt; Boolean.CS$1$0000" Killed="true" />
+            <AppliedMutant GenericDescription="Replacing writes to local variables and fields." Description="0061: write substitution Boolean.CS$4$0001 =&gt; Boolean.CS$1$0000" Killed="true" />
+          </AppliedMutants>
+        </SequencePoint>
+        <SequencePoint StartLine="31" StartColumn="46" EndLine="31" EndColumn="52">
+          <AppliedMutants>
+            <AppliedMutant GenericDescription="Rotating arithmetic operators +, -, *, / and %." Description="006c: Add =&gt; Sub" Killed="true" />
+            <AppliedMutant GenericDescription="Rotating arithmetic operators +, -, *, / and %." Description="006c: Add =&gt; Mul" Killed="true" />
+            <AppliedMutant GenericDescription="Rotating arithmetic operators +, -, *, / and %." Description="006c: Add =&gt; Div" Killed="true" />
+            <AppliedMutant GenericDescription="Rotating arithmetic operators +, -, *, / and %." Description="006c: Add =&gt; Rem" Killed="true" />
+            <AppliedMutant GenericDescription="Deleting sequence points from IL." Description="006a: deleting Ldloc, Ldc_I4, Add, Stloc" Killed="true" />
+            <AppliedMutant GenericDescription="Replacing reads from local variables, fields and parameters." Description="006a: read substitution Int32.i =&gt; Int32.n" Killed="true" />
+            <AppliedMutant GenericDescription="Replacing reads from local variables, fields and parameters." Description="006a: read substitution Int32.i =&gt; Int32.upperBound" Killed="true" />
+            <AppliedMutant GenericDescription="Replacing writes to local variables and fields." Description="006d: write substitution Int32.i =&gt; Int32.upperBound" Killed="true" />
+          </AppliedMutants>
+        </SequencePoint>
+        <SequencePoint StartLine="19" StartColumn="13" EndLine="19" EndColumn="31">
+          <AppliedMutants>
+            <AppliedMutant GenericDescription="Replacing branch op codes Brtrue and Brfalse." Description="000a: Brtrue =&gt; Nop" Killed="true" />
+            <AppliedMutant GenericDescription="Replacing branch op codes Brtrue and Brfalse." Description="000a: Brtrue =&gt; Brfalse" Killed="true" />
+            <AppliedMutant GenericDescription="Replacing branch op codes Brtrue and Brfalse." Description="000a: Brtrue =&gt; Br" Killed="true" />
+            <AppliedMutant GenericDescription="Deleting sequence points from IL." Description="0001: deleting Ldarg, Ldnull, Ceq, Ldc_I4, Ceq, Stloc, Ldloc, Brtrue" Killed="true" />
+            <AppliedMutant GenericDescription="Deleting sequence points from IL." Description="0001: deleting Ldarg, Ldnull, Ceq, Ldc_I4, Ceq, Stloc" Killed="true" />
+            <AppliedMutant GenericDescription="Replacing reads from local variables, fields and parameters." Description="0009: read substitution Boolean.CS$4$0001 =&gt; Boolean.CS$1$0000" Killed="true" />
+            <AppliedMutant GenericDescription="Replacing writes to local variables and fields." Description="0008: write substitution Boolean.CS$4$0001 =&gt; Boolean.CS$1$0000" Killed="true" />
+          </AppliedMutants>
+        </SequencePoint>
+        <SequencePoint StartLine="22" StartColumn="13" EndLine="22" EndColumn="24">
+          <AppliedMutants>
+            <AppliedMutant GenericDescription="Replacing branch op codes Brtrue and Brfalse." Description="001d: Brtrue =&gt; Br" Killed="true" />
+            <AppliedMutant GenericDescription="Replacing branch op codes Brtrue and Brfalse." Description="001d: Brtrue =&gt; Nop" Killed="true" />
+            <AppliedMutant GenericDescription="Replacing branch op codes Brtrue and Brfalse." Description="001d: Brtrue =&gt; Brfalse" Killed="true" />
+            <AppliedMutant GenericDescription="Toggling inclusivity of comparison operators &lt;, &lt;=, &gt; and &gt;=." Description="0019: Cgt =&gt; not Clt" Killed="false" />
+            <AppliedMutant GenericDescription="Deleting sequence points from IL." Description="0017: deleting Ldarg, Ldc_I4, Cgt, Stloc, Ldloc, Brtrue" Killed="true" />
+            <AppliedMutant GenericDescription="Deleting sequence points from IL." Description="0017: deleting Ldarg, Ldc_I4, Cgt, Stloc" Killed="false" />
+            <AppliedMutant GenericDescription="Replacing reads from local variables, fields and parameters." Description="0017: read substitution Int32.n =&gt; Int32.upperBound" Killed="true" />
+            <AppliedMutant GenericDescription="Replacing reads from local variables, fields and parameters." Description="0017: read substitution Int32.n =&gt; Int32.i" Killed="true" />
+            <AppliedMutant GenericDescription="Replacing reads from local variables, fields and parameters." Description="001c: read substitution Boolean.CS$4$0001 =&gt; Boolean.CS$1$0000" Killed="true" />
+            <AppliedMutant GenericDescription="Replacing writes to local variables and fields." Description="001b: write substitution Boolean.CS$4$0001 =&gt; Boolean.CS$1$0000" Killed="false" />
+          </AppliedMutants>
+        </SequencePoint>
+        <SequencePoint StartLine="25" StartColumn="13" EndLine="25" EndColumn="24">
+          <AppliedMutants>
+            <AppliedMutant GenericDescription="Replacing branch op codes Brtrue and Brfalse." Description="0033: Brtrue =&gt; Nop" Killed="true" />
+            <AppliedMutant GenericDescription="Replacing branch op codes Brtrue and Brfalse." Description="0033: Brtrue =&gt; Brfalse" Killed="true" />
+            <AppliedMutant GenericDescription="Replacing branch op codes Brtrue and Brfalse." Description="0033: Brtrue =&gt; Br" Killed="true" />
+            <AppliedMutant GenericDescription="Deleting sequence points from IL." Description="002a: deleting Ldarg, Ldc_I4, Ceq, Ldc_I4, Ceq, Stloc" Killed="false" />
+            <AppliedMutant GenericDescription="Deleting sequence points from IL." Description="002a: deleting Ldarg, Ldc_I4, Ceq, Ldc_I4, Ceq, Stloc, Ldloc, Brtrue" Killed="true" />
+            <AppliedMutant GenericDescription="Replacing reads from local variables, fields and parameters." Description="002a: read substitution Int32.n =&gt; Int32.i" Killed="false" />
+            <AppliedMutant GenericDescription="Replacing reads from local variables, fields and parameters." Description="002a: read substitution Int32.n =&gt; Int32.upperBound" Killed="false" />
+            <AppliedMutant GenericDescription="Replacing reads from local variables, fields and parameters." Description="0032: read substitution Boolean.CS$4$0001 =&gt; Boolean.CS$1$0000" Killed="true" />
+            <AppliedMutant GenericDescription="Replacing writes to local variables and fields." Description="0031: write substitution Boolean.CS$4$0001 =&gt; Boolean.CS$1$0000" Killed="false" />
+          </AppliedMutants>
+        </SequencePoint>
+        <SequencePoint StartLine="31" StartColumn="29" EndLine="31" EndColumn="44">
+          <AppliedMutants>
+            <AppliedMutant GenericDescription="Replacing branch op codes Brtrue and Brfalse." Description="0077: Brtrue =&gt; Nop" Killed="true" />
+            <AppliedMutant GenericDescription="Replacing branch op codes Brtrue and Brfalse." Description="0077: Brtrue =&gt; Br" Killed="true" />
+            <AppliedMutant GenericDescription="Replacing branch op codes Brtrue and Brfalse." Description="0077: Brtrue =&gt; Brfalse" Killed="true" />
+            <AppliedMutant GenericDescription="Toggling inclusivity of comparison operators &lt;, &lt;=, &gt; and &gt;=." Description="0070: Cgt =&gt; not Clt" Killed="true" />
+            <AppliedMutant GenericDescription="Deleting sequence points from IL." Description="006e: deleting Ldloc, Ldloc, Cgt, Ldc_I4, Ceq, Stloc" Killed="true" />
+            <AppliedMutant GenericDescription="Deleting sequence points from IL." Description="006e: deleting Ldloc, Ldloc, Cgt, Ldc_I4, Ceq, Stloc, Ldloc, Brtrue" Killed="true" />
+            <AppliedMutant GenericDescription="Replacing reads from local variables, fields and parameters." Description="006e: read substitution Int32.i =&gt; Int32.n" Killed="true" />
+            <AppliedMutant GenericDescription="Replacing reads from local variables, fields and parameters." Description="006f: read substitution Int32.upperBound =&gt; Int32.i" Killed="true" />
+            <AppliedMutant GenericDescription="Replacing reads from local variables, fields and parameters." Description="006e: read substitution Int32.i =&gt; Int32.upperBound" Killed="true" />
+            <AppliedMutant GenericDescription="Replacing reads from local variables, fields and parameters." Description="006f: read substitution Int32.upperBound =&gt; Int32.n" Killed="true" />
+            <AppliedMutant GenericDescription="Replacing reads from local variables, fields and parameters." Description="0076: read substitution Boolean.CS$4$0001 =&gt; Boolean.CS$1$0000" Killed="true" />
+            <AppliedMutant GenericDescription="Replacing writes to local variables and fields." Description="0075: write substitution Boolean.CS$4$0001 =&gt; Boolean.CS$1$0000" Killed="true" />
+          </AppliedMutants>
+        </SequencePoint>
+        <SequencePoint StartLine="20" StartColumn="17" EndLine="20" EndColumn="51">
+          <AppliedMutants>
+            <AppliedMutant GenericDescription="Deleting sequence points from IL." Description="000c: deleting Ldstr, Newobj, Throw" Killed="false" />
+          </AppliedMutants>
+        </SequencePoint>
+        <SequencePoint StartLine="23" StartColumn="17" EndLine="23" EndColumn="67">
+          <AppliedMutants>
+            <AppliedMutant GenericDescription="Deleting sequence points from IL." Description="001f: deleting Ldstr, Newobj, Throw" Killed="false" />
+          </AppliedMutants>
+        </SequencePoint>
+        <SequencePoint StartLine="26" StartColumn="17" EndLine="26" EndColumn="29">
+          <AppliedMutants>
+            <AppliedMutant GenericDescription="Deleting sequence points from IL." Description="0035: deleting Ldc_I4, Stloc, Br" Killed="false" />
+            <AppliedMutant GenericDescription="Replacing writes to local variables and fields." Description="0036: write substitution Boolean.CS$1$0000 =&gt; Boolean.CS$4$0001" Killed="false" />
+          </AppliedMutants>
+        </SequencePoint>
+        <SequencePoint StartLine="28" StartColumn="17" EndLine="28" EndColumn="30">
+          <AppliedMutants>
+            <AppliedMutant GenericDescription="Deleting sequence points from IL." Description="0046: deleting Ldc_I4, Stloc, Br" Killed="true" />
+          </AppliedMutants>
+        </SequencePoint>
+        <SequencePoint StartLine="31" StartColumn="18" EndLine="31" EndColumn="28">
+          <AppliedMutants>
+            <AppliedMutant GenericDescription="Deleting sequence points from IL." Description="0053: deleting Ldc_I4, Stloc" Killed="true" />
+            <AppliedMutant GenericDescription="Deleting sequence points from IL." Description="0053: deleting Ldc_I4, Stloc, Br" Killed="true" />
+            <AppliedMutant GenericDescription="Replacing writes to local variables and fields." Description="0054: write substitution Int32.i =&gt; Int32.upperBound" Killed="true" />
+          </AppliedMutants>
+        </SequencePoint>
+        <SequencePoint StartLine="30" StartColumn="13" EndLine="30" EndColumn="48">
+          <AppliedMutants>
+            <AppliedMutant GenericDescription="Deleting sequence points from IL." Description="004a: deleting Ldarg, Conv_R8, Call, Conv_I4, Stloc" Killed="true" />
+            <AppliedMutant GenericDescription="Replacing reads from local variables, fields and parameters." Description="004a: read substitution Int32.n =&gt; Int32.upperBound" Killed="true" />
+            <AppliedMutant GenericDescription="Replacing reads from local variables, fields and parameters." Description="004a: read substitution Int32.n =&gt; Int32.i" Killed="true" />
+            <AppliedMutant GenericDescription="Replacing writes to local variables and fields." Description="0052: write substitution Int32.upperBound =&gt; Int32.i" Killed="true" />
+          </AppliedMutants>
+        </SequencePoint>
+        <SequencePoint StartLine="34" StartColumn="21" EndLine="34" EndColumn="34">
+          <AppliedMutants>
+            <AppliedMutant GenericDescription="Deleting sequence points from IL." Description="0065: deleting Ldc_I4, Stloc, Br" Killed="true" />
+          </AppliedMutants>
+        </SequencePoint>
+        <SequencePoint StartLine="36" StartColumn="13" EndLine="36" EndColumn="25">
+          <AppliedMutants>
+            <AppliedMutant GenericDescription="Replacing writes to local variables and fields." Description="007a: write substitution Boolean.CS$1$0000 =&gt; Boolean.CS$4$0001" Killed="true" />
+          </AppliedMutants>
+        </SequencePoint>
+        <SequencePoint StartLine="14" StartColumn="13" EndLine="14" EndColumn="45">
+          <AppliedMutants />
+        </SequencePoint>
+      </SequencePoints>
+      <Lines>
+        <Line Number="1">using System;</Line>
+        <Line Number="2">using System.Net.Mime;</Line>
+        <Line Number="3" />
+        <Line Number="4">namespace PrimeFinderMutationPlayground</Line>
+        <Line Number="5">{</Line>
+        <Line Number="6">    public interface IDummy { }</Line>
+        <Line Number="7" />
+        <Line Number="8">    public class Dummy : IDummy { }</Line>
+        <Line Number="9" />
+        <Line Number="10">    public class PrimeFinder</Line>
+        <Line Number="11">    {</Line>
+        <Line Number="12">        public static bool IsPrime(int n)</Line>
+        <Line Number="13">        {</Line>
+        <Line Number="14">            return IsPrimed(n, new Dummy());</Line>
+        <Line Number="15">        }</Line>
+        <Line Number="16" />
+        <Line Number="17">        public static bool IsPrimed(int n, IDummy dummy)</Line>
+        <Line Number="18">        {</Line>
+        <Line Number="19">            if (dummy == null)</Line>
+        <Line Number="20">                throw new Exception("null dummy");</Line>
+        <Line Number="21" />
+        <Line Number="22">            if (n &lt;= 1)</Line>
+        <Line Number="23">                throw new Exception("n should be greater than 1");</Line>
+        <Line Number="24" />
+        <Line Number="25">            if (n == 2)</Line>
+        <Line Number="26">                return true;</Line>
+        <Line Number="27">            if (n % 2 == 0)</Line>
+        <Line Number="28">                return false;</Line>
+        <Line Number="29" />
+        <Line Number="30">            int upperBound = (int)Math.Sqrt(n);</Line>
+        <Line Number="31">            for (int i = 3; i &lt;= upperBound; i += 2)</Line>
+        <Line Number="32">            {</Line>
+        <Line Number="33">                if (n % i == 0)</Line>
+        <Line Number="34">                    return false;</Line>
+        <Line Number="35">            }</Line>
+        <Line Number="36">            return true;</Line>
+        <Line Number="37">        }</Line>
+        <Line Number="38">    }</Line>
+        <Line Number="39">}</Line>
+      </Lines>
+    </SourceFile>
+  </SourceFiles>
+</MutationTestingReport>

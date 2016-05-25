@@ -150,20 +150,20 @@ The html file is built from the xml. So **some of the informations can only be f
 These informations include the start/end lines/columns of the mutations (a mutation can span on
 several line), and details of IL changes made for each mutants, even the one that has been killed.
 
+##### I want the xml report !
+
+Use the `--output [-o]` option, and give a filename with it. It should look like this:
+
+`ntm.exe run -o mutation_report.xml -N PrimeFinderMutationPlayground PrimeFinder.UTest.dll`
+
+![XmlOutput](/Demofiles/XmlOutput.jpg)
+
 ##### I want the html report !
 
 Like the xml report use `--output [-o]` to specify a filename and set the format with the `--format [-f]`
 option as follow:
 
 `ntm.exe run -o mutation_report.html -f HTML -N PrimeFinderMutationPlayground PrimeFinder.UTest.dll`
-
-//////////OUTPUT
-
-##### I want the xml report !
-
-Use the `--output [-o]` option, and give a filename with it. It should look like this:
-
-`ntm.exe run -o mutation_report.xml -N PrimeFinderMutationPlayground PrimeFinder.UTest.dll`
 
 //////////OUTPUT
 
