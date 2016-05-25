@@ -221,4 +221,4 @@ in the [codeplex page](http://ninjaturtles.codeplex.com/team/view)
 
 Copyright (C) 2016 Tony Roussel
 
-Copyright (C) 2012 David Musgrove
+Copyright (C) 2012-14 David Musgrove and others
