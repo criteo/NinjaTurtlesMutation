@@ -165,7 +165,7 @@ option as follow:
 
 `ntm.exe run -o mutation_report.html -f HTML -N PrimeFinderMutationPlayground PrimeFinder.UTest.dll`
 
-//////////OUTPUT
+![Html Output](Demofiles/HtmlOutput.png?raw=true)
 
 ## Differences with NinjaTurtles
 
