@@ -31,7 +31,7 @@ will be located in path/to/your/clone/NinjaTurtlesMutation.Console/bin/Debug
 **From the repo's root, open NinjaTurtlesMutation.sln and hit F6** to build NTM with the test
 assembly.
 *If you doesn't want to build the test, in the Solution Explorer select all the projects
-except NinjaTurtles.Tests and hit Shift + F6*
+except NinjaTurtlesMutation.Tests and hit Shift + F6*
 
 *OR to build from command-line:*
 
@@ -115,7 +115,7 @@ the mutation score, details about the surviving mutants, and the methods that NT
 
 This command will start a mutation test on all the methods, of every classes contained in the 
 PrimeFinderMutationPlayground namespace.
-The output structure is like the "class mode" described in the previous section, except it will
+The output is like the "class mode" described in the previous section, except it will
 cover more methods:
 
 ```
@@ -143,10 +143,10 @@ Mutation testing failed
 
 You can generate two kind of reports: XML and HTML.
 
-They **both contain** the path and code of the original source files, the mutated lines listing, and
+They both contain the path and code of the original source files, the mutated lines listing, and
 which one survive.
 
-The html file is built from the xml. So **some of the informations can only be found in the xml report.**
+The html file is built from the xml. So some of the informations can only be found in the xml report.
 These informations include the start/end lines/columns of the mutations (a mutation can span on
 several line), and details of IL changes made for each mutants, even the one that has been killed.
 
@@ -169,9 +169,9 @@ option as follow:
 
 ## Differences with NinjaTurtles
 
-- Only compatible with tests made with NUnit (v2.6.4)
-- Have a namespace mode to tests several classes at once
-- Display a report of surviving mutants in the console output
+- Only compatible with tests made with NUnit (2.6.2 to 2.6.4)
+- Have a namespace mode to test several classes at once
+- Report of surviving mutants in the console output
 - Tests run are completely separated from the NTM application. A dispatching process exchange tests
   queries/results with NTM. The dispatcher also handle the workload between several test runner
   processes
@@ -191,9 +191,13 @@ More details in the LICENSE file
 
 Tony Roussel
 
-A list of the original NinjaTurtles project's owners and contributors can be found at http://ninjaturtles.codeplex.com/team/view
+David Musgrove - *Owner of the NinjaTurtles project*
+
+A list of the original NinjaTurtles project's owners/contributors and contributors 
+can be found in the [codeplex page](http://ninjaturtles.codeplex.com/team/view)
 
 ## Copyrights
 
 Copyright (C) 2016 Tony Roussel
+
 Copyright (C) 2012 David Musgrove
