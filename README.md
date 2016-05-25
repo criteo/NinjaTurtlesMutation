@@ -74,6 +74,7 @@ one for the tests
 
 The library have one namespace (PrimeFinderMutationPlayground) with three classes. The test
 library have one namespace (PrimeFinder.UTest) with one class.
+When built, this solution generate two dlls: PrimeFinderMutationPlayground.dll and PrimeFinder.UTest.dll
 
 #### Test a class
 
@@ -84,8 +85,9 @@ During his progress, NTM will display the full name of each method tested.
 This output the following:
 
 ```
-NinjaTurtles - mutation testing for .NET (version 1.0.0.0)
-Copyright (C) 2016 Tony Roussel.
+NinjaTurtlesMutation - mutation testing for .NET (version 1.0.0.0)
+Copyright (C) 2016 Tony Roussel
+Copyright (C) 2012 David Musgrove
 
 Running mutation tests for PrimeFinderMutationPlayground.PrimeFinder.IsPrime(Int32)
 Running mutation tests for PrimeFinderMutationPlayground.PrimeFinder.IsPrimed(Int32, IDummy)
@@ -137,8 +139,9 @@ The output is like the "class mode" described in the previous section, except it
 cover more methods:
 
 ```
-NinjaTurtles - mutation testing for .NET (version 1.0.0.0)
-Copyright (C) 2016 Tony Roussel.
+NinjaTurtlesMutation - mutation testing for .NET (version 1.0.0.0)
+Copyright (C) 2016 Tony Roussel
+Copyright (C) 2012 David Musgrove
 
 Running mutation tests for PrimeFinderMutationPlayground.Dummy..ctor
 Running mutation tests for PrimeFinderMutationPlayground.PrimeFinder.IsPrime(Int32)
