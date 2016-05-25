@@ -55,7 +55,7 @@ namespace NinjaTurtlesMutation.Console.Commands
 
         protected override string HelpText
         {
-            get { return @"usage: NinjaTurtles.Console run [<options>] TEST_ASSEMBLY
+            get { return @"usage: ntm run [<options>] TEST_ASSEMBLY
 
 Runs all mutation tests found in the specified test assembly.
 
@@ -73,6 +73,8 @@ Options:
                                   should be applied. All classes and method under that
                                   namespace are identified, and mutation testing is applied
                                   for each of them.
+   --no-pretest                 : Skip the first test pass. If some tests are faulty, the
+                                  number of dead mutant may be superior than normal.
    --output [-o]                : Specifies the name of a file to receive the mutation
                                   testing output. This file will be deleted if it already
                                   exists.
@@ -83,7 +85,7 @@ Arguments:
                         should be in the current working directory.
 
 Example:
-   NinjaTurtlesMutation.Console run -N NinjaTurtlesMutation
+   ntm run -N NinjaTurtlesMutation
        -o NinjaTurtlesMutation.html -f HTML
        NinjaTurtlesMutation.Tests.dll
 
@@ -172,6 +174,8 @@ Example:
                 }
                 return false;
             }
+            if (Options.Options.Any(o => o is NoPreTest))
+                return true;
             var benchmark = new TestsBenchmark(_testAssemblyLocation);
             benchmark.LaunchBenchmark();
             var originalSourcesPassTests = benchmark.TestsPass;

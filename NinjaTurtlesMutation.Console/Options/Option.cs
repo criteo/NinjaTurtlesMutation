@@ -49,6 +49,7 @@ namespace NinjaTurtlesMutation.Console.Options
                     {"N", typeof(TargetNamespace)},
                     {"-parallelization", typeof(ParallelLevel)},
                     {"p", typeof(ParallelLevel)},
+                    {"-no-pretest", typeof(NoPreTest)},
                 };
 
         static public bool TryParse(Queue<string> queue, out IEnumerable<Option> commandLineOptions)
