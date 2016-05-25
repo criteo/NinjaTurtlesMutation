@@ -26,4 +26,4 @@ using System.Runtime.CompilerServices;
 [assembly: AssemblyDescription("Mutation testing library for .NET")]
 
 [assembly: InternalsVisibleTo("NinjaTurtlesMutation.Tests")]
-[assembly: InternalsVisibleTo("NinjaTurtlesMutation.Console")]
+[assembly: InternalsVisibleTo("ntm")]

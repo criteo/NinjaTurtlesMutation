@@ -9,7 +9,7 @@
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>NinjaTurtlesMutation.Console</RootNamespace>
-    <AssemblyName>NinjaTurtlesMutation.Console</AssemblyName>
+    <AssemblyName>ntm</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <TargetFrameworkProfile>
     </TargetFrameworkProfile>
