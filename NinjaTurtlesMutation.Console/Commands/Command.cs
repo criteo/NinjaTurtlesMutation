@@ -106,10 +106,12 @@ namespace NinjaTurtlesMutation.Console.Commands
             using (new OutputWriterHighlight(ConsoleColor.White))
             {
                 OutputWriter.WriteLine(
-                    @"NinjaTurtles - mutation testing for .NET (version {0})",
+                    @"NinjaTurtlesMutation - mutation testing for .NET (version {0})",
                     typeof(Command).Assembly.GetName().Version);
                 OutputWriter.WriteLine(
-                    @"Copyright (C) 2016 Tony Roussel.");
+                    @"Copyright (C) 2016 Tony Roussel");
+                OutputWriter.WriteLine(
+                    @"Copyright (C) 2012 David Musgrove");
             }
             OutputWriter.WriteLine();
         }
