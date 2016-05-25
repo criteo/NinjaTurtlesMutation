@@ -6,12 +6,30 @@ java case.
 NinjaTurtlesMutation is a fork of [NinjaTurtles](http://ninjaturtles.codeplex.com/). It aim to provide a fast mutation testing tool for
 codebases using NUnit v2.6.4 as their unit test framework.
 
+___________________________________________________________
+
+**Table of Contents**
+
+- [Prerequisites](#prerequisites)
+- [Installation](#installation)
+- [Usage](#usage)
+  - [Test a class](#test-a-class)
+  - [Test all classes in a namespace](#test-all-classes-in-a-namespace)
+  - [Generate a file report](#generate-a-file-report)
+    - [Xml](#i-want-the-xml-report-)
+    - [Html](#i-want-the-html-report-)
+- [Differences with NinjaTurtles](#differences-with-ninjaturtles)
+- [Licence](#licence)
+- [Authors](#authors)
+- [Copyrights](#copyrights)
+
+
 ## Prerequisites
 
 - Visual Studio 2010+. It's recommended that you have NuGet and JetBrains ReSharper 6+ installed.
 - .NET Framework v4.5+
 
-## Installing
+## Installation
 
 **The followings steps assume that you are using a sh-like terminal**
 
@@ -193,8 +211,8 @@ Tony Roussel
 
 David Musgrove - *Owner of the NinjaTurtles project*
 
-A list of the original NinjaTurtles project's owners/contributors and contributors 
-can be found in the [codeplex page](http://ninjaturtles.codeplex.com/team/view)
+A list of the original NinjaTurtles project's owners/contributors can be found
+in the [codeplex page](http://ninjaturtles.codeplex.com/team/view)
 
 ## Copyrights
 
