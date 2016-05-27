@@ -20,9 +20,7 @@
 #endregion
 
 using System;
-using System.Diagnostics;
 using System.IO;
-using System.IO.Pipes;
 using System.Linq;
 using System.Reflection;
 using System.Security.Principal;
@@ -31,7 +29,6 @@ using System.Xml.Xsl;
 using Mono.Cecil;
 using NinjaTurtlesMutation.Console.Options;
 using NinjaTurtlesMutation.Console.Reporting;
-using NinjaTurtlesMutation.ServiceTestRunnerLib.Utilities;
 
 namespace NinjaTurtlesMutation.Console.Commands
 {
@@ -44,14 +41,6 @@ namespace NinjaTurtlesMutation.Console.Commands
         private Output _outputOption;
         private readonly TextWriter _originalOut = System.Console.Out;
         private string _outputPath;
-
-        private Process _testDispatcher;
-        private AnonymousPipeServerStream _testDispatcherPipeIn;
-        private AnonymousPipeServerStream _testDispatcherPipeOut;
-        private AnonymousPipeServerStream _testDispatcherPipeCmd;
-        private StreamReader _testDispatcherStreamIn;
-        private StreamWriter _testDispatcherStreamOut;
-        private StreamWriter _testDispatcherStreamCmd;
 
         protected override string HelpText
         {
@@ -94,45 +83,6 @@ Example:
    mutation testing of these methods. The resulting output will be transformed
    to HTML and saved to the file NinjaTurtlesMutation.html.";
             }
-        }
-
-        private void InitTestDispatcher()
-        {
-            var parallelLevel = Options.Options.OfType<ParallelLevel>().SingleOrDefault();
-            var parallelValue = (parallelLevel == null ? 8 : parallelLevel.ParallelValue);
-            _testDispatcherPipeIn = new AnonymousPipeServerStream(PipeDirection.In, HandleInheritability.Inheritable);
-            _testDispatcherPipeOut = new AnonymousPipeServerStream(PipeDirection.Out, HandleInheritability.Inheritable);
-            _testDispatcherPipeCmd = new AnonymousPipeServerStream(PipeDirection.Out, HandleInheritability.Inheritable);
-            _testDispatcherStreamIn = new StreamReader(_testDispatcherPipeIn);
-            _testDispatcherStreamOut = new StreamWriter(_testDispatcherPipeOut);
-            _testDispatcherStreamCmd = new StreamWriter(_testDispatcherPipeCmd);
-            _testDispatcher = new Process
-            {
-                StartInfo =
-                {
-                    FileName = "NTMDispatcher.exe",
-                    UseShellExecute = false,
-                    Arguments = _testDispatcherPipeOut.GetClientHandleAsString() + " " +
-                                _testDispatcherPipeIn.GetClientHandleAsString() + " " +
-                                _testDispatcherPipeCmd.GetClientHandleAsString() + " " + parallelValue
-                }
-            };
-            _testDispatcher.Start();
-            _testDispatcherPipeCmd.DisposeLocalCopyOfClientHandle();
-            _testDispatcherPipeOut.DisposeLocalCopyOfClientHandle();
-            _testDispatcherPipeIn.DisposeLocalCopyOfClientHandle();
-        }
-
-        private void DisposeTestDispatcher()
-        {
-            CommandExchanger.SendData(_testDispatcherStreamCmd, CommandExchanger.Commands.STOP);
-
-            _testDispatcherStreamIn.Dispose();
-            _testDispatcherStreamOut.Dispose();
-            _testDispatcherStreamCmd.Dispose();
-            _testDispatcherPipeIn.Dispose();
-            _testDispatcherPipeOut.Dispose();
-            _testDispatcherPipeCmd.Dispose();
         }
 
         public override bool Validate()
@@ -199,16 +149,18 @@ Example:
             {
                 ConfigureOutput(writer);
                 var runnerMethod = ConfigureRun();
-                InitTestDispatcher();
-                var result = runnerMethod();
-                DisposeTestDispatcher();
+                var parallelLevel = Options.Options.OfType<ParallelLevel>().SingleOrDefault();
+                var parallelValue = parallelLevel != null ? parallelLevel.ParallelValue : 8;
+                bool result;
+                using (var dispatcher = new TestsDispatcher(parallelValue))
+                    result = runnerMethod(dispatcher);
                 RestoreOutput();
                 ReportResult(result, _report);
                 return result;
             }
         }
 
-        private bool RunMutationTestsForClass()
+        private bool RunMutationTestsForClass(TestsDispatcher dispatcher)
         {
             string targetClass = Options.Options.OfType<TargetClass>().Single().ClassName;
             var testAssembly = Assembly.LoadFrom(_testAssemblyLocation);
@@ -228,7 +180,7 @@ Example:
                 string methodReturnType = methodInfo.ReturnType.FullName;
                 var methodsGenerics = methodInfo.GenericParameters.ToArray();
                 var parameterTypes = methodInfo.Parameters.Select(p => p.ParameterType).ToArray();
-                bool runResultBuf = RunTests(matchedType.Assembly.Location, targetClass, methodReturnType, targetMethod, methodsGenerics, parameterTypes);
+                bool runResultBuf = RunTests(matchedType.Assembly.Location, targetClass, methodReturnType, targetMethod, methodsGenerics, parameterTypes, dispatcher);
                 result &= runResultBuf;
             }
             if (string.IsNullOrEmpty(_message))
@@ -240,7 +192,7 @@ Example:
             return result;
         }
 
-        private bool RunMutationTestsForClassAndMethod()
+        private bool RunMutationTestsForClassAndMethod(TestsDispatcher dispatcher)
         {
             string targetClass = Options.Options.OfType<TargetClass>().Single().ClassName;
             var testAssembly = Assembly.LoadFrom(_testAssemblyLocation);
@@ -254,8 +206,8 @@ Example:
             var typeOptions = Options.Options.OfType<ParameterType>().Select(p => p.ResolvedType).ToArray();
             var result =
                 typeOptions.Any()
-                ? RunTests(matchedType.Assembly.Location, targetClass, targetMethod, typeOptions)
-                : RunTests(matchedType.Assembly.Location, targetClass, targetMethod);
+                ? RunTests(matchedType.Assembly.Location, targetClass, targetMethod, dispatcher, typeOptions)
+                : RunTests(matchedType.Assembly.Location, targetClass, targetMethod, dispatcher);
             if (string.IsNullOrEmpty(_message))
             {
                 _message = string.Format(
@@ -265,7 +217,7 @@ Example:
             return result;
         }
 
-        private bool RunMutationTestsForAllClassAndMethods()
+        private bool RunMutationTestsForAllClassAndMethods(TestsDispatcher dispatcher)
         {
             bool result = true;
 
@@ -281,7 +233,7 @@ Example:
             }
             foreach (var type in matchedTypes)
             {
-                var resultBuf = RunMutationTestsForType(type, type.FullName);
+                var resultBuf = RunMutationTestsForType(type, type.FullName, dispatcher);
                 result &= resultBuf;
             }
             if (!string.IsNullOrEmpty(_message))
@@ -290,7 +242,7 @@ Example:
             return result;
         }
 
-        private bool RunMutationTestsForType(Type type, string targetClass)
+        private bool RunMutationTestsForType(Type type, string targetClass, TestsDispatcher dispatcher)
         {
             bool result = true;
 
@@ -302,13 +254,13 @@ Example:
                 string methodReturnType = methodInfo.ReturnType.FullName;
                 var methodsGenerics = methodInfo.GenericParameters.ToArray();
                 var parameterTypes = methodInfo.Parameters.Select(p => p.ParameterType).ToArray();
-                bool runResultBuf = RunTests(type.Assembly.Location, targetClass, methodReturnType, targetMethod, methodsGenerics, parameterTypes);
+                bool runResultBuf = RunTests(type.Assembly.Location, targetClass, methodReturnType, targetMethod, methodsGenerics, parameterTypes, dispatcher);
                 result &= runResultBuf;
             }
             return result;
         }
 
-        private bool RunTests(string targetAssemblyLocation, string targetClass, string returnType, string targetMethod, GenericParameter[] methodGenerics, TypeReference[] parameterTypes)
+        private bool RunTests(string targetAssemblyLocation, string targetClass, string returnType, string targetMethod, GenericParameter[] methodGenerics, TypeReference[] parameterTypes, TestsDispatcher dispatcher)
         {
             var parameterList = parameterTypes == null || parameterTypes.Length == 0
                                     ? null
@@ -316,14 +268,14 @@ Example:
             OutputMethod(targetClass, targetMethod, parameterList);
             MutationTest mutationTest =
                 parameterTypes == null
-                    ? (MutationTest)MutationTestBuilder.For(targetAssemblyLocation, targetClass, returnType, targetMethod, methodGenerics, _testDispatcherStreamOut, _testDispatcherStreamIn)
-                    : (MutationTest)MutationTestBuilder.For(targetAssemblyLocation, targetClass, returnType, targetMethod, methodGenerics, _testDispatcherStreamOut, _testDispatcherStreamIn, parameterTypes);
+                    ? (MutationTest)MutationTestBuilder.For(targetAssemblyLocation, targetClass, returnType, targetMethod, methodGenerics, dispatcher)
+                    : (MutationTest)MutationTestBuilder.For(targetAssemblyLocation, targetClass, returnType, targetMethod, methodGenerics, dispatcher, parameterTypes);
             mutationTest.TestAssemblyLocation = _testAssemblyLocation;
             var result = BuildAndRunMutationTest(mutationTest);
             return result;
         }
 
-        private bool RunTests(string targetAssemblyLocation, string targetClass, string targetMethod, Type[] parameterTypes = null)
+        private bool RunTests(string targetAssemblyLocation, string targetClass, string targetMethod, TestsDispatcher dispatcher, Type[] parameterTypes = null)
         {
             var parameterList = parameterTypes == null || parameterTypes.Length == 0
                                     ? null
@@ -331,8 +283,8 @@ Example:
             OutputMethod(targetClass, targetMethod, parameterList);
             MutationTest mutationTest =
                 parameterTypes == null
-                    ? (MutationTest)MutationTestBuilder.For(targetAssemblyLocation, targetClass, targetMethod, _testDispatcherStreamOut, _testDispatcherStreamIn)
-                    : (MutationTest)MutationTestBuilder.For(targetAssemblyLocation, targetClass, targetMethod, _testDispatcherStreamOut, _testDispatcherStreamIn, parameterTypes);
+                    ? (MutationTest)MutationTestBuilder.For(targetAssemblyLocation, targetClass, targetMethod, dispatcher)
+                    : (MutationTest)MutationTestBuilder.For(targetAssemblyLocation, targetClass, targetMethod, dispatcher, parameterTypes);
             mutationTest.TestAssemblyLocation = _testAssemblyLocation;
             var result = BuildAndRunMutationTest(mutationTest);
             return result;
@@ -373,15 +325,13 @@ Exception details:
             return result;
         }
 
-        private Func<Boolean> ConfigureRun()
+        private Func<TestsDispatcher, bool> ConfigureRun()
         {
-            var runnerMethod = Options.Options.Any(o => o is TargetNamespace) ? RunMutationTestsForAllClassAndMethods
-                                : Options.Options.Any(o => o is TargetClass)
-                                    ? (Options.Options.Any(o => o is TargetMethod)
-                                        ? (Func<bool>)RunMutationTestsForClassAndMethod
-                                            : RunMutationTestsForClass)
-                                                : RunAllMutationTestsInAssembly;
-            return runnerMethod;
+            if (Options.Options.Any(o => o is TargetNamespace))
+                return RunMutationTestsForAllClassAndMethods;
+            if (Options.Options.Any(o => o is TargetClass) && Options.Options.Any(o => o is TargetMethod))
+                return RunMutationTestsForClassAndMethod;
+            return RunMutationTestsForClass;
         }
 
         private void ConfigureOutput(StreamWriter sinkStream)

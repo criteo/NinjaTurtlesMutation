@@ -33,7 +33,6 @@ using Mono.Cecil.Cil;
 using Mono.Collections.Generic;
 using NinjaTurtlesMutation.Reporting;
 using NinjaTurtlesMutation.ServiceTestRunnerLib;
-using NinjaTurtlesMutation.ServiceTestRunnerLib.Utilities;
 using NinjaTurtlesMutation.Turtles;
 
 namespace NinjaTurtlesMutation
@@ -60,37 +59,35 @@ namespace NinjaTurtlesMutation
 	    private readonly MethodReferenceComparer _comparer = new MethodReferenceComparer();
 	    private static readonly Regex _automaticallyGeneratedNestedClassMatcher = new Regex("^\\<([A-Za-z0-9@_]+)\\>");
 
-        private readonly StreamReader _testDispatcherStreamIn;
-        private readonly StreamWriter _testDispatcherStreamOut;
+        private readonly TestsDispatcher _dispatcher;
 
         private Dictionary<string, MutantMetaData> _pendingTest;
 
         private TestsBenchmark _benchmark;
 
-        private MutationTest(string testAssemblyLocation, Type targetType, string targetMethod, StreamWriter dispatcherStreamOut, StreamReader dispatcherStreamIn)
+        private MutationTest(string testAssemblyLocation, Type targetType, string targetMethod, TestsDispatcher dispatcher)
         {
             TestAssemblyLocation = testAssemblyLocation;
             TargetType = targetType;
             TargetMethod = targetMethod;
-            _testDispatcherStreamOut = dispatcherStreamOut;
-            _testDispatcherStreamIn = dispatcherStreamIn;
+            _dispatcher = dispatcher;
         }
 
-        internal MutationTest(string testAssemblyLocation, Type targetType, string targetMethod, Type[] parameterTypes, StreamWriter dispatcherStreamOut, StreamReader dispatcherStreamIn) : this(testAssemblyLocation, targetType, targetMethod, dispatcherStreamOut, dispatcherStreamIn)
+        internal MutationTest(string testAssemblyLocation, Type targetType, string targetMethod, Type[] parameterTypes, TestsDispatcher dispatcher) : this(testAssemblyLocation, targetType, targetMethod, dispatcher)
         {
             _parameterTypes = parameterTypes;
         }
 
-        public MutationTest(string testAssemblyLocation, Type targetType, string returnType, string targetMethod, GenericParameter[] genericsParameters, Type[] parameterTypes, StreamWriter dispatcherStreamOut, StreamReader dispatcherStreamIn)
-            : this(testAssemblyLocation, targetType, targetMethod, dispatcherStreamOut, dispatcherStreamIn)
+        public MutationTest(string testAssemblyLocation, Type targetType, string returnType, string targetMethod, GenericParameter[] genericsParameters, Type[] parameterTypes, TestsDispatcher dispatcher)
+            : this(testAssemblyLocation, targetType, targetMethod, dispatcher)
         {
             _returnType = returnType;
             _genericParameters = genericsParameters;
             _parameterTypes = parameterTypes;
         }
 
-        public MutationTest(string testAssemblyLocation, Type targetType, string returnType, string targetMethod, GenericParameter[] genericsParameters, TypeReference[] parameterTypes, StreamWriter dispatcherStreamOut, StreamReader dispatcherStreamIn)
-            : this(testAssemblyLocation, targetType, targetMethod, dispatcherStreamOut, dispatcherStreamIn)
+        public MutationTest(string testAssemblyLocation, Type targetType, string returnType, string targetMethod, GenericParameter[] genericsParameters, TypeReference[] parameterTypes, TestsDispatcher dispatcher)
+            : this(testAssemblyLocation, targetType, targetMethod, dispatcher)
         {
             _returnType = returnType;
             _genericParameters = genericsParameters;
@@ -185,14 +182,14 @@ namespace NinjaTurtlesMutation
         {
             TestDescription testDescription = new TestDescription(Path.Combine(mutation.TestDirectory.FullName, Path.GetFileName(TestAssemblyLocation)), _testsToRun, _benchmark.TotalMs);
             _pendingTest.Add(testDescription.Uid, mutation);
-            TestDescriptionExchanger.SendATestDescription(_testDispatcherStreamOut, testDescription);
+            _dispatcher.SendTest(testDescription);
         }
 
         private void ProceedTestResult(MethodTurtleBase turtle, ref int failures, ref int count)
         {
             while (_pendingTest.Count != 0)
             {
-                var testResult = TestDescriptionExchanger.ReadATestDescription(_testDispatcherStreamIn);
+                var testResult = _dispatcher.ReadATest();
                 var mutation = _pendingTest[testResult.Uid];
                 if (!CheckTestResult(turtle, mutation, testResult))
                     Interlocked.Increment(ref failures);

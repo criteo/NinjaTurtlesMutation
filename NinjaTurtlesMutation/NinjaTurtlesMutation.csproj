@@ -85,6 +85,7 @@
     <Compile Include="ManagedTestRunners\IManagedTestRunner.cs" />
     <Compile Include="ManagedTestRunners\NUnitManagedTestRunner.cs" />
     <Compile Include="ServiceTestRunnerLib\TestDescription.cs" />
+    <Compile Include="TestsDispatcher.cs" />
     <Compile Include="ServiceTestRunnerLib\Utilities\ErrorModeContext.cs" />
     <Compile Include="ServiceTestRunnerLib\Utilities\CommandExchanger.cs" />
     <Compile Include="ServiceTestRunnerLib\Utilities\TestDescriptionExchanger.cs" />
