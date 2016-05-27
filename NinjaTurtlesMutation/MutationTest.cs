@@ -339,13 +339,10 @@ namespace NinjaTurtlesMutation
 	                thisModule.Types.SingleOrDefault(t => t.FullName == interfaceReference.FullName);
 	            if (interfaceDefinition != null)
 	            {
-	                var interfaceMethod = interfaceDefinition.Methods
-	                    .SingleOrDefault(m => MethodsMatch(m, targetMethod));
-	                if (interfaceMethod != null)
-	                {
-	                    AddMethod(interfaceMethod, matchingMethods);
-	                }
-	            }
+                    var interfaceMethods = interfaceDefinition.Methods.Where(m => MethodsMatch(m, targetMethod));
+	                foreach (var interfaceMethod in interfaceMethods)
+                        AddMethod(interfaceMethod, matchingMethods);
+                }
 	        }
 	    }
 
