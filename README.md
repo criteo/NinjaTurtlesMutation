@@ -3,8 +3,12 @@
 If you're not familiar with what is mutation testing, [this article](http://www.codeaffine.com/2015/10/05/what-the-heck-is-mutation-testing/) give a good explanation on the
 java case.
 
-NinjaTurtlesMutation is a fork of [NinjaTurtles](http://ninjaturtles.codeplex.com/). It aims to provide a fast mutation testing tool for
+NinjaTurtlesMutation [is a fork](#differences-with-ninjaturtles) of [NinjaTurtles](http://ninjaturtles.codeplex.com/). It aims to provide a fast mutation testing tool for
 codebases using NUnit v2.6.4.
+
+NTM is fast and generate easy to read reports of mutation coverage:
+
+![Html Output mini](Demofiles/HtmlOutputMini.png?raw=true)
 
 ___________________________________________________________
 
@@ -26,7 +30,7 @@ ___________________________________________________________
 
 ## Prerequisites
 
-- Visual Studio 2010+. It's recommended that you have NuGet and JetBrains ReSharper 6+ installed.
+- Visual Studio 2010+. It's recommended that you have NuGet installed.
 - .NET Framework v4.5+
 
 ## Installation
@@ -53,6 +57,8 @@ To build from command-line (tested with MSBuild 4.6.1 / .NET 4.0.3):
 
 To illustrate basic usages, I'll use a dummy solution with two projects. One for the library,
 one for the tests
+
+*You can find this demo project inside Demofiles/PrimeFinderMutationPlayground*
 
     | PrimeFinderMutationPlayground
         | PrimeFinderMutationPlayground.IDummy
