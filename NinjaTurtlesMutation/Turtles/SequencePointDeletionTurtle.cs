@@ -77,10 +77,9 @@ namespace NinjaTurtlesMutation.Turtles
                 }
                 if (startIndex >= 0)
                     sequence.Add(index, instruction.OpCode);
-                if (!IsLastSequenceInstruction(index, instructionsMaxIndex, instruction) || !ShouldDeleteSequence(method.Body, sequence))
+                if (!IsLastSequenceInstruction(index, instructionsMaxIndex, instruction) || !ShouldDeleteSequence(method.Body, sequence, instruction))
                     continue;
                 var originalInstruction = ReplaceOpcodeAndOperand(method, startIndex, OpCodes.Br, instruction.Next);
-
                 var codes = string.Join(", ", sequence.Values.Select(o => o.Code));
                 var description = string.Format("{0:x4}: deleting {1}", originalOffsets[startIndex], codes);
                 MutantMetaData mutation = DoYield(method, module, description, Description, startIndex);
@@ -100,7 +99,7 @@ namespace NinjaTurtlesMutation.Turtles
             return instruction.SequencePoint != null && instruction.SequencePoint.StartLine != 0xfeefee;
         }
 
-        private bool ShouldDeleteSequence(MethodBody method, IDictionary<int, OpCode> opCodes)
+        private bool ShouldDeleteSequence(MethodBody method, IDictionary<int, OpCode> opCodes, Instruction currentInstruction)
         {
             if (opCodes.Values.All(o => o == OpCodes.Nop)) return false;
             if (opCodes.Values.All(o => o == OpCodes.Pop)) return false;
@@ -120,6 +119,10 @@ namespace NinjaTurtlesMutation.Turtles
             // If setting default value to a field, don't delete.
             if (method.Instructions[opCodes.Keys.First()].FollowsSequence(OpCodes.Ldarg, OpCodes.Ldc_I4, OpCodes.Stfld)
                 && (int)method.Instructions[opCodes.Keys.First() + 1].Operand == 0)
+                return false;
+
+            // If there is no instruction to branch to
+            if (currentInstruction.Next == null)
                 return false;
 
             return true;
