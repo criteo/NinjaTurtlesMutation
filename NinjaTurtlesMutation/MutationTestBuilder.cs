@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using Mono.Cecil;
@@ -44,6 +45,9 @@ namespace NinjaTurtlesMutation
         /// <param name="dispatcher">
         /// The dispatcher used by MutationTest to test mutated assembly
         /// </param>
+        /// <param name="testMethods">
+        /// Correspondance between method name and nunit compliant fully qualified name
+        /// </param>
         /// <param name="parameterTypes">
         /// Optional parameter specifying an array of parameter types used to
         /// identify a particular method overload.
@@ -52,28 +56,28 @@ namespace NinjaTurtlesMutation
         /// An <see cref="IMutationTest" /> instance to allow fluent
         /// method chaining.
         /// </returns>
-        internal static IMutationTest For(string callingAssemblyLocation, string targetClass, string targetMethod, TestsDispatcher dispatcher, Type[] parameterTypes = null)
+        internal static IMutationTest For(string callingAssemblyLocation, string targetClass, string targetMethod, TestsDispatcher dispatcher, IDictionary<string, string> testMethods, Type[] parameterTypes = null)
         {
             var callingAssembly = Assembly.LoadFrom(callingAssemblyLocation);
             Type resolvedType = TypeResolver.ResolveTypeFromReferences(callingAssembly, targetClass);
 
-            return new MutationTest(callingAssemblyLocation, resolvedType, targetMethod, parameterTypes, dispatcher);
+            return new MutationTest(callingAssemblyLocation, resolvedType, targetMethod, parameterTypes, dispatcher, testMethods);
         }
 
-        internal static IMutationTest For(string callingAssemblyLocation, string targetClass, string returnType, string targetMethod, GenericParameter[] methodGenerics, TestsDispatcher dispatcher, Type[] parameterTypes = null)
+        internal static IMutationTest For(string callingAssemblyLocation, string targetClass, string returnType, string targetMethod, GenericParameter[] methodGenerics, TestsDispatcher dispatcher, IDictionary<string, string> testMethods, Type[] parameterTypes = null)
         {
             var callingAssembly = Assembly.LoadFrom(callingAssemblyLocation);
             Type resolvedType = TypeResolver.ResolveTypeFromReferences(callingAssembly, targetClass);
 
-            return new MutationTest(callingAssemblyLocation, resolvedType, returnType, targetMethod, methodGenerics, parameterTypes, dispatcher);
+            return new MutationTest(callingAssemblyLocation, resolvedType, returnType, targetMethod, methodGenerics, parameterTypes, dispatcher, testMethods);
         }
 
-        internal static IMutationTest For(string callingAssemblyLocation, string targetClass, string returnType, string targetMethod, GenericParameter[] methodGenerics, TestsDispatcher dispatcher, TypeReference[] parameterTypes)
+        internal static IMutationTest For(string callingAssemblyLocation, string targetClass, string returnType, string targetMethod, GenericParameter[] methodGenerics, TestsDispatcher dispatcher, IDictionary<string, string> testMethods, TypeReference[] parameterTypes)
         {
             var callingAssembly = Assembly.LoadFrom(callingAssemblyLocation);
             Type resolvedType = TypeResolver.ResolveTypeFromReferences(callingAssembly, targetClass);
 
-            return new MutationTest(callingAssemblyLocation, resolvedType, returnType, targetMethod, methodGenerics, parameterTypes, dispatcher);
+            return new MutationTest(callingAssemblyLocation, resolvedType, returnType, targetMethod, methodGenerics, parameterTypes, dispatcher, testMethods);
         }
 	}
 }

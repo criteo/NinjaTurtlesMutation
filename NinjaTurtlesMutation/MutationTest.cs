@@ -45,14 +45,12 @@ namespace NinjaTurtlesMutation
         private MethodDefinition _method;
         private int[] _originalOffsets;
 	    private readonly IList<Type> _mutationsToApply = new List<Type>();
-		private string _testAssemblyLocation;
         private readonly string _returnType;
         private readonly GenericParameter[] _genericParameters;
         private readonly Type[] _parameterTypes;
         private readonly TypeReference[] _parameterTypeReferences;
         private AssemblyDefinition _testAssembly;
 	    private Module _module;
-	    private IEnumerable<string> _testsToRun;
 	    private MutationTestingReport _report;
         private ReportingStrategy _reportingStrategy = new NullReportingStrategy();
 	    private string _reportFileName;
@@ -63,31 +61,35 @@ namespace NinjaTurtlesMutation
 
         private Dictionary<string, MutantMetaData> _pendingTest;
 
+		private string _testAssemblyLocation;
+        private IDictionary<string, string> _testMethods;
+        private IEnumerable<string> _testsToRun;
         private TestsBenchmark _benchmark;
 
-        private MutationTest(string testAssemblyLocation, Type targetType, string targetMethod, TestsDispatcher dispatcher)
+        private MutationTest(string testAssemblyLocation, Type targetType, string targetMethod, TestsDispatcher dispatcher, IDictionary<string, string> testMethods)
         {
             TestAssemblyLocation = testAssemblyLocation;
             TargetType = targetType;
             TargetMethod = targetMethod;
             _dispatcher = dispatcher;
+            _testMethods = testMethods;
         }
 
-        internal MutationTest(string testAssemblyLocation, Type targetType, string targetMethod, Type[] parameterTypes, TestsDispatcher dispatcher) : this(testAssemblyLocation, targetType, targetMethod, dispatcher)
+        internal MutationTest(string testAssemblyLocation, Type targetType, string targetMethod, Type[] parameterTypes, TestsDispatcher dispatcher, IDictionary<string, string> testMethods) : this(testAssemblyLocation, targetType, targetMethod, dispatcher, testMethods)
         {
             _parameterTypes = parameterTypes;
         }
 
-        public MutationTest(string testAssemblyLocation, Type targetType, string returnType, string targetMethod, GenericParameter[] genericsParameters, Type[] parameterTypes, TestsDispatcher dispatcher)
-            : this(testAssemblyLocation, targetType, targetMethod, dispatcher)
+        public MutationTest(string testAssemblyLocation, Type targetType, string returnType, string targetMethod, GenericParameter[] genericsParameters, Type[] parameterTypes, TestsDispatcher dispatcher, IDictionary<string, string> testMethods)
+            : this(testAssemblyLocation, targetType, targetMethod, dispatcher, testMethods)
         {
             _returnType = returnType;
             _genericParameters = genericsParameters;
             _parameterTypes = parameterTypes;
         }
 
-        public MutationTest(string testAssemblyLocation, Type targetType, string returnType, string targetMethod, GenericParameter[] genericsParameters, TypeReference[] parameterTypes, TestsDispatcher dispatcher)
-            : this(testAssemblyLocation, targetType, targetMethod, dispatcher)
+        public MutationTest(string testAssemblyLocation, Type targetType, string returnType, string targetMethod, GenericParameter[] genericsParameters, TypeReference[] parameterTypes, TestsDispatcher dispatcher, IDictionary<string, string> testMethods)
+            : this(testAssemblyLocation, targetType, targetMethod, dispatcher, testMethods)
         {
             _returnType = returnType;
             _genericParameters = genericsParameters;
@@ -146,11 +148,9 @@ namespace NinjaTurtlesMutation
 
         private void TestsDiscovery(IList<MethodReference> matchingMethods)
         {
-            var testMethods = GetMethodsNameWithAttributesFromAssembly(_testAssembly,
-                new[] { "TestAttribute", "TestCaseAttribute" });
             try
             {
-                _testsToRun = GetMatchingTestsFromTree(_method, matchingMethods, testMethods);
+                _testsToRun = GetMatchingTestsFromTree(_method, matchingMethods, _testMethods);
             }
             catch (MutationTestFailureException)
             {
@@ -365,33 +365,6 @@ namespace NinjaTurtlesMutation
             return result;
 	    }
 
-        private IDictionary<string, string> GetMethodsNameWithAttributesFromAssembly(AssemblyDefinition assembly,
-            IList<string> searchedAttributes)
-        {
-            var methodsWithAttributes = new Dictionary<string, string>();
-            foreach (var type in assembly.MainModule.Types)
-                GetMethodsNameWithAttributesFromType(type, searchedAttributes, methodsWithAttributes);
-            return methodsWithAttributes;
-        }
-
-        private void GetMethodsNameWithAttributesFromType(TypeDefinition type, IList<string> searchedAttributes, IDictionary<string, string> matchingMethods)
-        {
-            foreach (var method in type.Methods)
-            {
-                if (!MethodHasAttributes(method, searchedAttributes))
-                    continue;
-                var methodName = method.Name;
-                var methodNunitName = string.Format("{0}.{1}", type.FullName.Replace("/", "+"), methodName);
-                if (matchingMethods.ContainsKey(methodName))
-                    continue;
-                matchingMethods.Add(methodName, methodNunitName);
-            }
-            if (type.NestedTypes == null)
-                return;
-            foreach (var nestedType in type.NestedTypes)
-                GetMethodsNameWithAttributesFromType(nestedType, searchedAttributes, matchingMethods);
-        }
-
         private void AddTestsForType(MethodDefinition targetmethod, IList<MethodReference> matchingMethods, bool force, TypeDefinition type, IDictionary<string, string> testMethods, ISet<string> result)
 	    {
 	        String          targetType = targetmethod.DeclaringType.FullName;
@@ -496,14 +469,6 @@ namespace NinjaTurtlesMutation
 	        }
 	        return typeUsed;
 	    }
-
-        private static bool MethodHasAttributes(MethodDefinition method, IList<string> searchedAttributes)
-        {
-            var attributesTypes = method.CustomAttributes.Select(a => a.AttributeType).ToList();
-            if (attributesTypes.Any(at => searchedAttributes.Contains(at.Name)))
-                return true;
-            return false;
-        }
 
         private void AddCallingMethods(MethodReference targetMethod, List<MethodReference> matchingMethods)
         {
@@ -650,6 +615,6 @@ namespace NinjaTurtlesMutation
                 }
             }
         }
-    }
+	}
 }
 
