@@ -12,8 +12,6 @@ namespace NinjaTurtlesMutation.Dispatcher
         private readonly AnonymousPipeServerStream _runnerPipeIn;
         private readonly AnonymousPipeServerStream _runnerPipeOut;
 
-        private readonly object _lockObject = new object();
-
         public StreamReader runnerStreamIn;
         public StreamWriter runnerStreamOut;
 
