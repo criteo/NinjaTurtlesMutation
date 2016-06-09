@@ -187,7 +187,7 @@ namespace NinjaTurtlesMutation.Turtles
                 {
                     variables.Add(type, new List<Variable>());
                 }
-                variables[type].Add(new Variable(VariableType.Local, variable.Index, variable.Name));
+                variables[type].Add(new Variable(VariableType.Local, variable.Index, variable.ToString()));
             }
             foreach (var field in method.DeclaringType.Fields)
             {
