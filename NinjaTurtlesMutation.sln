@@ -28,6 +28,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NinjaTurtlesMutation.Dispat
 		{56AFCF77-0818-4B5C-8099-1CCC5D611282} = {56AFCF77-0818-4B5C-8099-1CCC5D611282}
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NinjaTurtlesMutation.Benchmarker", "NinjaTurtlesMutation.Benchmarker\NinjaTurtlesMutation.Benchmarker.csproj", "{F5405A70-94BC-46EE-B62E-57504F8288FD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -90,6 +92,18 @@ Global
 		{E4543D7B-7EAF-422D-BECB-370DC12BDCF9}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{E4543D7B-7EAF-422D-BECB-370DC12BDCF9}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{E4543D7B-7EAF-422D-BECB-370DC12BDCF9}.Release|x86.ActiveCfg = Release|Any CPU
+		{F5405A70-94BC-46EE-B62E-57504F8288FD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F5405A70-94BC-46EE-B62E-57504F8288FD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F5405A70-94BC-46EE-B62E-57504F8288FD}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{F5405A70-94BC-46EE-B62E-57504F8288FD}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{F5405A70-94BC-46EE-B62E-57504F8288FD}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{F5405A70-94BC-46EE-B62E-57504F8288FD}.Debug|x86.Build.0 = Debug|Any CPU
+		{F5405A70-94BC-46EE-B62E-57504F8288FD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F5405A70-94BC-46EE-B62E-57504F8288FD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F5405A70-94BC-46EE-B62E-57504F8288FD}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{F5405A70-94BC-46EE-B62E-57504F8288FD}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{F5405A70-94BC-46EE-B62E-57504F8288FD}.Release|x86.ActiveCfg = Release|Any CPU
+		{F5405A70-94BC-46EE-B62E-57504F8288FD}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

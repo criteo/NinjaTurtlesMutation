@@ -125,7 +125,7 @@ namespace NinjaTurtlesMutation
                 _testsToRun.Count(),
                 TargetType.FullName,
                 TargetMethod);
-            _benchmark = new TestsBenchmark(_testAssemblyLocation, _testsToRun);
+            _benchmark = new TestsBenchmark(_testAssemblyLocation, _testsToRun.ToArray());
 	        _benchmark.LaunchBenchmark();
             MutateAndTest(out count, out failures);
             RestoreErrorReporting(errorReportingValue);

@@ -69,7 +69,7 @@ namespace NinjaTurtlesMutation.ServiceTestRunnerLib
         {
             var sb = new StringBuilder();
 
-            sb.AppendFormat("Test {0}, bench {1}ms", Uid, TotalMsBench);
+            sb.AppendFormat("Test {0}, bench {1}ms, Pass {2}", Uid, TotalMsBench, TestsPass);
             return sb.ToString();
         }
     }

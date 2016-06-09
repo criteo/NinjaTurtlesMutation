@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using NinjaTurtlesMutation.AppDomainIsolation;
 using NinjaTurtlesMutation.AppDomainIsolation.Adaptor;
+using NinjaTurtlesMutation.ServiceTestRunnerLib;
 
 namespace NinjaTurtlesMutation
 {
@@ -11,28 +12,44 @@ namespace NinjaTurtlesMutation
 
         public long TotalMs { get; private set; }
         public bool TestsPass { get; private set; }
-        public IEnumerable<string> testsName;
+        public ICollection<string> testsName;
 
         public TestsBenchmark(string testAssemblyLocation)
         {
             TotalMs = -1;
             TestsPass = false;
             _testAssemblyLocation = testAssemblyLocation;
-            testsName = null;
+            testsName = new List<string>();
         }
 
-        public TestsBenchmark(string testAssemblyLocation, IEnumerable<string> testsName) : this(testAssemblyLocation)
+        public TestsBenchmark(string testAssemblyLocation, ICollection<string> testsName) : this(testAssemblyLocation)
         {
             this.testsName = testsName;
         }
 
-        public long LaunchBenchmark()
+        public long LaunchBenchmark(bool useSeparatedProcess = false)
         {
-            if (testsName != null)
+            if (useSeparatedProcess)
+                TotalMs = SeparatedProcessBench();
+            else if (testsName.Count > 0)
                 TotalMs = FullSetBench();
             else
                 TotalMs = NoSetBench();
             return TotalMs;
+        }
+
+        private long SeparatedProcessBench()
+        {
+            TestDescription toBench = new TestDescription(_testAssemblyLocation, testsName, -1);
+            TestDescription benchedTest = null;
+            using (TestsBenchmarker benchProc = new TestsBenchmarker())
+            {
+                benchProc.SendTest(toBench);
+                benchedTest = benchProc.ReadATest();
+            }
+            System.Console.WriteLine("to bench:\n{0}\nbenched:\n{1}", toBench, benchedTest); /////////////
+            TestsPass = benchedTest.TestsPass;
+            return benchedTest.TotalMsBench;
         }
 
         private long FullSetBench()
