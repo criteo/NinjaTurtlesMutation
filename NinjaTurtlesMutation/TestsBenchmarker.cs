@@ -53,14 +53,34 @@ namespace NinjaTurtlesMutation
             _pipeIn.DisposeLocalCopyOfClientHandle();
         }
 
+        public TestDescription Bench(TestDescription toBench)
+        {
+            TestDescription result = null;
+            var watch = Stopwatch.StartNew();
+            SendTest(toBench);
+            try
+            {
+                result = ReadATest();
+            }
+            catch (Exception)
+            {
+                var elapsedMs = watch.ElapsedMilliseconds;
+                result = new TestDescription(toBench);
+                result.TestsPass = false;
+                result.TotalMsBench = elapsedMs;
+            }
+            watch.Stop();
+            return result;
+        }
+
         #region Tests Exchange Methods
 
-        public void SendTest(TestDescription test)
+        private void SendTest(TestDescription test)
         {
             TestDescriptionExchanger.SendATestDescription(_streamOut, test);
         }
 
-        public TestDescription ReadATest()
+        private TestDescription ReadATest()
         {
             var test = TestDescriptionExchanger.ReadATestDescription(_streamIn);
             return test;
