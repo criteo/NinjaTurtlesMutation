@@ -39,6 +39,8 @@ namespace NinjaTurtlesMutation.ServiceTestRunnerLib
         /// </summary>
         public bool TestsPass;
 
+        #region .ctor
+
         /// <summary>
         /// Empty constructor, mostly here for the xml serialization
         /// </summary>
@@ -64,6 +66,18 @@ namespace NinjaTurtlesMutation.ServiceTestRunnerLib
             TestsToRun = new List<string>(testsToRun);
             TotalMsBench = totalMsBench;
         }
+
+        public TestDescription(TestDescription toCopy)
+        {
+            Uid = toCopy.Uid;
+            AssemblyPath = toCopy.AssemblyPath;
+            TestsToRun = new List<string>(toCopy.TestsToRun);
+            TotalMsBench = toCopy.TotalMsBench;
+            ExitedInTime = toCopy.ExitedInTime;
+            TestsPass = toCopy.TestsPass;
+        }
+
+        #endregion
 
         public override string ToString()
         {
