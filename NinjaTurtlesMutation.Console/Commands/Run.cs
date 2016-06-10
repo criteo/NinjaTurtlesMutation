@@ -56,6 +56,8 @@ Options:
                                   method name is specified, all methods in the class are
                                   identified, and mutation testing applied for each of
                                   them.
+   --detach-bench               : Run the tests benchmarks in a detached process, reset
+                                  between each benchmark.
    --format [-f]                 : Specifies the format for the output file specified by
                                   the --output option. By default, this will be XML, but
                                   HTML can be specified here to transform the results
@@ -142,7 +144,7 @@ Example:
             if (Options.Options.Any(o => o is NoPreTest))
                 return true;
             var benchmark = new TestsBenchmark(_testAssemblyLocation);
-            benchmark.LaunchBenchmark();
+            benchmark.LaunchBenchmark(Options.Options.Any(o => o is DetachBench));
             var originalSourcesPassTests = benchmark.TestsPass;
             if (!originalSourcesPassTests)
             {
@@ -316,7 +318,7 @@ Example:
             bool result = false;
             try
             {
-                mutationTest.Run();
+                mutationTest.Run(Options.Options.Any(o => o is DetachBench));
                 result = true;
             }
             catch (MutationTestFailureException)

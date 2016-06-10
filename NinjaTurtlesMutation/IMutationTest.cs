@@ -51,7 +51,7 @@ namespace NinjaTurtlesMutation
         /// <summary>
         /// Runs the defined mutation tests.
         /// </summary>
-        void Run();
+        void Run(bool detachBench);
 
         /// <summary>
         /// Adds a <see cref="IMethodTurtle" /> type to be used in mutation

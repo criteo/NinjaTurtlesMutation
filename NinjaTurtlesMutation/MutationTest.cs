@@ -112,7 +112,7 @@ namespace NinjaTurtlesMutation
 
         public MutationTestingReport Report { get { return _report; } }
 
-	    public void Run()
+	    public void Run(bool detachBench)
 		{
             int count;
             int failures;
@@ -126,7 +126,7 @@ namespace NinjaTurtlesMutation
                 TargetType.FullName,
                 TargetMethod);
             _benchmark = new TestsBenchmark(_testAssemblyLocation, _testsToRun.ToArray());
-	        _benchmark.LaunchBenchmark();
+	        _benchmark.LaunchBenchmark(detachBench);
             MutateAndTest(out count, out failures);
             RestoreErrorReporting(errorReportingValue);
             if (count == 0)

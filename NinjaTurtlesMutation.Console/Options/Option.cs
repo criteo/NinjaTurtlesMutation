@@ -50,6 +50,7 @@ namespace NinjaTurtlesMutation.Console.Options
                     {"-parallelization", typeof(ParallelLevel)},
                     {"p", typeof(ParallelLevel)},
                     {"-no-pretest", typeof(NoPreTest)},
+                    {"-detach-bench", typeof(DetachBench)},
                 };
 
         static public bool TryParse(Queue<string> queue, out IEnumerable<Option> commandLineOptions)

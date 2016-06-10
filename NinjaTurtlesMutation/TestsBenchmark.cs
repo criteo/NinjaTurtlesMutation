@@ -27,7 +27,7 @@ namespace NinjaTurtlesMutation
             this.testsName = testsName;
         }
 
-        public long LaunchBenchmark(bool useSeparatedProcess = false)
+        public long LaunchBenchmark(bool useSeparatedProcess)
         {
             if (useSeparatedProcess)
                 TotalMs = SeparatedProcessBench();

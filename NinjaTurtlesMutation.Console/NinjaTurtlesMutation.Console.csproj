@@ -94,6 +94,7 @@
     <Compile Include="Commands\Run.cs" />
     <Compile Include="CommandWithOptions.cs" />
     <Compile Include="EmbeddedResourceResolver.cs" />
+    <Compile Include="Options\DetachBench.cs" />
     <Compile Include="Options\NoPreTest.cs" />
     <Compile Include="Options\ParallelLevel.cs" />
     <Compile Include="Options\TargetNamespace.cs" />
