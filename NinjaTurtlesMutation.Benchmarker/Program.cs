@@ -28,10 +28,8 @@ namespace NinjaTurtlesMutation.Benchmarker
                 try
                 {
                     var testDescription = TestDescriptionExchanger.ReadATestDescription(receiveStream);
-                    Console.WriteLine("Benchmarker receive:\n{0}", testDescription); ////////
                     RunDescribedTests(testDescription);
                     TestDescriptionExchanger.SendATestDescription(sendStream, testDescription);
-                    Console.WriteLine("Benchmarker sended:\n{0}", testDescription); ////////
                 }
                 catch (Exception)
                 {
@@ -52,7 +50,6 @@ namespace NinjaTurtlesMutation.Benchmarker
         private static void RunAllTests(TestDescription testDescription)
         {
             int exitCode;
-            Console.WriteLine("Null TestsToRun");///////////////
             using (Isolated<NunitManagedTestRunnerAdaptor> runner = new Isolated<NunitManagedTestRunnerAdaptor>())
             {
                 var mutantPath = testDescription.AssemblyPath;
@@ -69,7 +66,6 @@ namespace NinjaTurtlesMutation.Benchmarker
         private static void RunSpecifiedTests(TestDescription testDescription)
         {
             int exitCode;
-            Console.WriteLine("Not Null TestsToRun");///////////////
             using (Isolated<NunitManagedTestRunnerAdaptor> runner = new Isolated<NunitManagedTestRunnerAdaptor>())
             {
                 var mutantPath = testDescription.AssemblyPath;

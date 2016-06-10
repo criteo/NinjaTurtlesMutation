@@ -47,7 +47,6 @@ namespace NinjaTurtlesMutation
                 benchProc.SendTest(toBench);
                 benchedTest = benchProc.ReadATest();
             }
-            System.Console.WriteLine("to bench:\n{0}\nbenched:\n{1}", toBench, benchedTest); /////////////
             TestsPass = benchedTest.TestsPass;
             return benchedTest.TotalMsBench;
         }
