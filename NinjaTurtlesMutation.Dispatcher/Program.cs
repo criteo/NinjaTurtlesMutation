@@ -48,14 +48,21 @@ namespace NinjaTurtlesMutation.Dispatcher
 
         #endregion
 
+        #region RunnersTweaks
+
+        private static bool _oneTimeRunners;
+
+        #endregion
+
         static void Main(string[] args)
         {
-            if (args.Length != 4)
+            if (args.Length != 5)
                 return;
             _pipeInStringHandler = args[0];
             _pipeOutStringHandler = args[1];
             _pipeCmdStringHandler = args[2];
             var numRunners = int.Parse(args[3]);
+            _oneTimeRunners = args[4] == true.ToString();
             InstantiateTestRunners(numRunners);
             InitSender();
             InitReceiver();
@@ -177,7 +184,7 @@ namespace NinjaTurtlesMutation.Dispatcher
         private static void RunnerRestart(TestRunnerHandler busyRunner, int busyRunnerIndex)
         {
             busyRunner.KillTestRunner();
-            _testRunners[busyRunnerIndex] = new TestRunnerHandler();
+            _testRunners[busyRunnerIndex] = new TestRunnerHandler(_oneTimeRunners);
         }
 
         #endregion
@@ -215,7 +222,7 @@ namespace NinjaTurtlesMutation.Dispatcher
         private static void InstantiateTestRunners(int numRunners)
         {
             for (int i = 0; i < numRunners; i++)
-                _testRunners.Add(new TestRunnerHandler());
+                _testRunners.Add(new TestRunnerHandler(_oneTimeRunners));
         }
 
         #endregion

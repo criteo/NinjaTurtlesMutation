@@ -45,7 +45,7 @@ namespace NinjaTurtlesMutation
 
         #endregion
 
-        public TestsDispatcher(int parallelLevel)
+        public TestsDispatcher(int parallelLevel, bool oneTimeRunners)
         {
             _pipeIn = new AnonymousPipeServerStream(PipeDirection.In, HandleInheritability.Inheritable);
             _pipeOut = new AnonymousPipeServerStream(PipeDirection.Out, HandleInheritability.Inheritable);
@@ -61,7 +61,9 @@ namespace NinjaTurtlesMutation
                     UseShellExecute = false,
                     Arguments = _pipeOut.GetClientHandleAsString() + " " +
                                 _pipeIn.GetClientHandleAsString() + " " +
-                                _pipeCmd.GetClientHandleAsString() + " " + parallelLevel
+                                _pipeCmd.GetClientHandleAsString() + " " +
+                                parallelLevel + " " +
+                                oneTimeRunners
                 }
             };
             _coreProcess.Start();

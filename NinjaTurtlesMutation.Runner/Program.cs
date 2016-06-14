@@ -12,9 +12,9 @@ namespace NinjaTurtlesMutation.Runner
     {
         static void Main(string[] args)
         {
-            if (args.Length != 2)
+            if (args.Length != 3)
                 return;
-            bool oneRunOnly = false;
+            bool oneRunOnly = args[2] == true.ToString();
             AppDomain.CurrentDomain.UnhandledException += UnexpectedExceptionHandler;
             try
             {

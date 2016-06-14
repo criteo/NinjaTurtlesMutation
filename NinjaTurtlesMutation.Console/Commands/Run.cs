@@ -68,6 +68,8 @@ Options:
                                   for each of them.
    --no-pretest                 : Skip the first test pass. If some tests are faulty, the
                                   number of dead mutant may be superior than normal.
+   --onetime-run                : Close the tests runners after each run. Use this if you
+                                  need to be sure each tests run are made in a new process.
    --output [-o]                : Specifies the name of a file to receive the mutation
                                   testing output. This file will be deleted if it already
                                   exists.
@@ -168,8 +170,9 @@ Example:
                 var runnerMethod = ConfigureRun();
                 var parallelLevel = Options.Options.OfType<ParallelLevel>().SingleOrDefault();
                 var parallelValue = parallelLevel != null ? parallelLevel.ParallelValue : 8;
+                var oneTimeRunners = Options.Options.Any(o => o is OneTimeRunners);
                 bool result;
-                using (var dispatcher = new TestsDispatcher(parallelValue))
+                using (var dispatcher = new TestsDispatcher(parallelValue, oneTimeRunners))
                     result = runnerMethod(dispatcher);
                 RestoreOutput();
                 ReportResult(result, _report);

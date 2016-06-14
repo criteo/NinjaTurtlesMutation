@@ -96,6 +96,7 @@
     <Compile Include="EmbeddedResourceResolver.cs" />
     <Compile Include="Options\DetachBench.cs" />
     <Compile Include="Options\NoPreTest.cs" />
+    <Compile Include="Options\OneTimeRunners.cs" />
     <Compile Include="Options\ParallelLevel.cs" />
     <Compile Include="Options\TargetNamespace.cs" />
     <Compile Include="Options\Format.cs" />

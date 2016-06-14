@@ -51,6 +51,7 @@ namespace NinjaTurtlesMutation.Console.Options
                     {"p", typeof(ParallelLevel)},
                     {"-no-pretest", typeof(NoPreTest)},
                     {"-detach-bench", typeof(DetachBench)},
+                    {"-onetime-run", typeof(OneTimeRunners)}
                 };
 
         static public bool TryParse(Queue<string> queue, out IEnumerable<Option> commandLineOptions)
