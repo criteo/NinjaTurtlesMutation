@@ -36,25 +36,15 @@ namespace NinjaTurtlesMutation
 
         #endregion
 
+	    private static readonly IEnumerable<string> _resolvingExtensions = new[] {".dll", ".exe"};
+
         private static Assembly LoadReferencedAssembly(AssemblyName reference, String codeBaseFolder)
         {
             Assembly referencedAssembly = null;
-
-            try
-            {
-                referencedAssembly = Assembly.Load(reference);
-            }
-            catch (FileNotFoundException) { }
-            catch (FileLoadException) { }
+            referencedAssembly = TryLoad(reference);
             if (referencedAssembly != null)
                 return (referencedAssembly);
-            try
-            {
-                // ReSharper disable once AssignNullToNotNullAttribute
-                referencedAssembly = Assembly.LoadFile(Path.Combine(codeBaseFolder, reference.Name) + ".dll");
-            }
-            // ReSharper disable once EmptyGeneralCatchClause
-            catch { }
+            referencedAssembly = TryLoadFrom(Path.Combine(codeBaseFolder, reference.Name), _resolvingExtensions);
             return (referencedAssembly);
         }
 
@@ -124,6 +114,43 @@ namespace NinjaTurtlesMutation
                 types.AddRange(ResolveNamespaceTypesFromReferences(referencedAssembly, nspace, consideredAssemblies, testAssemblyLocation));
 	        }
 	        return types;
+	    }
+
+	    private static Assembly TryLoad(AssemblyName assemblyName)
+	    {
+	        Assembly loadedAssembly = null;
+	        try
+	        {
+	            loadedAssembly = Assembly.Load(assemblyName.FullName);
+	        }
+            catch (FileNotFoundException) { }
+            catch (FileLoadException) { }
+            if (loadedAssembly != null)
+                return (loadedAssembly);
+            try
+            {
+                loadedAssembly = Assembly.Load(assemblyName);
+            }
+            catch (FileNotFoundException) { }
+            catch (FileLoadException) { }
+            return loadedAssembly;
+	    }
+
+	    private static Assembly TryLoadFrom(String fullPathNoExtension, IEnumerable<string> extensions)
+	    {
+	        Assembly loadedAssembly = null;
+            foreach (var extension in extensions)
+	        {
+	            try
+	            {
+                    loadedAssembly = Assembly.LoadFrom(fullPathNoExtension + extension);
+                }
+                catch (FileNotFoundException) { }
+                catch (FileLoadException) { }
+	            if (loadedAssembly != null)
+	                return loadedAssembly;
+	        }
+	        return null;
 	    }
     }
 }
