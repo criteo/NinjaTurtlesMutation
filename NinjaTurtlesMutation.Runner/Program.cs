@@ -14,6 +14,7 @@ namespace NinjaTurtlesMutation.Runner
         {
             if (args.Length != 2)
                 return;
+            bool oneRunOnly = false;
             AppDomain.CurrentDomain.UnhandledException += UnexpectedExceptionHandler;
             try
             {
@@ -28,6 +29,8 @@ namespace NinjaTurtlesMutation.Runner
                         var testDescription = TestDescriptionExchanger.ReadATestDescription(receiveStream);
                         RunDescribedTests(testDescription);
                         TestDescriptionExchanger.SendATestDescription(sendStream, testDescription);
+                        if (oneRunOnly)
+                            break;
                     }
                 }
             }
