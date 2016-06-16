@@ -146,10 +146,12 @@ Example:
             if (Options.Options.Any(o => o is NoPreTest))
                 return true;
             var benchmark = new TestsBenchmark(_testAssemblyLocation);
+            System.Console.Write("Checking if tests pass...");
             benchmark.LaunchBenchmark(Options.Options.Any(o => o is DetachBench));
             var originalSourcesPassTests = benchmark.TestsPass;
             if (!originalSourcesPassTests)
             {
+                System.Console.WriteLine("FAIL");
                 using (new OutputWriterErrorHighlight())
                 {
                     OutputWriter.WriteLine(
@@ -158,6 +160,7 @@ Example:
                 }
                 return false;
             }
+            System.Console.WriteLine("OK");
             return true;
         }
 
