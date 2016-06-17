@@ -45,24 +45,27 @@ namespace NinjaTurtlesMutation.Dispatcher
         private static readonly ConcurrentQueue<TestDescription> _completedJobs = new ConcurrentQueue<TestDescription>();
 
         private static bool _shouldStop;
+        private static int _busyRunnersCount;
 
         #endregion
 
         #region RunnersTweaks
 
         private static bool _oneTimeRunners;
+        private static int _maxSimultaneousBusyRunners;
 
         #endregion
 
         static void Main(string[] args)
         {
-            if (args.Length != 5)
+            if (args.Length != 6)
                 return;
             _pipeInStringHandler = args[0];
             _pipeOutStringHandler = args[1];
             _pipeCmdStringHandler = args[2];
             var numRunners = int.Parse(args[3]);
-            _oneTimeRunners = args[4] == true.ToString();
+            _maxSimultaneousBusyRunners = int.Parse(args[4]);
+            _oneTimeRunners = args[5] == true.ToString();
             InstantiateTestRunners(numRunners);
             InitSender();
             InitReceiver();
@@ -86,6 +89,8 @@ namespace NinjaTurtlesMutation.Dispatcher
                 while (testToDispatch != null)
                 {
                     int assignedRunnerIndex;
+                    while (_busyRunnersCount >= _maxSimultaneousBusyRunners)
+                        Thread.Sleep(DISPATCH_RUNNER_ACQUISITION_COOLDOWN_MS);
                     while ((assignedRunnerIndex = _testRunners.FindIndex(r => !r.isBusy)) == -1)
                         Thread.Sleep(DISPATCH_RUNNER_ACQUISITION_COOLDOWN_MS);
                     TestRunnerHandler assignedRunner = _testRunners[assignedRunnerIndex];
@@ -100,6 +105,7 @@ namespace NinjaTurtlesMutation.Dispatcher
                     }
                     _dispatchedJobs.TryAdd(assignedRunnerIndex, testToDispatch);
                     assignedRunner.isBusy = true;
+                    Interlocked.Increment(ref _busyRunnersCount);
                     Task.Factory.StartNew(() => BusyRunnerHandler(assignedRunner, assignedRunnerIndex));
                     testToDispatch = null;
                 }
@@ -164,6 +170,7 @@ namespace NinjaTurtlesMutation.Dispatcher
             var testResult = RetrieveTestResult(busyRunner, busyRunnerIndex);
             _completedJobs.Enqueue(testResult);
             _dispatchedJobs.TryRemove(busyRunnerIndex, out sink);
+            Interlocked.Decrement(ref _busyRunnersCount);
             busyRunner.isBusy = false;
         }
 

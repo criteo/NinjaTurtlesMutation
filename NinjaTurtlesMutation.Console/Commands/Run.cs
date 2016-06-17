@@ -62,6 +62,7 @@ Options:
                                   the --output option. By default, this will be XML, but
                                   HTML can be specified here to transform the results
                                   into displayable format.
+   --max-busy                   : Define how many test runners can run simultaneously.
    --namespace [-N]             : Specifies the namespace class for which mutation testing
                                   should be applied. All classes and method under that
                                   namespace are identified, and mutation testing is applied
@@ -173,9 +174,11 @@ Example:
                 var runnerMethod = ConfigureRun();
                 var parallelLevel = Options.Options.OfType<ParallelLevel>().SingleOrDefault();
                 var parallelValue = parallelLevel != null ? parallelLevel.ParallelValue : 8;
+                var maxBusyRunners = Options.Options.OfType<MaxBusyRunner>().SingleOrDefault();
+                var maxBusyRunnersValue = maxBusyRunners != null ? maxBusyRunners.MaxBusyRunnersValue : parallelValue;
                 var oneTimeRunners = Options.Options.Any(o => o is OneTimeRunners);
                 bool result;
-                using (var dispatcher = new TestsDispatcher(parallelValue, oneTimeRunners))
+                using (var dispatcher = new TestsDispatcher(parallelValue, maxBusyRunnersValue, oneTimeRunners))
                     result = runnerMethod(dispatcher);
                 RestoreOutput();
                 ReportResult(result, _report);
