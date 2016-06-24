@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using NinjaTurtlesMutation.ManagedTestRunners;
 using NUnit.Core;
 
@@ -41,6 +42,11 @@ namespace NinjaTurtlesMutation.AppDomainIsolation.Adaptor
         public override bool IsCompleted()
         {
             return _runner.IsCompleted();
+        }
+
+        public override void Dispose()
+        {
+            _runner.Dispose();
         }
     }
 }

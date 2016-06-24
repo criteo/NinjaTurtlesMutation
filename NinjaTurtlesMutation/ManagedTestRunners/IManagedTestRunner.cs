@@ -1,6 +1,8 @@
-﻿namespace NinjaTurtlesMutation.ManagedTestRunners
+﻿using System;
+
+namespace NinjaTurtlesMutation.ManagedTestRunners
 {
-    interface IManagedTestRunner
+    interface IManagedTestRunner: IDisposable
     {
         /// <summary>
         /// Runs the tests associate with the current instance asynchronously

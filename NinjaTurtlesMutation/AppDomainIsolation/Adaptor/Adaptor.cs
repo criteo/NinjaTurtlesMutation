@@ -6,7 +6,7 @@ namespace NinjaTurtlesMutation.AppDomainIsolation.Adaptor
     /// <summary>
     /// Abstract class used by Isolated to interact with a runner
     /// </summary>
-    public abstract class Adaptor : MarshalByRefObject
+    public abstract class Adaptor : MarshalByRefObject, IDisposable
     {
         /// <summary>
         /// Start the tests designated by testAssemblyLocation
@@ -46,5 +46,7 @@ namespace NinjaTurtlesMutation.AppDomainIsolation.Adaptor
         /// </summary>
         /// <returns></returns>
         public abstract bool IsCompleted();
+
+        public abstract void Dispose();
     }
 }

@@ -114,6 +114,7 @@ namespace NinjaTurtlesMutation.ManagedTestRunners
             Result = _remoteTestRunner.Run(new NullListener(), filter, false, LoggingThreshold.Off);
             ExitCode = Result.IsSuccess ? 0 : 1;
             Console.SetOut(currentOut);
+            //WriteErrorsAndFailuresReport(Result);
         }
 
         public bool IsCompleted()
@@ -134,5 +135,57 @@ namespace NinjaTurtlesMutation.ManagedTestRunners
 
             Console.WriteLine("IsSuccess: {0}", result.IsSuccess);
         }
+
+        public void Dispose()
+        {
+            _remoteTestRunner.Dispose();
+        }
+        
+         /*private static int reportIndex;
+
+        private void WriteErrorsAndFailuresReport(TestResult result)
+        {
+            reportIndex = 0;
+            Console.WriteLine("Errors and Failures:");
+            WriteErrorsAndFailures(result);
+            Console.WriteLine();
+        }
+
+        private void WriteErrorsAndFailures(TestResult result)
+        {
+            if (result.Executed)
+            {
+                if (result.HasResults)
+                {
+                    if (result.IsFailure || result.IsError)
+                        if (result.FailureSite == FailureSite.SetUp || result.FailureSite == FailureSite.TearDown)
+                            WriteSingleResult(result);
+
+                    foreach (TestResult childResult in result.Results)
+                        WriteErrorsAndFailures(childResult);
+                }
+                else if (result.IsFailure || result.IsError)
+                {
+                    WriteSingleResult(result);
+                }
+            }
+        }
+
+        private void WriteSingleResult(TestResult result)
+        {
+            string status = result.IsFailure || result.IsError
+                ? string.Format("{0} {1}", result.FailureSite, result.ResultState)
+                : result.ResultState.ToString();
+
+            Console.WriteLine("{0}) {1} : {2}", ++reportIndex, status, result.FullName);
+
+            if (result.Message != null && result.Message != string.Empty)
+                Console.WriteLine("   {0}", result.Message);
+
+            if (result.StackTrace != null && result.StackTrace != string.Empty)
+                Console.WriteLine(result.IsFailure
+                    ? StackTraceFilter.Filter(result.StackTrace)
+                    : result.StackTrace + Environment.NewLine);
+        }*/
     }
 }
