@@ -34,7 +34,8 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
+    <DefineConstants>
+    </DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
@@ -75,6 +76,15 @@
     <Reference Include="Mono.Cecil.Rocks, Version=0.9.6.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Mono.Cecil.0.9.6.1\lib\net45\Mono.Cecil.Rocks.dll</HintPath>
+    </Reference>
+    <Reference Include="NTMBenchmarker">
+      <HintPath>..\NinjaTurtlesMutation.Benchmarker\bin\Debug\NTMBenchmarker.exe</HintPath>
+    </Reference>
+    <Reference Include="NTMDispatcher">
+      <HintPath>..\NinjaTurtlesMutation.Dispatcher\bin\Debug\NTMDispatcher.exe</HintPath>
+    </Reference>
+    <Reference Include="NTMRunner">
+      <HintPath>..\NinjaTurtlesMutation.Runner\bin\Debug\NTMRunner.exe</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
