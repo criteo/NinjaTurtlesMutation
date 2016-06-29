@@ -13,7 +13,7 @@
     <tags></tags>
   </metadata>
   <files>
-    <file src="..\NinjaTurtlesMutation.Console\bin\Release\*.exe" target="tools\net45" />
-    <file src="..\NinjaTurtlesMutation.Console\bin\Release\*.dll" target="tools\net45" />
+    <file src="..\NinjaTurtlesMutation.Console\bin\$configuration$\*.exe" target="tools\net45" />
+    <file src="..\NinjaTurtlesMutation.Console\bin\$configuration$\*.dll" target="tools\net45" />
   </files>
 </package>
