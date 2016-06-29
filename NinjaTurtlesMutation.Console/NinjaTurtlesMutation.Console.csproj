@@ -39,6 +39,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
@@ -76,15 +77,6 @@
     <Reference Include="Mono.Cecil.Rocks, Version=0.9.6.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Mono.Cecil.0.9.6.1\lib\net45\Mono.Cecil.Rocks.dll</HintPath>
-    </Reference>
-    <Reference Include="NTMBenchmarker">
-      <HintPath>..\NinjaTurtlesMutation.Benchmarker\bin\Debug\NTMBenchmarker.exe</HintPath>
-    </Reference>
-    <Reference Include="NTMDispatcher">
-      <HintPath>..\NinjaTurtlesMutation.Dispatcher\bin\Debug\NTMDispatcher.exe</HintPath>
-    </Reference>
-    <Reference Include="NTMRunner">
-      <HintPath>..\NinjaTurtlesMutation.Runner\bin\Debug\NTMRunner.exe</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -132,6 +124,18 @@
     <Compile Include="Reporting\SourceFileReportSummary.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\NinjaTurtlesMutation.Benchmarker\NinjaTurtlesMutation.Benchmarker.csproj">
+      <Project>{f5405a70-94bc-46ee-b62e-57504f8288fd}</Project>
+      <Name>NinjaTurtlesMutation.Benchmarker</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\NinjaTurtlesMutation.Dispatcher\NinjaTurtlesMutation.Dispatcher.csproj">
+      <Project>{e4543d7b-7eaf-422d-becb-370dc12bdcf9}</Project>
+      <Name>NinjaTurtlesMutation.Dispatcher</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\NinjaTurtlesMutation.Runner\NinjaTurtlesMutation.Runner.csproj">
+      <Project>{c849941a-6317-438d-83e4-e99914359d4d}</Project>
+      <Name>NinjaTurtlesMutation.Runner</Name>
+    </ProjectReference>
     <ProjectReference Include="..\NinjaTurtlesMutation\NinjaTurtlesMutation.csproj">
       <Project>{56AFCF77-0818-4B5C-8099-1CCC5D611282}</Project>
       <Name>NinjaTurtlesMutation</Name>
