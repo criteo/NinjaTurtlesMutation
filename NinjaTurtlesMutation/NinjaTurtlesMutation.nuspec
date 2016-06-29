@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package >
   <metadata>
-    <id>$id$</id>
+    <id>ntm</id>
     <version>$version$</version>
     <title>$title$</title>
     <authors>$author$</authors>
@@ -13,7 +13,7 @@
     <tags></tags>
   </metadata>
   <files>
-    <file src="..\NinjaTurtlesMutation.Console\bin\Debug\*.exe" target="tools\net45" />
-    <file src="..\NinjaTurtlesMutation.Console\bin\Debug\*.dll" target="tools\net45" />
+    <file src="..\NinjaTurtlesMutation.Console\bin\Release\*.exe" target="tools\net45" />
+    <file src="..\NinjaTurtlesMutation.Console\bin\Release\*.dll" target="tools\net45" />
   </files>
 </package>
