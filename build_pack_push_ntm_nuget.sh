@@ -1,3 +1,5 @@
+#!/bin/sh
+
 if [ -z ${1+x} ]
 then
     PACK_MODE="Release"
