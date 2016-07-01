@@ -89,7 +89,7 @@ namespace NinjaTurtlesMutation.Console.Options
             return false;
         }
 
-        static private bool TryParseSingleOption(Queue<string> queue, string optionName,
+        private static bool TryParseSingleOption(Queue<string> queue, string optionName,
                                                  out Option option)
         {
             option = null;
