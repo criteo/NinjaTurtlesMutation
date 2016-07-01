@@ -120,7 +120,7 @@ namespace NinjaTurtlesMutation.Tests.Turtles
 
             Assert.AreEqual(1, mutations.Count);
             string expectedMessage = string.Format(
-                "{0:x4}: write substitution Int32. => Int32.",
+                "{0:x4}: write substitution Int32.V_0 => Int32.V_2",
                 _mutatedInstruction.Offset);
             StringAssert.EndsWith(expectedMessage, mutations[0].Description);
         }
