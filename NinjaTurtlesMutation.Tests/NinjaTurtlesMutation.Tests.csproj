@@ -74,6 +74,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="MethodDefinitionResolverLoggingTests.cs" />
+    <Compile Include="ConsoleOptionsTests\TurtlesTypesTests.cs" />
     <Compile Include="TestDirectoryLoggingTests.cs" />
     <Compile Include="InstructionExtensionsTests.cs" />
     <Compile Include="TestUtilities\LoggingTestFixture.cs" />
@@ -119,6 +120,10 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\NinjaTurtlesMutation.Console\NinjaTurtlesMutation.Console.csproj">
+      <Project>{AF38D08E-27BD-49A4-9D30-B8E1C8A9D121}</Project>
+      <Name>NinjaTurtlesMutation.Console</Name>
+    </ProjectReference>
     <ProjectReference Include="..\NinjaTurtlesMutation\NinjaTurtlesMutation.csproj">
       <Project>{56afcf77-0818-4b5c-8099-1ccc5d611282}</Project>
       <Name>NinjaTurtlesMutation</Name>

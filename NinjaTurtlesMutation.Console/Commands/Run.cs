@@ -74,7 +74,15 @@ Options:
    --output [-o]                : Specifies the name of a file to receive the mutation
                                   testing output. This file will be deleted if it already
                                   exists.
-   --parallelization [-p]       : Set the number of test runner to use. Default value is 8
+   --parallelization [-p]       : Set the number of test runner to use. Default value is 8.
+   --turtle-types [-T] KEYS     : Set the kind of mutation operators to apply.
+                                    A = Arithmetic operator rotation
+                                    T = Bitwise operator rotation
+                                    B = Branch condition rotation
+                                    C = Conditional boundary switch
+                                    S = Sequence point deletion
+                                    R = Variable read substitution
+                                    W = Variable write substitution
 
 Arguments:
    TEST_ASSEMBLY      : The file name of the test assembly to inspect, which
@@ -324,6 +332,9 @@ Example:
                 string outputPath = Path.Combine(Environment.CurrentDirectory, outputOption.FileName);
                 mutationTest.MergeReportTo(outputPath);
             }
+            var turtlesOption = Options.Options.OfType<TurtlesTypes>().FirstOrDefault();
+            if (turtlesOption != null)
+                mutationTest.With(turtlesOption.Types);
             bool result = false;
             try
             {

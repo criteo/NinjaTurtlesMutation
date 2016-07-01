@@ -111,6 +111,7 @@
     <Compile Include="Options\Quiet.cs" />
     <Compile Include="Options\TargetClass.cs" />
     <Compile Include="Options\ParameterType.cs" />
+    <Compile Include="Options\TurtlesTypes.cs" />
     <Compile Include="Options\Verbose.cs" />
     <Compile Include="OutputVerbosity.cs" />
     <Compile Include="OutputWriter.cs" />

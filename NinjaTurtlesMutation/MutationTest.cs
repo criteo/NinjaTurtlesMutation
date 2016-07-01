@@ -569,7 +569,13 @@ namespace NinjaTurtlesMutation
 			return this;
 		}
 
-	    public IMutationTest WriteReportTo(string fileName)
+        public void With(ISet<Type> turtleSet)
+        {
+            foreach (var type in turtleSet)
+                _mutationsToApply.Add(type);
+        }
+
+        public IMutationTest WriteReportTo(string fileName)
 	    {
 	        _reportingStrategy = new OverwriteReportingStrategy();
 	        _reportFileName = fileName;

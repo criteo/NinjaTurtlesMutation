@@ -53,9 +53,11 @@ namespace NinjaTurtlesMutation.Console.Options
                     {"-detach-bench", typeof(DetachBench)},
                     {"-onetime-run", typeof(OneTimeRunners)},
                     {"-max-busy", typeof(MaxBusyRunner)},
+                    {"T", typeof(TurtlesTypes)},
+                    {"-turtle-types", typeof(TurtlesTypes)},
                 };
 
-        static public bool TryParse(Queue<string> queue, out IEnumerable<Option> commandLineOptions)
+        public static bool TryParse(Queue<string> queue, out IEnumerable<Option> commandLineOptions)
         {
             var options = new List<Option>();
             commandLineOptions = options;

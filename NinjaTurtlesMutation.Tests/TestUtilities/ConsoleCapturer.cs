@@ -33,10 +33,10 @@ namespace NinjaTurtlesMutation.Tests.TestUtilities
 		
 		public ConsoleCapturer()
 		{
-			_originalOut = Console.Out;
+			_originalOut = System.Console.Out;
 			_builder = new StringBuilder();
 			_writer = new StringWriter(_builder);
-			Console.SetOut(_writer);
+			System.Console.SetOut(_writer);
 		}
 
 		public string Output
@@ -50,7 +50,7 @@ namespace NinjaTurtlesMutation.Tests.TestUtilities
 		
 		public void Dispose()
 		{
-			Console.SetOut(_originalOut);
+			System.Console.SetOut(_originalOut);
 		}
 	}
 }

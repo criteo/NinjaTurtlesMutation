@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using System.Collections.Generic;
 using NinjaTurtlesMutation.Turtles;
 
 namespace NinjaTurtlesMutation
@@ -66,6 +67,14 @@ namespace NinjaTurtlesMutation
         /// method chaining.
         /// </returns>
         IMutationTest With<T>() where T : IMethodTurtle;
+
+        /// <summary>
+        /// Specify which types of turtles to use during mutation test.
+        /// </summary>
+        /// <param name="turtleSet">
+        /// A set of IMethodTurtle types
+        /// </param>
+        void With(ISet<Type> turtleSet);
 
         /// <summary>
         /// Specifies a file name to which mutation test results should be

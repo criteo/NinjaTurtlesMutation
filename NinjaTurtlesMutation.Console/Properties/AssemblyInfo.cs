@@ -20,6 +20,8 @@
 #endregion
 
 using System.Reflection;
+using System.Runtime.CompilerServices;
 
+[assembly: InternalsVisibleTo("NinjaTurtlesMutation.Tests")]
 [assembly: AssemblyTitle("NinjaTurtlesMutation.Console")]
 [assembly: AssemblyDescription("Console runner for the NinjaTurtlesMutation mutation testing library")]
