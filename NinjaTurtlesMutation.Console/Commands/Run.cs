@@ -44,6 +44,8 @@ namespace NinjaTurtlesMutation.Console.Commands
         private readonly TextWriter _originalOut = System.Console.Out;
         private string _outputPath;
 
+        private readonly float minimum_score = 0.5F; // temporary field before adding command line option to set failure threshold
+
         protected override string HelpText
         {
             get { return @"usage: ntm run [<options>] TEST_ASSEMBLY
@@ -196,7 +198,7 @@ Example:
 
         private bool RunMutationTestsForClass(TestsDispatcher dispatcher)
         {
-            string targetClass = Options.Options.OfType<TargetClass>().Single().ClassName;
+            var targetClass = Options.Options.OfType<TargetClass>().Single().ClassName;
             var testAssembly = Assembly.LoadFrom(_testAssemblyLocation);
             var matchedType = TypeResolver.ResolveTypeFromReferences(testAssembly, targetClass);
             if (matchedType == null)
@@ -204,19 +206,9 @@ Example:
                 _message = String.Format(@"Unknown type '{0}'", targetClass);
                 return false;
             }
-            var assemblyDefinition = AssemblyDefinition.ReadAssembly(matchedType.Assembly.Location);
-            var targetType = assemblyDefinition.MainModule.Types.FirstOrDefault(t => t.FullName == targetClass);
-            bool result = true;
-            foreach (var methodInfo in targetType.Methods
-                .Where(m => m.HasBody && m.Name != Methods.STATIC_CONSTRUCTOR))
-            {
-                string targetMethod = methodInfo.Name;
-                string methodReturnType = methodInfo.ReturnType.FullName;
-                var methodsGenerics = methodInfo.GenericParameters.ToArray();
-                var parameterTypes = methodInfo.Parameters.Select(p => p.ParameterType).ToArray();
-                bool runResultBuf = RunTests(matchedType.Assembly.Location, targetClass, methodReturnType, targetMethod, methodsGenerics, parameterTypes, dispatcher);
-                result &= runResultBuf;
-            }
+            var score = RunMutationTestsForType(matchedType, targetClass, dispatcher);
+            var result = score >= minimum_score;
+
             if (String.IsNullOrEmpty(_message))
             {
                 _message = String.Format(
@@ -228,7 +220,8 @@ Example:
 
         private bool RunMutationTestsForClassAndMethod(TestsDispatcher dispatcher)
         {
-            string targetClass = Options.Options.OfType<TargetClass>().Single().ClassName;
+            var result = true;
+            var targetClass = Options.Options.OfType<TargetClass>().Single().ClassName;
             var testAssembly = Assembly.LoadFrom(_testAssemblyLocation);
             var matchedType = TypeResolver.ResolveTypeFromReferences(testAssembly, targetClass);
             if (matchedType == null)
@@ -238,10 +231,11 @@ Example:
             }
             string targetMethod = Options.Options.OfType<TargetMethod>().Single().MethodName;
             var typeOptions = Options.Options.OfType<ParameterType>().Select(p => p.ResolvedType).ToArray();
-            var result =
+            var score =
                 typeOptions.Any()
                 ? RunTests(matchedType.Assembly.Location, targetClass, targetMethod, dispatcher, typeOptions)
                 : RunTests(matchedType.Assembly.Location, targetClass, targetMethod, dispatcher);
+            result = score >= minimum_score;
             if (String.IsNullOrEmpty(_message))
             {
                 _message = String.Format(
@@ -254,6 +248,8 @@ Example:
         private bool RunMutationTestsForAllClassAndMethods(TestsDispatcher dispatcher)
         {
             bool result = true;
+            float score = 0;
+            int evaluatedTypesCount = 0;
 
             var nspace = Options.Options.OfType<TargetNamespace>().Single().NamespaceName;
             var testAssembly = Assembly.LoadFrom(_testAssemblyLocation);
@@ -267,18 +263,20 @@ Example:
             }
             foreach (var type in matchedTypes)
             {
-                var resultBuf = RunMutationTestsForType(type, type.FullName, dispatcher);
-                result &= resultBuf;
+                score += RunMutationTestsForType(type, type.FullName, dispatcher);
+                evaluatedTypesCount++;
             }
+            result = score/evaluatedTypesCount >= minimum_score;
             if (!String.IsNullOrEmpty(_message))
                 return result;
             _message = String.Format(@"Mutation testing {0}", result ? "passed" : "failed");
             return result;
         }
 
-        private bool RunMutationTestsForType(Type type, string targetClass, TestsDispatcher dispatcher)
+        private float RunMutationTestsForType(Type type, string targetClass, TestsDispatcher dispatcher)
         {
-            bool result = true;
+            float score = 0;
+            int evaluatedMethodsCount = 0;
 
             var assemblyDefinition = AssemblyDefinition.ReadAssembly(type.Assembly.Location);
             var targetType = assemblyDefinition.MainModule.Types.FirstOrDefault(t => t.FullName == targetClass);
@@ -288,13 +286,17 @@ Example:
                 string methodReturnType = methodInfo.ReturnType.FullName;
                 var methodsGenerics = methodInfo.GenericParameters.ToArray();
                 var parameterTypes = methodInfo.Parameters.Select(p => p.ParameterType).ToArray();
-                bool runResultBuf = RunTests(type.Assembly.Location, targetClass, methodReturnType, targetMethod, methodsGenerics, parameterTypes, dispatcher);
-                result &= runResultBuf;
+                var runScoretBuf = RunTests(type.Assembly.Location, targetClass, methodReturnType, targetMethod, methodsGenerics, parameterTypes, dispatcher);
+                score += runScoretBuf;
+                evaluatedMethodsCount++;
             }
-            return result;
+            if (evaluatedMethodsCount == 0)
+                return 1;
+            score /= (float)evaluatedMethodsCount;
+            return score;
         }
 
-        private bool RunTests(string targetAssemblyLocation, string targetClass, string returnType, string targetMethod, GenericParameter[] methodGenerics, TypeReference[] parameterTypes, TestsDispatcher dispatcher)
+        private float RunTests(string targetAssemblyLocation, string targetClass, string returnType, string targetMethod, GenericParameter[] methodGenerics, TypeReference[] parameterTypes, TestsDispatcher dispatcher)
         {
             var parameterList = parameterTypes == null || parameterTypes.Length == 0
                                     ? null
@@ -305,11 +307,11 @@ Example:
                     ? (MutationTest)MutationTestBuilder.For(targetAssemblyLocation, targetClass, returnType, targetMethod, methodGenerics, dispatcher, _testMethods)
                     : (MutationTest)MutationTestBuilder.For(targetAssemblyLocation, targetClass, returnType, targetMethod, methodGenerics, dispatcher, _testMethods,parameterTypes);
             mutationTest.TestAssemblyLocation = _testAssemblyLocation;
-            var result = BuildAndRunMutationTest(mutationTest);
-            return result;
+            var score = BuildAndRunMutationTest(mutationTest);
+            return score;
         }
 
-        private bool RunTests(string targetAssemblyLocation, string targetClass, string targetMethod, TestsDispatcher dispatcher, Type[] parameterTypes = null)
+        private float RunTests(string targetAssemblyLocation, string targetClass, string targetMethod, TestsDispatcher dispatcher, Type[] parameterTypes = null)
         {
             var parameterList = parameterTypes == null || parameterTypes.Length == 0
                                     ? null
@@ -320,11 +322,11 @@ Example:
                     ? (MutationTest)MutationTestBuilder.For(targetAssemblyLocation, targetClass, targetMethod, dispatcher, _testMethods)
                     : (MutationTest)MutationTestBuilder.For(targetAssemblyLocation, targetClass, targetMethod, dispatcher, _testMethods,parameterTypes);
             mutationTest.TestAssemblyLocation = _testAssemblyLocation;
-            var result = BuildAndRunMutationTest(mutationTest);
-            return result;
+            var score = BuildAndRunMutationTest(mutationTest);
+            return score;
         }
 
-        private bool BuildAndRunMutationTest(MutationTest mutationTest)
+        private float BuildAndRunMutationTest(MutationTest mutationTest)
         {
             var outputOption = Options.Options.OfType<Output>().FirstOrDefault();
             if (outputOption != null)
@@ -335,14 +337,10 @@ Example:
             var turtlesOption = Options.Options.OfType<TurtlesTypes>().FirstOrDefault();
             if (turtlesOption != null)
                 mutationTest.With(turtlesOption.Types);
-            bool result = false;
+            float score = 0;
             try
             {
-                mutationTest.Run(Options.Options.Any(o => o is DetachBench));
-                result = true;
-            }
-            catch (MutationTestFailureException)
-            {
+                score = mutationTest.Run(Options.Options.Any(o => o is DetachBench));
             }
             catch (Exception ex)
             {
@@ -359,7 +357,7 @@ Exception details:
 " + ex;
             }
             _report.MergeMutationTestReport(mutationTest.Report);
-            return result;
+            return score;
         }
 
         private Func<TestsDispatcher, bool> ConfigureRun()
