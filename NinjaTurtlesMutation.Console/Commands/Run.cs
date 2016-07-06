@@ -75,6 +75,7 @@ Options:
                                   testing output. This file will be deleted if it already
                                   exists.
    --parallelization [-p]       : Set the number of test runner to use. Default value is 8.
+   --success-score              : Set the minimum mutation score at which the test pass
    --turtle-types [-T] KEYS     : Set the kind of mutation operators to apply.
                                     A = Arithmetic operator rotation
                                     T = Bitwise operator rotation
@@ -180,15 +181,18 @@ Example:
             {
                 ConfigureOutput(writer);
                 var runnerMethod = ConfigureRun();
+                var successThreshold = Options.Options.OfType<SuccessThreshold>().SingleOrDefault();
+                var successThresholdValue = successThreshold != null ? successThreshold.MinScore : 1;
                 var parallelLevel = Options.Options.OfType<ParallelLevel>().SingleOrDefault();
                 var parallelValue = parallelLevel != null ? parallelLevel.ParallelValue : 8;
                 var maxBusyRunners = Options.Options.OfType<MaxBusyRunner>().SingleOrDefault();
                 var maxBusyRunnersValue = maxBusyRunners != null ? maxBusyRunners.MaxBusyRunnersValue : parallelValue;
                 var oneTimeRunners = Options.Options.Any(o => o is OneTimeRunners);
-                bool result;
                 using (var dispatcher = new TestsDispatcher(parallelValue, maxBusyRunnersValue, oneTimeRunners))
-                    result = runnerMethod(dispatcher);
+                    runnerMethod(dispatcher);
                 RestoreOutput();
+                var score = _report.GetMutationScore();
+                var result = score >= successThresholdValue;
                 ReportResult(result, _report);
                 return result;
             }

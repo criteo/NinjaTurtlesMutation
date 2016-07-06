@@ -102,6 +102,7 @@
     <Compile Include="Options\OneTimeRunners.cs" />
     <Compile Include="Options\MaxBusyRunner.cs" />
     <Compile Include="Options\ParallelLevel.cs" />
+    <Compile Include="Options\SuccessThreshold.cs" />
     <Compile Include="Options\TargetNamespace.cs" />
     <Compile Include="Options\Format.cs" />
     <Compile Include="Options\Output.cs" />

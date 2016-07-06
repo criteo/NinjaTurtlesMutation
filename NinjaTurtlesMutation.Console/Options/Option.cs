@@ -55,6 +55,7 @@ namespace NinjaTurtlesMutation.Console.Options
                     {"-max-busy", typeof(MaxBusyRunner)},
                     {"T", typeof(TurtlesTypes)},
                     {"-turtle-types", typeof(TurtlesTypes)},
+                    {"-success-score", typeof(SuccessThreshold)},
                 };
 
         public static bool TryParse(Queue<string> queue, out IEnumerable<Option> commandLineOptions)

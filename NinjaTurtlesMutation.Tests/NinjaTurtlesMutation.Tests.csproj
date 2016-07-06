@@ -73,6 +73,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ConsoleOptionsTests\SuccessThresholdTests.cs" />
     <Compile Include="MethodDefinitionResolverLoggingTests.cs" />
     <Compile Include="ConsoleOptionsTests\TurtlesTypesTests.cs" />
     <Compile Include="TestDirectoryLoggingTests.cs" />
