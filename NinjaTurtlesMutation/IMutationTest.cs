@@ -50,9 +50,9 @@ namespace NinjaTurtlesMutation
 		string TargetMethod { get; }
 
         /// <summary>
-        /// Runs the defined mutation tests and return the mutation score.
+        /// Runs the defined mutation tests.
         /// </summary>
-        float Run(bool detachBench);
+        void Run(bool detachBench);
 
         /// <summary>
         /// Adds a <see cref="IMethodTurtle" /> type to be used in mutation

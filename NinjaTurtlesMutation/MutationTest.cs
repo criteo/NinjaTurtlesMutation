@@ -112,15 +112,14 @@ namespace NinjaTurtlesMutation
 
         public MutationTestingReport Report { get { return _report; } }
 
-	    public float Run(bool detachBench)
+	    public void Run(bool detachBench)
 		{
             int count;
             int failures;
 
             var errorReportingValue = TurnOffErrorReporting();
 	        var matchingMethods = MethodDiscovery();
-	        if (DiscoverTestsToRun(matchingMethods) == 0)
-	            return 0;
+            TestsDiscovery(matchingMethods);
             Console.WriteLine(
                 "Suite of {0} tests identified for {1}.{2}",
                 _testsToRun.Count(),
@@ -132,10 +131,9 @@ namespace NinjaTurtlesMutation
             RestoreErrorReporting(errorReportingValue);
             if (count == 0)
 				Console.WriteLine("No valid mutations found (this is fine).");
-	        if (failures == 0)
-	            return 1;
-	        return failures / (float) count;
-		}
+			if (failures > 0)
+                throw new MutationTestFailureException();
+        }
 
         private List<MethodReference> MethodDiscovery()
         {
@@ -148,7 +146,7 @@ namespace NinjaTurtlesMutation
             return matchingMethods;
         }
 
-        private int DiscoverTestsToRun(IList<MethodReference> matchingMethods)
+        private void TestsDiscovery(IList<MethodReference> matchingMethods)
         {
             try
             {
@@ -158,10 +156,9 @@ namespace NinjaTurtlesMutation
             {
                 _report.RegisterMethod(_method);
                 _reportingStrategy.WriteReport(_report, _reportFileName);
-                return 0;
+                throw;
             }
             _report.TestsFounded = true;
-            return _testsToRun.Count();
         }
 
         private void MutateAndTest(out int mutationCount, out int mutationFailures)
