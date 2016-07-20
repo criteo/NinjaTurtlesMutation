@@ -119,7 +119,7 @@ namespace NinjaTurtlesMutation
 
             var errorReportingValue = TurnOffErrorReporting();
 	        var matchingMethods = MethodDiscovery();
-            TestsDiscovery(matchingMethods);
+            MethodsTestsDiscovery(matchingMethods);
             Console.WriteLine(
                 "Suite of {0} tests identified for {1}.{2}",
                 _testsToRun.Count(),
@@ -146,7 +146,7 @@ namespace NinjaTurtlesMutation
             return matchingMethods;
         }
 
-        private void TestsDiscovery(IList<MethodReference> matchingMethods)
+        private void MethodsTestsDiscovery(IList<MethodReference> matchingMethods)
         {
             try
             {
