@@ -66,7 +66,7 @@ namespace NinjaTurtlesMutation.Reporting
         /// True if the targeted method has matching tests
         /// </summary>
         [XmlIgnore]
-        public bool TestsFounded = false;
+        public bool TestsFound = false;
 
         /// <summary>
         /// Gets or sets a list of the <see cref="SourceFile" />s covered by

@@ -113,25 +113,30 @@ namespace NinjaTurtlesMutation
         public MutationTestingReport Report { get { return _report; } }
 
 	    public void Run(bool detachBench)
-		{
-            int count;
-            int failures;
-
+	    {
+	        MutationTestInfo mutationsInfo;
             var errorReportingValue = TurnOffErrorReporting();
 	        var matchingMethods = MethodDiscovery();
-            MethodsTestsDiscovery(matchingMethods);
+            _report.TestsFound = MethodsTestsDiscovery(matchingMethods);
             Console.WriteLine(
                 "Suite of {0} tests identified for {1}.{2}",
                 _testsToRun.Count(),
                 TargetType.FullName,
                 TargetMethod);
-            _benchmark = new TestsBenchmark(_testAssemblyLocation, _testsToRun.ToArray());
-	        _benchmark.LaunchBenchmark(detachBench);
-            MutateAndTest(out count, out failures);
-            RestoreErrorReporting(errorReportingValue);
-            if (count == 0)
+	        if (_report.TestsFound)
+	        {
+	            _benchmark = new TestsBenchmark(_testAssemblyLocation, _testsToRun.ToArray());
+	            _benchmark.LaunchBenchmark(detachBench);
+	            mutationsInfo = MutateAndTest();
+	        }
+	        else
+	            mutationsInfo = MutateAndCount();
+	        RestoreErrorReporting(errorReportingValue);
+            _report.RegisterMethod(_method);
+            _reportingStrategy.WriteReport(_report, _reportFileName);
+            if (mutationsInfo.MutantsCount == 0)
 				Console.WriteLine("No valid mutations found (this is fine).");
-			if (failures > 0)
+			if (mutationsInfo.MutantsFailures > 0)
                 throw new MutationTestFailureException();
         }
 
@@ -146,7 +151,7 @@ namespace NinjaTurtlesMutation
             return matchingMethods;
         }
 
-        private void MethodsTestsDiscovery(IList<MethodReference> matchingMethods)
+        private bool MethodsTestsDiscovery(IList<MethodReference> matchingMethods)
         {
             try
             {
@@ -154,17 +159,32 @@ namespace NinjaTurtlesMutation
             }
             catch (MutationTestFailureException)
             {
-                _report.RegisterMethod(_method);
-                _reportingStrategy.WriteReport(_report, _reportFileName);
-                throw;
+                _testsToRun = new HashSet<string>();
+                return false;
             }
-            _report.TestsFounded = true;
+            return true;
+        }
+        private MutationTestInfo MutateAndCount()
+        {
+            var mutationsInfo = new MutationTestInfo(0, 0);
+            if (_mutationsToApply.Count == 0) PopulateDefaultTurtles();
+            foreach (var turtleType in _mutationsToApply)
+            {
+                var turtle = (MethodTurtleBase)Activator.CreateInstance(turtleType);
+                foreach (var mutation in turtle.Mutate(_method, _module, _originalOffsets))
+                {
+                    mutationsInfo.MutantsCount++;
+                    _report.AddResult(mutation.MethodDefinition.GetCurrentSequencePoint(mutation.ILIndex), mutation, false);
+                    turtle.MutantComplete(mutation);
+                }
+            }
+            mutationsInfo.MutantsFailures = mutationsInfo.MutantsCount;
+            return mutationsInfo;
         }
 
-        private void MutateAndTest(out int mutationCount, out int mutationFailures)
+        private MutationTestInfo MutateAndTest()
         {
-            mutationCount = 0;
-            mutationFailures = 0;
+            var mutationInfo = new MutationTestInfo(0, 0);
             if (_mutationsToApply.Count == 0) PopulateDefaultTurtles();
             foreach (var turtleType in _mutationsToApply)
             {
@@ -173,11 +193,9 @@ namespace NinjaTurtlesMutation
                 _pendingTest = new Dictionary<string, MutantMetaData>();
                 foreach (var mutation in turtle.Mutate(_method, _module, _originalOffsets))
                     SendMutationTestToDispatcher(mutation);
-                ProceedTestResult(turtle, ref mutationFailures, ref mutationCount);
+                mutationInfo += ProceedTestResult(turtle);
             }
-
-            _report.RegisterMethod(_method);
-            _reportingStrategy.WriteReport(_report, _reportFileName);
+            return mutationInfo;
         }
 
         private void SendMutationTestToDispatcher(MutantMetaData mutation)
@@ -187,17 +205,19 @@ namespace NinjaTurtlesMutation
             _dispatcher.SendTest(testDescription);
         }
 
-        private void ProceedTestResult(MethodTurtleBase turtle, ref int failures, ref int count)
+        private MutationTestInfo ProceedTestResult(MethodTurtleBase turtle)
         {
+            var mutationInfo = new MutationTestInfo(0, 0);
             while (_pendingTest.Count != 0)
             {
                 var testResult = _dispatcher.ReadATest();
                 var mutation = _pendingTest[testResult.Uid];
                 if (!CheckTestResult(turtle, mutation, testResult))
-                    Interlocked.Increment(ref failures);
-                Interlocked.Increment(ref count);
+                    Interlocked.Increment(ref mutationInfo.MutantsFailures);
+                Interlocked.Increment(ref mutationInfo.MutantsCount);
                 _pendingTest.Remove(testResult.Uid);
             }
+            return mutationInfo;
         }
 
         private bool CheckTestResult(MethodTurtleBase turtle, MutantMetaData mutation, TestDescription testDescription)
@@ -359,7 +379,7 @@ namespace NinjaTurtlesMutation
             }
             if (result.Count == 0)
             {
-                Console.WriteLine("No matching tests found so mutation testing cannot be applied.");
+                Console.WriteLine("No matching tests found.");
                 throw new MutationTestFailureException("No matching tests were found to run.");
             }
             return result;

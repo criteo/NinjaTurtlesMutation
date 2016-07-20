@@ -42,11 +42,8 @@ namespace NinjaTurtlesMutation.Console.Reporting
 
         public void MergeMutationTestReport(MutationTestingReport report)
         {
-            if (!report.TestsFounded)
-            {
+            if (!report.TestsFound)
                 _methodsWithNoTest.Add(report.MethodFullname);
-                return;
-            }
             _mutantsCount += report.MutantsCount;
             _mutantsKilledCount += report.MutantsKilledCount;
             MergeSourceFileReport(report);

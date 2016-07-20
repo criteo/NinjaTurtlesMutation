@@ -86,6 +86,7 @@
     <Compile Include="AssemblyExtensions.cs" />
     <Compile Include="ManagedTestRunners\IManagedTestRunner.cs" />
     <Compile Include="ManagedTestRunners\NUnitManagedTestRunner.cs" />
+    <Compile Include="MutationTestInfo.cs" />
     <Compile Include="ServiceTestRunnerLib\TestDescription.cs" />
     <Compile Include="TestsBenchmarker.cs" />
     <Compile Include="TestsDispatcher.cs" />
