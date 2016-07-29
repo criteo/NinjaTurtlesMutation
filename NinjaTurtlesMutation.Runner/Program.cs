@@ -10,11 +10,14 @@ namespace NinjaTurtlesMutation.Runner
 {
     class Program
     {
+        private static float _killTimeFactor;
+
         static void Main(string[] args)
         {
-            if (args.Length != 3)
+            if (args.Length != 4)
                 return;
             bool oneRunOnly = args[2] == true.ToString();
+            _killTimeFactor = float.Parse(args[3]);
             AppDomain.CurrentDomain.UnhandledException += UnexpectedExceptionHandler;
             try
             {
@@ -58,7 +61,7 @@ namespace NinjaTurtlesMutation.Runner
             {
                 var mutantPath = testDescription.AssemblyPath;
                 runner.Instance.Start(mutantPath, testDescription.TestsToRun);
-                exitedInTime = runner.Instance.WaitForExit((int)(1.1 * testDescription.TotalMsBench));
+                exitedInTime = runner.Instance.WaitForExit((int)(_killTimeFactor * testDescription.TotalMsBench));
                 exitCode = runner.Instance.ExitCode;
             }
             testDescription.ExitedInTime = exitedInTime;

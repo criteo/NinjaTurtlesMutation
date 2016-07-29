@@ -53,12 +53,13 @@ namespace NinjaTurtlesMutation.Dispatcher
 
         private static bool _oneTimeRunners;
         private static int _maxSimultaneousBusyRunners;
+        private static float _killTimeFactor;
 
         #endregion
 
         static void Main(string[] args)
         {
-            if (args.Length != 6)
+            if (args.Length != 7)
                 return;
             _pipeInStringHandler = args[0];
             _pipeOutStringHandler = args[1];
@@ -66,6 +67,7 @@ namespace NinjaTurtlesMutation.Dispatcher
             var numRunners = int.Parse(args[3]);
             _maxSimultaneousBusyRunners = int.Parse(args[4]);
             _oneTimeRunners = args[5] == true.ToString();
+            _killTimeFactor = float.Parse(args[6]);
             InstantiateTestRunners(numRunners);
             InitSender();
             InitReceiver();
@@ -191,7 +193,7 @@ namespace NinjaTurtlesMutation.Dispatcher
         private static void RunnerRestart(TestRunnerHandler busyRunner, int busyRunnerIndex)
         {
             busyRunner.KillTestRunner();
-            _testRunners[busyRunnerIndex] = new TestRunnerHandler(_oneTimeRunners);
+            _testRunners[busyRunnerIndex] = new TestRunnerHandler(_oneTimeRunners, _killTimeFactor);
         }
 
         #endregion
@@ -229,7 +231,7 @@ namespace NinjaTurtlesMutation.Dispatcher
         private static void InstantiateTestRunners(int numRunners)
         {
             for (int i = 0; i < numRunners; i++)
-                _testRunners.Add(new TestRunnerHandler(_oneTimeRunners));
+                _testRunners.Add(new TestRunnerHandler(_oneTimeRunners, _killTimeFactor));
         }
 
         #endregion

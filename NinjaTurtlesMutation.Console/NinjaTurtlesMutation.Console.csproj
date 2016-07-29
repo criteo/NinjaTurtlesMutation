@@ -97,10 +97,14 @@
     <Compile Include="Commands\Run.cs" />
     <Compile Include="CommandWithOptions.cs" />
     <Compile Include="EmbeddedResourceResolver.cs" />
+    <Compile Include="Options\ArgumentException.cs" />
     <Compile Include="Options\DetachBench.cs" />
+    <Compile Include="Options\InvalidArgumentValueException.cs" />
+    <Compile Include="Options\KillTimeFactor.cs" />
     <Compile Include="Options\NoPreTest.cs" />
     <Compile Include="Options\OneTimeRunners.cs" />
     <Compile Include="Options\MaxBusyRunner.cs" />
+    <Compile Include="Options\OptionArgumentParseException.cs" />
     <Compile Include="Options\ParallelLevel.cs" />
     <Compile Include="Options\SuccessThreshold.cs" />
     <Compile Include="Options\TargetNamespace.cs" />

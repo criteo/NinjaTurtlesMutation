@@ -56,6 +56,7 @@ namespace NinjaTurtlesMutation.Console.Options
                     {"T", typeof(TurtlesTypes)},
                     {"-turtle-types", typeof(TurtlesTypes)},
                     {"-success-score", typeof(SuccessThreshold)},
+                    {"-killtime-factor", typeof(KillTimeFactor)},
                 };
 
         public static bool TryParse(Queue<string> queue, out IEnumerable<Option> commandLineOptions)

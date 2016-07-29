@@ -62,6 +62,8 @@ Options:
                                   the --output option. By default, this will be XML, but
                                   HTML can be specified here to transform the results
                                   into displayable format.
+   --killtime-factor            : Set, compared to the benchmark, how much time a runner
+                                  will wait before marking a mutation killed. Default at 2
    --max-busy                   : Define how many test runners can run simultaneously.
    --namespace [-N]             : Specifies the namespace class for which mutation testing
                                   should be applied. All classes and method under that
@@ -188,7 +190,9 @@ Example:
                 var maxBusyRunners = Options.Options.OfType<MaxBusyRunner>().SingleOrDefault();
                 var maxBusyRunnersValue = maxBusyRunners != null ? maxBusyRunners.MaxBusyRunnersValue : parallelValue;
                 var oneTimeRunners = Options.Options.Any(o => o is OneTimeRunners);
-                using (var dispatcher = new TestsDispatcher(parallelValue, maxBusyRunnersValue, oneTimeRunners))
+                var killTimeFactor = Options.Options.OfType<KillTimeFactor>().SingleOrDefault();
+                var killTimeFactorValue = killTimeFactor != null ? killTimeFactor.Factor : 2;
+                using (var dispatcher = new TestsDispatcher(parallelValue, maxBusyRunnersValue, oneTimeRunners, killTimeFactorValue))
                     runnerMethod(dispatcher);
                 RestoreOutput();
                 var score = _report.GetMutationScore();

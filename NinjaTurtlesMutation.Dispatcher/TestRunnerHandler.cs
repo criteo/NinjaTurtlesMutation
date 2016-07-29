@@ -17,7 +17,7 @@ namespace NinjaTurtlesMutation.Dispatcher
 
         public bool isBusy;
 
-        public TestRunnerHandler(bool oneTimeRunner)
+        public TestRunnerHandler(bool oneTimeRunner, float killTimeFactor)
         {
             _runnerPipeIn = new AnonymousPipeServerStream(PipeDirection.In, HandleInheritability.Inheritable);
             _runnerPipeOut = new AnonymousPipeServerStream(PipeDirection.Out, HandleInheritability.Inheritable);
@@ -28,7 +28,8 @@ namespace NinjaTurtlesMutation.Dispatcher
             _runnerProcess.StartInfo.UseShellExecute = false;
             _runnerProcess.StartInfo.Arguments = _runnerPipeOut.GetClientHandleAsString() + " " +
                                                 _runnerPipeIn.GetClientHandleAsString() + " " +
-                                                oneTimeRunner;
+                                                oneTimeRunner + " " +
+                                                killTimeFactor;
             _runnerProcess.Start();
             _runnerPipeOut.DisposeLocalCopyOfClientHandle();
             _runnerPipeIn.DisposeLocalCopyOfClientHandle();
