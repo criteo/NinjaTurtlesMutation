@@ -26,7 +26,7 @@ namespace NinjaTurtlesMutation.Console.Options
             foreach (char c in arg)
             {
                 if (!_turtlesKeys.ContainsKey(c))
-                    continue;
+                    throw new InvalidArgumentValueException("TurtlesTypes", "Invalid turtle key given (use 'ntm help run' for the valid key list)", c.ToString());
                 Types.Add(_turtlesKeys[c]);
             }
         }

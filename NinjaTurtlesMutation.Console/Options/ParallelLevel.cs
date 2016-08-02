@@ -6,13 +6,17 @@ namespace NinjaTurtlesMutation.Console.Options
     {
         protected override void TakeArguments(System.Collections.Generic.Queue<string> queue)
         {
+            var arg = queue.Dequeue();
             try
             {
-                ParallelValue = int.Parse(queue.Dequeue());
+                ParallelValue = int.Parse(arg);
                 if (ParallelValue < 1)
-                    ParallelValue = 8;
+                    throw new InvalidArgumentValueException("ParallelLevel", "ParallelLevel minimum is 1", arg);
             }
-            catch (FormatException) {ParallelValue = 8;}
+            catch (FormatException)
+            {
+                throw new OptionArgumentParseException("ParallelLevel", arg);
+            }
         }
 
         public int ParallelValue { get; private set; }

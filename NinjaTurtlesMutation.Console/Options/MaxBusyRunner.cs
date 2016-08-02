@@ -6,13 +6,17 @@ namespace NinjaTurtlesMutation.Console.Options
     {
         protected override void TakeArguments(System.Collections.Generic.Queue<string> queue)
         {
+            var arg = queue.Dequeue();
             try
             {
-                MaxBusyRunnersValue = int.Parse(queue.Dequeue());
+                MaxBusyRunnersValue = int.Parse(arg);
                 if (MaxBusyRunnersValue < 1)
-                    MaxBusyRunnersValue = 8;
+                    throw new InvalidArgumentValueException("MaxBusyRunner", "MaxBusyRunner minimum is 1", arg);
             }
-            catch (FormatException) { MaxBusyRunnersValue = 8;}
+            catch (FormatException)
+            {
+                throw new OptionArgumentParseException("MaxBusyRunner", arg);
+            }
         }
 
         public int MaxBusyRunnersValue { get; private set; }

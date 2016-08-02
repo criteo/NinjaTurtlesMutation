@@ -59,5 +59,19 @@ namespace NinjaTurtlesMutation.Tests.ConsoleOptionsTests
             Assert.IsTrue(tte.Types.Contains(typeof(VariableReadTurtle)));
             Assert.IsTrue(tte.Types.Contains(typeof(VariableWriteTurtle)));
         }
+
+        [TestCase("ACBFW")]
+        [TestCase("CBS3W")]
+        [TestCase("666")]
+        [TestCase("3CBSW")]
+        [TestCase("CBSW3")]
+        public void NonValidKeyThrow(string containBadKey)
+        {
+            var qarg = new Queue<string>();
+            var tte = new TurtleTypesExposed();
+
+            qarg.Enqueue(containBadKey);
+            Assert.Throws<InvalidArgumentValueException>(() => tte.TakeArgumentsExposed(qarg));
+        }
     }
 }

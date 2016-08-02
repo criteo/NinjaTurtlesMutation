@@ -19,17 +19,29 @@
 
 #endregion
 
+using NinjaTurtlesMutation.Console.Options;
+
 namespace NinjaTurtlesMutation.Console
 {
     class Program
     {
         private const int SUCCESS = 0;
-        private const int VALIDATION_FAILURE = 1;
-        private const int EXECUTION_FAILURE = 2;
+        private const int PARSE_FAILURE = 1;
+        private const int VALIDATION_FAILURE = 2;
+        private const int EXECUTION_FAILURE = 3;
 
         static int Main(string[] args)
         {
-            var options = new CommandWithOptions(args);
+            CommandWithOptions options;
+            try
+            {
+                options = new CommandWithOptions(args);
+            }
+            catch (ArgumentException ae)
+            {
+                System.Console.Error.WriteLine(ae.Message);
+                return PARSE_FAILURE;
+            }
             if (!options.Command.Validate())
             {
                 return VALIDATION_FAILURE;

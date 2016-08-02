@@ -1,7 +1,6 @@
 ﻿
 using System.Collections.Generic;
 using NinjaTurtlesMutation.Console.Options;
-using NinjaTurtlesMutation.Turtles;
 using NUnit.Framework;
 
 namespace NinjaTurtlesMutation.Tests.ConsoleOptionsTests

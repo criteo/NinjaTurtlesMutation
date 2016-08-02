@@ -74,6 +74,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ConsoleOptionsTests\KillTimeFactorTests.cs" />
+    <Compile Include="ConsoleOptionsTests\MaxBusyRunnerTest.cs" />
+    <Compile Include="ConsoleOptionsTests\ParallelLevelTest.cs" />
     <Compile Include="ConsoleOptionsTests\SuccessThresholdTests.cs" />
     <Compile Include="MethodDefinitionResolverLoggingTests.cs" />
     <Compile Include="ConsoleOptionsTests\TurtlesTypesTests.cs" />

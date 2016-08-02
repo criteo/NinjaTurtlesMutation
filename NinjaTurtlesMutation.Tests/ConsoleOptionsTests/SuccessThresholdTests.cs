@@ -35,19 +35,29 @@ namespace NinjaTurtlesMutation.Tests.ConsoleOptionsTests
             Assert.AreEqual(sce.MinScore, expected);
         }
 
+        [TestCase("-1")]
+        [TestCase("2")]
+        public void OutOfRangeValueThrow(string badValue)
+        {
+            var qarg = new Queue<string>();
+            var sce  = new SuccessThresholdExposed();
+
+            qarg.Enqueue(badValue);
+            qarg.Enqueue("rededesintox");
+            Assert.Throws<InvalidArgumentValueException>(() => sce.TakeArgumentsExposed(qarg));
+        }
+
         [TestCase("lolz")]
         [TestCase("rpz91")]
         [TestCase("html")]
-        public void AssertNonsenseParseAsOne(string nonsence)
+        public void NonsenseThrow(string nonsense)
         {
             var qarg = new Queue<string>();
             var sce = new SuccessThresholdExposed();
 
-            qarg.Enqueue(nonsence);
+            qarg.Enqueue(nonsense);
             qarg.Enqueue("lé");
-            sce.TakeArgumentsExposed(qarg);
-
-            Assert.AreEqual(sce.MinScore, 1F);
+            Assert.Throws<OptionArgumentParseException>(() => sce.TakeArgumentsExposed(qarg));
         }
     }
 }
