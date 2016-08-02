@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,6 +9,6 @@ namespace NinjaTurtlesMutation.Console.Options
     internal class InvalidArgumentValueException : ArgumentException
     {
         public InvalidArgumentValueException(string optionname, string why, string argument) :
-            base($"{optionname}: {why}: {argument}") { }
+            base(string.Format("{0}: {1}: {2}", optionname, why, argument)) { }
     }
 }
