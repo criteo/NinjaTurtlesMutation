@@ -1,4 +1,4 @@
-﻿#region Copyright & licence
+#region Copyright & licence
 
 // This file is part of NinjaTurtles.
 // 
@@ -131,9 +131,7 @@ Example:
                     return false;
                 }
             }
-            _testMethods =
-                GetMethodsNameWithAttributesFromAssembly(AssemblyDefinition.ReadAssembly(_testAssemblyLocation),
-                    new[] {"TestAttribute", "TestCaseAttribute"});
+            _testMethods = TestUtils.NUnit.GetTestsNameDictionnaryTranslation(AssemblyDefinition.ReadAssembly(_testAssemblyLocation));
             if (_testMethods.Count == 0)
             {
                 using (new OutputWriterErrorHighlight())
@@ -490,41 +488,6 @@ Exception details:
                 tests - failures,
                 failures);
             return tests > 0 && failures == 0;
-        }
-
-        private IDictionary<string, string> GetMethodsNameWithAttributesFromAssembly(AssemblyDefinition assembly,
-    IList<string> searchedAttributes)
-        {
-            var methodsWithAttributes = new Dictionary<string, string>();
-            foreach (var type in assembly.MainModule.Types)
-                GetMethodsNameWithAttributesFromType(type, searchedAttributes, methodsWithAttributes);
-            return methodsWithAttributes;
-        }
-
-        private void GetMethodsNameWithAttributesFromType(TypeDefinition type, IList<string> searchedAttributes, IDictionary<string, string> matchingMethods)
-        {
-            foreach (var method in type.Methods)
-            {
-                if (!MethodHasAttributes(method, searchedAttributes))
-                    continue;
-                var methodName = method.Name;
-                var methodNunitName = String.Format("{0}.{1}", type.FullName.Replace("/", "+"), methodName);
-                if (matchingMethods.ContainsKey(methodName))
-                    continue;
-                matchingMethods.Add(methodName, methodNunitName);
-            }
-            if (type.NestedTypes == null)
-                return;
-            foreach (var nestedType in type.NestedTypes)
-                GetMethodsNameWithAttributesFromType(nestedType, searchedAttributes, matchingMethods);
-        }
-
-        private static bool MethodHasAttributes(MethodDefinition method, IList<string> searchedAttributes)
-        {
-            var attributesTypes = method.CustomAttributes.Select(a => a.AttributeType).ToList();
-            if (attributesTypes.Any(at => searchedAttributes.Contains(at.Name)))
-                return true;
-            return false;
         }
     }
 }

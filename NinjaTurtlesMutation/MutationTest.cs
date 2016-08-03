@@ -146,6 +146,7 @@ namespace NinjaTurtlesMutation
             _module.LoadDebugInformation();
             var matchingMethods = new List<MethodReference>();
             AddMethod(_method, matchingMethods);
+            FindAlternativeMethodsFromNUnitAssembly(_testAssembly, matchingMethods);
             _originalOffsets = _method.Body.Instructions.Select(i => i.Offset).ToArray();
             _report = new MutationTestingReport(_method);
             return matchingMethods;
@@ -368,15 +369,11 @@ namespace NinjaTurtlesMutation
 	        }
 	    }
 
-        private ISet<string> GetMatchingTestsFromTree(MethodDefinition targetmethod, IList<MethodReference> matchingMethods, IDictionary<string, string> testMethods,  bool force = false)
+        private ISet<string> GetMatchingTestsFromTree(MethodDefinition targetmethod, IList<MethodReference> matchingMethods, IDictionary<string, string> testMethods)
         {
             ISet<string> result = new HashSet<string>();
             foreach (var type in _testAssembly.MainModule.Types)
-                AddTestsForType(targetmethod, matchingMethods, force, type, testMethods, result);
-            if (!force && result.Count == 0)
-            {
-                result = GetMatchingTestsFromTree(targetmethod, matchingMethods, testMethods, true);
-            }
+                AddTestsForType(targetmethod, matchingMethods, type, testMethods, result);
             if (result.Count == 0)
             {
                 Console.WriteLine("No matching tests found.");
@@ -385,11 +382,11 @@ namespace NinjaTurtlesMutation
             return result;
 	    }
 
-        private void AddTestsForType(MethodDefinition targetmethod, IList<MethodReference> matchingMethods, bool force, TypeDefinition type, IDictionary<string, string> testMethods, ISet<string> result)
+        private void AddTestsForType(MethodDefinition targetmethod, IList<MethodReference> matchingMethods, TypeDefinition type, IDictionary<string, string> testMethods, ISet<string> result)
 	    {
-	        String          targetType = targetmethod.DeclaringType.FullName;
+	        var targetType = targetmethod.DeclaringType.FullName;
 
-            foreach (MethodDefinition method in type.Methods.Where(m => m.HasBody))
+            foreach (var method in type.Methods.Where(m => m.HasBody))
             {
                 var methodName = method.Name;
                 if (methodName.StartsWith("<"))
@@ -399,27 +396,22 @@ namespace NinjaTurtlesMutation
                 }
                 if (!testMethods.Keys.Contains(methodName))
                     continue;
-                if (!force && !DoesMethodReferenceType(method, targetType))
-                    continue;
-                if (!MethodCallTargetDirectOrIndirect(method, matchingMethods))
+                if (!DoesMethodReferenceType(method, targetType) && !AtLeastOneMethodIsCalledFromMethod(method, matchingMethods))
                     continue;
                 var methodFinalName = testMethods[methodName];
                 result.Add(methodFinalName);
             }
             if (type.NestedTypes == null)
                 return;
-            foreach (TypeDefinition typeDefinition in type.NestedTypes)
-                AddTestsForType(targetmethod, matchingMethods, force, typeDefinition, testMethods, result);
+            foreach (var typeDefinition in type.NestedTypes)
+                AddTestsForType(targetmethod, matchingMethods, typeDefinition, testMethods, result);
         }
 
-        private bool MethodCallTargetDirectOrIndirect(MethodDefinition methodDefinition, IList<MethodReference> matchingMethods)
+        private bool AtLeastOneMethodIsCalledFromMethod(MethodDefinition methodDefinition, IList<MethodReference> matchingMethods)
         {
-            foreach (Instruction instruction in methodDefinition.Body.Instructions)
+            foreach (var instruction in methodDefinition.Body.Instructions)
             {
-                if (!(instruction.OpCode == OpCodes.Call // Call method
-                      || instruction.OpCode == OpCodes.Callvirt // Call a method associated with an object
-                      || instruction.OpCode == OpCodes.Newobj // Allocate an uninitialized object or value type and call ctor
-                      || instruction.OpCode == OpCodes.Ldftn)) // Push a pointer to a method referenced by method, on the stack
+                if (!IsCallStatement(instruction))
                     continue;
                 var operandAsMethodReference = instruction.Operand as MethodReference;
                 if (operandAsMethodReference == null)
@@ -445,10 +437,7 @@ namespace NinjaTurtlesMutation
 	        bool typeUsed = false;
 	        foreach (var instruction in method.Body.Instructions)
 	        {
-	            if (instruction.OpCode == OpCodes.Call
-	                || instruction.OpCode == OpCodes.Callvirt
-	                || instruction.OpCode == OpCodes.Newobj
-	                || instruction.OpCode == OpCodes.Ldftn)
+	            if (IsCallStatement(instruction))
 	            {
 	                var reference = (MethodReference)instruction.Operand;
 	                var declaringType = reference.DeclaringType;
@@ -501,10 +490,7 @@ namespace NinjaTurtlesMutation
 	        foreach (var method in type.Methods.Where(m => m.HasBody))
 	        foreach (var instruction in method.Body.Instructions)
 	        {
-	            if (instruction.OpCode == OpCodes.Call
-	                || instruction.OpCode == OpCodes.Callvirt
-                    || instruction.OpCode == OpCodes.Newobj
-                    || instruction.OpCode == OpCodes.Ldftn)
+	            if (IsCallStatement(instruction))
 	            {
 	                var reference = (MethodReference)instruction.Operand;
 	                if (_comparer.Equals(reference, targetMethod)
@@ -527,6 +513,32 @@ namespace NinjaTurtlesMutation
                 AddCallingMethodsForType(targetMethod, matchingMethods, nestedType);
             }
 	    }
+
+        private void FindAlternativeMethodsFromNUnitAssembly(AssemblyDefinition assembly, List<MethodReference> matchingMethods)
+        {
+            var candidatesMethods = assembly.MainModule.Types.SelectMany(type => type.Methods.Where(m => m.HasBody && !TestUtils.Filtering.IsTestMethod(m))).ToList();
+            FindAlternativeMethodsFromCandidatesMethods(candidatesMethods, matchingMethods);
+        }
+
+        private void FindAlternativeMethodsFromCandidatesMethods(List<MethodDefinition> candidatesMethods, List<MethodReference> matchingMethods)
+        {
+            Func<MethodDefinition, bool> isNotRegisterAndIsAlternative = method => !matchingMethods.Contains(method) && AtLeastOneMethodIsCalledFromMethod(method, matchingMethods);
+
+            var currentAlternatives = candidatesMethods.Where(isNotRegisterAndIsAlternative);
+            while (currentAlternatives.Any())
+            {
+                matchingMethods.AddRange(currentAlternatives);
+                currentAlternatives = candidatesMethods.Where(isNotRegisterAndIsAlternative);
+            }
+        }
+
+        private static bool IsCallStatement(Instruction instruction)
+        {
+            return instruction.OpCode == OpCodes.Call
+                   || instruction.OpCode == OpCodes.Callvirt
+                   || instruction.OpCode == OpCodes.Newobj
+                   || instruction.OpCode == OpCodes.Ldftn;
+        }
 
 	    private class MethodReferenceComparer : IEqualityComparer<MethodReference>
         {
@@ -641,6 +653,6 @@ namespace NinjaTurtlesMutation
                 }
             }
         }
-	}
+    }
 }
 

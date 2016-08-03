@@ -113,6 +113,7 @@
     <Compile Include="Reporting\SequencePoint.cs" />
     <Compile Include="Reporting\SourceFile.cs" />
     <Compile Include="Reporting\Line.cs" />
+    <Compile Include="TestUtils.cs" />
     <Compile Include="Turtles\ArithmeticOperatorTurtle.cs" />
     <Compile Include="MutantMetaData.cs" />
     <Compile Include="Turtles\BranchConditionTurtle.cs" />
