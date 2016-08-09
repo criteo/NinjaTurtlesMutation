@@ -352,17 +352,8 @@ Example:
             }
             catch (Exception ex)
             {
-                _message =
-                    @"
-An exception was thrown setting up the mutation tests. The exception details
-are below. If you are unable to resolve the problem from these details, please
-post the details in our issue tracker at:
-
-https://github.com/criteo/NinjaTurtlesMutation/issues
-
-Exception details:
-
-" + ex;
+                System.Console.Error.WriteLine("An error occur during mutation test of {0}:\n{1}\nThe corresponding report was not merged", mutationTest.TargetMethod, ex);
+                return false;
             }
             _report.MergeMutationTestReport(mutationTest.Report);
             return result;
