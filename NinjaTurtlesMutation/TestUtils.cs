@@ -12,6 +12,7 @@ namespace NinjaTurtlesMutation
         public static class Attributes
         {
             public static List<string> Tests = new List<string> {"TestAttribute", "TestCaseAttribute"};
+            public static List<string> UnactivatedTests = new List<string> { "IgnoreAttribute", "ExplicitAttribute" };
         }
 
         public static class Filtering
@@ -28,15 +29,15 @@ namespace NinjaTurtlesMutation
             {
                 var methodsWithAttributes = new Dictionary<string, string>();
                 foreach (var type in assembly.MainModule.Types)
-                    GetMethodsNameWithAttributesFromType(type, Attributes.Tests, methodsWithAttributes);
+                    GetMethodsNameWithAttributesFromType(type, Attributes.Tests, Attributes.UnactivatedTests, methodsWithAttributes);
                 return methodsWithAttributes;
             }
 
-            private static void GetMethodsNameWithAttributesFromType(TypeDefinition type, IList<string> searchedAttributes, IDictionary<string, string> matchingMethods)
+            private static void GetMethodsNameWithAttributesFromType(TypeDefinition type, IList<string> searchedAttributes, IList<string> avoidedAttributes, IDictionary<string, string> matchingMethods)
             {
                 foreach (var method in type.Methods)
                 {
-                    if (!MethodHasAttributes(method, searchedAttributes))
+                    if (!MethodHasAttributes(method, searchedAttributes) || MethodHasAttributes(method, avoidedAttributes))
                         continue;
                     var methodName = method.Name;
                     var methodNunitName = String.Format("{0}.{1}", type.FullName.Replace("/", "+"), methodName);
@@ -47,7 +48,7 @@ namespace NinjaTurtlesMutation
                 if (type.NestedTypes == null)
                     return;
                 foreach (var nestedType in type.NestedTypes)
-                    GetMethodsNameWithAttributesFromType(nestedType, searchedAttributes, matchingMethods);
+                    GetMethodsNameWithAttributesFromType(nestedType, searchedAttributes, avoidedAttributes, matchingMethods);
             }
         }
 
